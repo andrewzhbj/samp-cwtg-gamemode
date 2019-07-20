@@ -1,0 +1,839 @@
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3.7-R2, (C)2005-2015 SA-MP Team
+
+[02:55:10] filterscripts = ""  (string)
+[02:55:10] 
+[02:55:10] Server Plugins
+[02:55:10] --------------
+[02:55:10]  Loaded 0 plugins.
+
+[02:55:10] 
+[02:55:10] Filterscripts
+[02:55:10] ---------------
+[02:55:10]   Loaded 0 filterscripts.
+
+[02:55:10] 
+----------------------------------
+[02:55:10]   Rivershell by Kye 2006-2013
+
+[02:55:10] ----------------------------------
+
+[02:55:10] Number of vehicle models: 3
+[02:55:42] [connection] 127.0.0.1:64154 requests connection cookie.
+[02:55:43] [connection] incoming connection: 127.0.0.1:64154 id: 0
+[02:55:43] [join] [WTx]Andrew_Manu has joined the server (0:127.0.0.1)
+Console input: stop
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3.7-R2, (C)2005-2015 SA-MP Team
+
+[03:07:28] filterscripts = ""  (string)
+[03:07:28] 
+[03:07:28] Server Plugins
+[03:07:28] --------------
+[03:07:28]  Loaded 0 plugins.
+
+[03:07:28] 
+[03:07:28] Filterscripts
+[03:07:28] ---------------
+[03:07:28]   Loaded 0 filterscripts.
+
+[03:07:28] AllowAdminTeleport() : function is deprecated. Please see OnPlayerClickMap()
+[03:07:28] 
+----------------------------------
+[03:07:28]   Bare Script
+
+[03:07:28] ----------------------------------
+
+[03:07:28] Number of vehicle models: 0
+[03:07:30] [connection] 127.0.0.1:57212 requests connection cookie.
+[03:07:31] [connection] incoming connection: 127.0.0.1:57212 id: 0
+[03:07:31] [join] [WTx]Andrew_Manu has joined the server (0:127.0.0.1)
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3.7-R2, (C)2005-2015 SA-MP Team
+
+[03:10:26] filterscripts = ""  (string)
+[03:10:26] 
+[03:10:26] Server Plugins
+[03:10:26] --------------
+[03:10:26]  Loaded 0 plugins.
+
+[03:10:26] 
+[03:10:26] Filterscripts
+[03:10:26] ---------------
+[03:10:26]   Loaded 0 filterscripts.
+
+[03:10:26] AllowAdminTeleport() : function is deprecated. Please see OnPlayerClickMap()
+[03:10:26] 
+----------------------------------
+[03:10:26]   Gamemode: CW/TG
+
+[03:10:26]   Desarrollador: Andrew_Manu
+
+[03:10:26] ----------------------------------
+
+[03:10:26] Number of vehicle models: 0
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3.7-R2, (C)2005-2015 SA-MP Team
+
+[03:20:12] filterscripts = ""  (string)
+[03:20:12] 
+[03:20:12] Server Plugins
+[03:20:12] --------------
+[03:20:12]  Loaded 0 plugins.
+
+[03:20:12] 
+[03:20:12] Filterscripts
+[03:20:12] ---------------
+[03:20:12]   Loaded 0 filterscripts.
+
+[03:20:12] AllowAdminTeleport() : function is deprecated. Please see OnPlayerClickMap()
+[03:20:12] 
+----------------------------------
+[03:20:12]   Gamemode: CW/TG
+
+[03:20:12]   Desarrollador: Andrew_Manu
+
+[03:20:12] ----------------------------------
+
+[03:20:12] Number of vehicle models: 0
+[03:20:13] [connection] 127.0.0.1:49339 requests connection cookie.
+[03:20:14] [connection] incoming connection: 127.0.0.1:49339 id: 0
+[03:20:14] [join] [WTx]Andrew_Manu has joined the server (0:127.0.0.1)
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3.7-R2, (C)2005-2015 SA-MP Team
+
+[03:20:42] filterscripts = ""  (string)
+[03:20:42] 
+[03:20:42] Server Plugins
+[03:20:42] --------------
+[03:20:42]  Loaded 0 plugins.
+
+[03:20:42] 
+[03:20:42] Filterscripts
+[03:20:42] ---------------
+[03:20:42]   Loaded 0 filterscripts.
+
+[03:20:42] AllowAdminTeleport() : function is deprecated. Please see OnPlayerClickMap()
+[03:20:42] 
+----------------------------------
+[03:20:42]   Gamemode: CW/TG
+
+[03:20:42]   Desarrollador: Andrew_Manu
+
+[03:20:42] ----------------------------------
+
+[03:20:42] Number of vehicle models: 0
+[03:20:56] [connection] 127.0.0.1:58936 requests connection cookie.
+[03:20:57] [connection] incoming connection: 127.0.0.1:58936 id: 0
+[03:20:58] [join] [WTx]Andrew_Manu has joined the server (0:127.0.0.1)
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3.7-R2, (C)2005-2015 SA-MP Team
+
+[03:23:50] filterscripts = ""  (string)
+[03:23:50] 
+[03:23:50] Server Plugins
+[03:23:50] --------------
+[03:23:50]  Loaded 0 plugins.
+
+[03:23:50] 
+[03:23:50] Filterscripts
+[03:23:50] ---------------
+[03:23:50]   Loaded 0 filterscripts.
+
+[03:23:50] AllowAdminTeleport() : function is deprecated. Please see OnPlayerClickMap()
+[03:23:50] 
+----------------------------------
+[03:23:50]   Gamemode: CW/TG
+
+[03:23:50]   Desarrollador: Andrew_Manu
+
+[03:23:50] ----------------------------------
+
+[03:23:50] Number of vehicle models: 0
+[03:23:52] [connection] 127.0.0.1:61970 requests connection cookie.
+[03:23:53] [connection] incoming connection: 127.0.0.1:61970 id: 0
+[03:23:53] [join] [WTx]Andrew_Manu has joined the server (0:127.0.0.1)
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3.7-R2, (C)2005-2015 SA-MP Team
+
+[03:26:49] filterscripts = ""  (string)
+[03:26:49] 
+[03:26:49] Server Plugins
+[03:26:49] --------------
+[03:26:49]  Loaded 0 plugins.
+
+[03:26:49] 
+[03:26:49] Filterscripts
+[03:26:49] ---------------
+[03:26:49]   Loaded 0 filterscripts.
+
+[03:26:49] AllowAdminTeleport() : function is deprecated. Please see OnPlayerClickMap()
+[03:26:49] 
+----------------------------------
+[03:26:49]   Gamemode: CW/TG
+
+[03:26:49]   Desarrollador: Andrew_Manu
+
+[03:26:49] ----------------------------------
+
+[03:26:49] Number of vehicle models: 0
+[03:26:50] [connection] 127.0.0.1:63189 requests connection cookie.
+[03:26:51] [connection] incoming connection: 127.0.0.1:63189 id: 0
+[03:26:51] [join] [WTx]Andrew_Manu has joined the server (0:127.0.0.1)
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3.7-R2, (C)2005-2015 SA-MP Team
+
+[03:34:01] filterscripts = ""  (string)
+[03:34:01] 
+[03:34:01] Server Plugins
+[03:34:01] --------------
+[03:34:01]  Loaded 0 plugins.
+
+[03:34:01] 
+[03:34:01] Filterscripts
+[03:34:01] ---------------
+[03:34:01]   Loaded 0 filterscripts.
+
+[03:34:01] AllowAdminTeleport() : function is deprecated. Please see OnPlayerClickMap()
+[03:34:01] 
+----------------------------------
+[03:34:01]   Gamemode: CW/TG
+
+[03:34:01]   Desarrollador: Andrew_Manu
+
+[03:34:01] ----------------------------------
+
+[03:34:01] Number of vehicle models: 0
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3.7-R2, (C)2005-2015 SA-MP Team
+
+[03:34:29] filterscripts = ""  (string)
+[03:34:29] 
+[03:34:29] Server Plugins
+[03:34:29] --------------
+[03:34:29]  Loaded 0 plugins.
+
+[03:34:29] 
+[03:34:29] Filterscripts
+[03:34:29] ---------------
+[03:34:29]   Loaded 0 filterscripts.
+
+[03:34:29] AllowAdminTeleport() : function is deprecated. Please see OnPlayerClickMap()
+[03:34:29] 
+----------------------------------
+[03:34:29]   Gamemode: CW/TG
+
+[03:34:29]   Desarrollador: Andrew_Manu
+
+[03:34:29] ----------------------------------
+
+[03:34:29] Number of vehicle models: 0
+[03:34:48] [connection] 127.0.0.1:60572 requests connection cookie.
+[03:34:49] [connection] incoming connection: 127.0.0.1:60572 id: 0
+[03:34:50] [join] [WTx]Andrew_Manu has joined the server (0:127.0.0.1)
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3.7-R2, (C)2005-2015 SA-MP Team
+
+[03:39:47] filterscripts = ""  (string)
+[03:39:47] 
+[03:39:47] Server Plugins
+[03:39:47] --------------
+[03:39:47]  Loaded 0 plugins.
+
+[03:39:47] 
+[03:39:47] Filterscripts
+[03:39:47] ---------------
+[03:39:47]   Loaded 0 filterscripts.
+
+[03:39:47] AllowAdminTeleport() : function is deprecated. Please see OnPlayerClickMap()
+[03:39:47] 
+----------------------------------
+[03:39:47]   Gamemode: CW/TG
+
+[03:39:47]   Desarrollador: Andrew_Manu
+
+[03:39:47] ----------------------------------
+
+[03:39:47] Number of vehicle models: 0
+[03:40:52] [connection] 127.0.0.1:58609 requests connection cookie.
+[03:40:53] [connection] incoming connection: 127.0.0.1:58609 id: 0
+[03:40:53] [join] [WTx]Andrew_Manu has joined the server (0:127.0.0.1)
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3.7-R2, (C)2005-2015 SA-MP Team
+
+[04:04:53] filterscripts = ""  (string)
+[04:04:53] weburl = "www.sa-mp.com"  (string)
+[04:04:53] 
+[04:04:53] Server Plugins
+[04:04:53] --------------
+[04:04:53]  Loaded 0 plugins.
+
+[04:04:53] 
+[04:04:53] Filterscripts
+[04:04:53] ---------------
+[04:04:53]   Loaded 0 filterscripts.
+
+[04:04:53] Script[gamemodes/Gamemode.amx]: Run time error 19: "File or function is not found"
+[04:04:53] Number of vehicle models: 0
+[04:05:04] [connection] 127.0.0.1:57615 requests connection cookie.
+[04:05:05] [connection] incoming connection: 127.0.0.1:57615 id: 0
+[04:05:05] [join] [WTx]Andrew_Manu has joined the server (0:127.0.0.1)
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3.7-R2, (C)2005-2015 SA-MP Team
+
+[04:05:51] filterscripts = ""  (string)
+[04:05:51] weburl = "www.sa-mp.com"  (string)
+[04:05:51] 
+[04:05:51] Server Plugins
+[04:05:51] --------------
+[04:05:51]  Loaded 0 plugins.
+
+[04:05:51] 
+[04:05:51] Filterscripts
+[04:05:51] ---------------
+[04:05:51]   Loaded 0 filterscripts.
+
+[04:05:51] Script[gamemodes/Gamemode.amx]: Run time error 19: "File or function is not found"
+[04:05:51] Number of vehicle models: 0
+[04:05:55] [connection] 127.0.0.1:51781 requests connection cookie.
+[04:05:56] [connection] incoming connection: 127.0.0.1:51781 id: 0
+[04:05:56] [join] [WTx]Andrew_Manu has joined the server (0:127.0.0.1)
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3.7-R2, (C)2005-2015 SA-MP Team
+
+[04:06:50] filterscripts = ""  (string)
+[04:06:50] weburl = "www.sa-mp.com"  (string)
+[04:06:50] 
+[04:06:50] Server Plugins
+[04:06:50] --------------
+[04:06:50]  Loaded 0 plugins.
+
+[04:06:50] I couldn't load any gamemode scripts. Please verify your server.cfg
+[04:06:50] It needs a gamemode0 line at the very least.
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3.7-R2, (C)2005-2015 SA-MP Team
+
+[04:06:51] filterscripts = ""  (string)
+[04:06:51] weburl = "www.sa-mp.com"  (string)
+[04:06:51] 
+[04:06:51] Server Plugins
+[04:06:51] --------------
+[04:06:51]  Loaded 0 plugins.
+
+[04:06:51] I couldn't load any gamemode scripts. Please verify your server.cfg
+[04:06:51] It needs a gamemode0 line at the very least.
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3.7-R2, (C)2005-2015 SA-MP Team
+
+[04:06:56] filterscripts = ""  (string)
+[04:06:56] weburl = "www.sa-mp.com"  (string)
+[04:06:56] 
+[04:06:56] Server Plugins
+[04:06:56] --------------
+[04:06:56]  Loaded 0 plugins.
+
+[04:06:56] 
+[04:06:56] Filterscripts
+[04:06:56] ---------------
+[04:06:56]   Loaded 0 filterscripts.
+
+[04:06:56] Script[gamemodes/Gamemode.amx]: Run time error 19: "File or function is not found"
+[04:06:56] Number of vehicle models: 0
+[04:07:09] --- Server Shutting Down.
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3.7-R2, (C)2005-2015 SA-MP Team
+
+[04:07:51] filterscripts = ""  (string)
+[04:07:51] weburl = "www.sa-mp.com"  (string)
+[04:07:51] 
+[04:07:51] Server Plugins
+[04:07:51] --------------
+[04:07:51]  Loading plugin: sscanf
+[04:07:51]   Failed.
+[04:07:51]  Loaded 0 plugins.
+
+[04:07:51] 
+[04:07:51] Filterscripts
+[04:07:51] ---------------
+[04:07:51]   Loaded 0 filterscripts.
+
+[04:07:51] Script[gamemodes/Gamemode.amx]: Run time error 19: "File or function is not found"
+[04:07:51] Number of vehicle models: 0
+[04:08:01] [connection] 127.0.0.1:60850 requests connection cookie.
+[04:08:02] [connection] incoming connection: 127.0.0.1:60850 id: 0
+[04:08:02] [join] [WTx]Andrew_Manu has joined the server (0:127.0.0.1)
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3.7-R2, (C)2005-2015 SA-MP Team
+
+[04:09:28] filterscripts = ""  (string)
+[04:09:28] weburl = "www.sa-mp.com"  (string)
+[04:09:28] 
+[04:09:28] Server Plugins
+[04:09:28] --------------
+[04:09:28]  Loading plugin: sscanf
+[04:09:28]   Failed.
+[04:09:28]  Loaded 0 plugins.
+
+[04:09:28] 
+[04:09:28] Filterscripts
+[04:09:28] ---------------
+[04:09:28]   Loaded 0 filterscripts.
+
+[04:09:28] Script[gamemodes/Gamemode.amx]: Run time error 19: "File or function is not found"
+[04:09:28] Number of vehicle models: 0
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3.7-R2, (C)2005-2015 SA-MP Team
+
+[04:09:54] filterscripts = ""  (string)
+[04:09:54] weburl = "www.sa-mp.com"  (string)
+[04:09:54] 
+[04:09:54] Server Plugins
+[04:09:54] --------------
+[04:09:54]  Loading plugin: sscanf2
+[04:09:54]   Failed.
+[04:09:54]  Loaded 0 plugins.
+
+[04:09:54] 
+[04:09:54] Filterscripts
+[04:09:54] ---------------
+[04:09:54]   Loaded 0 filterscripts.
+
+[04:09:54] Script[gamemodes/Gamemode.amx]: Run time error 19: "File or function is not found"
+[04:09:54] Number of vehicle models: 0
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3.7-R2, (C)2005-2015 SA-MP Team
+
+[04:10:03] filterscripts = ""  (string)
+[04:10:03] weburl = "www.sa-mp.com"  (string)
+[04:10:03] 
+[04:10:03] Server Plugins
+[04:10:03] --------------
+[04:10:03]  Loaded 0 plugins.
+
+[04:10:03] 
+[04:10:03] Filterscripts
+[04:10:03] ---------------
+[04:10:03]   Loaded 0 filterscripts.
+
+[04:10:03] Script[gamemodes/Gamemode.amx]: Run time error 19: "File or function is not found"
+[04:10:03] Number of vehicle models: 0
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3.7-R2, (C)2005-2015 SA-MP Team
+
+[04:10:26] filterscripts = ""  (string)
+[04:10:26] 
+[04:10:26] Server Plugins
+[04:10:26] --------------
+[04:10:26]  Loaded 0 plugins.
+
+[04:10:26] 
+[04:10:26] Filterscripts
+[04:10:26] ---------------
+[04:10:26]   Loaded 0 filterscripts.
+
+[04:10:26] Script[gamemodes/Gamemode.amx]: Run time error 19: "File or function is not found"
+[04:10:26] Number of vehicle models: 0
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3.7-R2, (C)2005-2015 SA-MP Team
+
+[04:10:42] 
+[04:10:42] Server Plugins
+[04:10:42] --------------
+[04:10:42]  Loaded 0 plugins.
+
+[04:10:42] 
+[04:10:42] Filterscripts
+[04:10:42] ---------------
+[04:10:42]   Loading filterscript 'base.amx'...
+[04:10:42] 
+--Base FS loaded.
+
+[04:10:42]   Loaded 1 filterscripts.
+
+[04:10:42] Script[gamemodes/Gamemode.amx]: Run time error 19: "File or function is not found"
+[04:10:42] Number of vehicle models: 0
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3.7-R2, (C)2005-2015 SA-MP Team
+
+[04:11:35] filterscripts = ""  (string)
+[04:11:35] 
+[04:11:35] Server Plugins
+[04:11:35] --------------
+[04:11:35]  Loaded 0 plugins.
+
+[04:11:35] 
+[04:11:35] Filterscripts
+[04:11:35] ---------------
+[04:11:35]   Loaded 0 filterscripts.
+
+[04:11:35] Script[gamemodes/Gamemode.amx]: Run time error 19: "File or function is not found"
+[04:11:35] Number of vehicle models: 0
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3.7-R2, (C)2005-2015 SA-MP Team
+
+[04:11:43] filterscripts = ""  (string)
+[04:11:43] 
+[04:11:43] Server Plugins
+[04:11:43] --------------
+[04:11:43]  Loaded 0 plugins.
+
+[04:11:43] 
+[04:11:43] Filterscripts
+[04:11:43] ---------------
+[04:11:43]   Loaded 0 filterscripts.
+
+[04:11:43] Script[gamemodes/bare.amx]: Run time error 19: "File or function is not found"
+[04:11:43] Number of vehicle models: 0
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3.7-R2, (C)2005-2015 SA-MP Team
+
+[04:11:52] filterscripts = ""  (string)
+[04:11:52] 
+[04:11:52] Server Plugins
+[04:11:52] --------------
+[04:11:52]  Loaded 0 plugins.
+
+[04:11:52] 
+[04:11:52] Filterscripts
+[04:11:52] ---------------
+[04:11:52]   Loaded 0 filterscripts.
+
+[04:11:52] Script[gamemodes/bare.amx]: Run time error 19: "File or function is not found"
+[04:11:52] Number of vehicle models: 0
+[04:11:53] [connection] 127.0.0.1:60752 requests connection cookie.
+[04:11:54] [connection] incoming connection: 127.0.0.1:60752 id: 0
+[04:11:55] [join] [WTx]Andrew_Manu has joined the server (0:127.0.0.1)
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3.7-R2, (C)2005-2015 SA-MP Team
+
+[04:12:19] filterscripts = ""  (string)
+[04:12:19] 
+[04:12:19] Server Plugins
+[04:12:19] --------------
+[04:12:19]  Loaded 0 plugins.
+
+[04:12:19] 
+[04:12:19] Filterscripts
+[04:12:19] ---------------
+[04:12:19]   Loaded 0 filterscripts.
+
+[04:12:19] Script[gamemodes/Gamemode.amx]: Run time error 19: "File or function is not found"
+[04:12:19] Number of vehicle models: 0
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3.7-R2, (C)2005-2015 SA-MP Team
+
+[04:12:38] filterscripts = ""  (string)
+[04:12:38] 
+[04:12:38] Server Plugins
+[04:12:38] --------------
+[04:12:38]  Loaded 0 plugins.
+
+[04:12:38] 
+[04:12:38] Filterscripts
+[04:12:38] ---------------
+[04:12:38]   Loaded 0 filterscripts.
+
+[04:12:38] AllowAdminTeleport() : function is deprecated. Please see OnPlayerClickMap()
+[04:12:38] 
+----------------------------------
+[04:12:38]   Gamemode: CW/TG
+
+[04:12:38]   Desarrollador: Andrew_Manu
+
+[04:12:38] ----------------------------------
+
+[04:12:38] Number of vehicle models: 0
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3.7-R2, (C)2005-2015 SA-MP Team
+
+[04:13:02] filterscripts = ""  (string)
+[04:13:02] 
+[04:13:02] Server Plugins
+[04:13:02] --------------
+[04:13:02]  Loading plugin: sscanf
+[04:13:02]   Failed.
+[04:13:02]  Loaded 0 plugins.
+
+[04:13:02] 
+[04:13:02] Filterscripts
+[04:13:02] ---------------
+[04:13:02]   Loaded 0 filterscripts.
+
+[04:13:02] AllowAdminTeleport() : function is deprecated. Please see OnPlayerClickMap()
+[04:13:02] 
+----------------------------------
+[04:13:02]   Gamemode: CW/TG
+
+[04:13:02]   Desarrollador: Andrew_Manu
+
+[04:13:02] ----------------------------------
+
+[04:13:02] Number of vehicle models: 0
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3.7-R2, (C)2005-2015 SA-MP Team
+
+[04:13:21] filterscripts = ""  (string)
+[04:13:21] 
+[04:13:21] Server Plugins
+[04:13:21] --------------
+[04:13:21]  Loading plugin: sscanf
+[04:13:21]   Failed.
+[04:13:21]  Loaded 0 plugins.
+
+[04:13:21] 
+[04:13:21] Filterscripts
+[04:13:21] ---------------
+[04:13:21]   Loaded 0 filterscripts.
+
+[04:13:21] AllowAdminTeleport() : function is deprecated. Please see OnPlayerClickMap()
+[04:13:21] 
+----------------------------------
+[04:13:21]   Gamemode: CW/TG
+
+[04:13:21]   Desarrollador: Andrew_Manu
+
+[04:13:21] ----------------------------------
+
+[04:13:21] Number of vehicle models: 0
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3.7-R2, (C)2005-2015 SA-MP Team
+
+[04:15:16] filterscripts = ""  (string)
+[04:15:16] 
+[04:15:16] Server Plugins
+[04:15:16] --------------
+[04:15:16]  Loaded 0 plugins.
+
+[04:15:16] 
+[04:15:16] Filterscripts
+[04:15:16] ---------------
+[04:15:16]   Loaded 0 filterscripts.
+
+[04:15:16] AllowAdminTeleport() : function is deprecated. Please see OnPlayerClickMap()
+[04:15:16] 
+----------------------------------
+[04:15:16]   Gamemode: CW/TG
+
+[04:15:16]   Desarrollador: Andrew_Manu
+
+[04:15:16] ----------------------------------
+
+[04:15:16] Number of vehicle models: 0
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3.7-R2, (C)2005-2015 SA-MP Team
+
+[04:15:40] filterscripts = ""  (string)
+[04:15:40] 
+[04:15:40] Server Plugins
+[04:15:40] --------------
+[04:15:40]  Loaded 0 plugins.
+
+[04:15:41] 
+[04:15:41] Filterscripts
+[04:15:41] ---------------
+[04:15:41]   Loaded 0 filterscripts.
+
+[04:15:41] Script[gamemodes/Gamemode.amx]: Run time error 19: "File or function is not found"
+[04:15:41] Number of vehicle models: 0
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3.7-R2, (C)2005-2015 SA-MP Team
+
+[04:17:52] filterscripts = ""  (string)
+[04:17:52] 
+[04:17:52] Server Plugins
+[04:17:52] --------------
+[04:17:52]  Loaded 0 plugins.
+
+[04:17:52] 
+[04:17:52] Filterscripts
+[04:17:52] ---------------
+[04:17:52]   Loaded 0 filterscripts.
+
+[04:17:52] Script[gamemodes/Gamemode.amx]: Run time error 19: "File or function is not found"
+[04:17:52] Number of vehicle models: 0
