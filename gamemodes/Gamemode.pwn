@@ -6,10 +6,6 @@
 #include <a_samp>
 #include <zcmd>
 
-static Equipo[MAX_PLAYERS];
-
-new DB:Cuentas;
-
 #define EQUIPO_ESPECTADOR  	0
 #define EQUIPO_NARANJA 		1
 #define EQUIPO_VERDE 		2
@@ -17,14 +13,23 @@ new DB:Cuentas;
 #define COLOR_BLANCO 		0xFFFFFFFF
 #define COLOR_NARANJA 		0xF78411FF
 #define COLOR_VERDE 		0x77CC77FF
-#define COLOR_ROJO      	0x9C001fFF
+#define COLOR_ROJO      	0xF51111FF
+
+#define GRISEADO            "{C3C3C3}"
+#define BLANCO              "{FFFFFF}"
 
 #define DIALOG_REGISTRO 	1
 #define DIALOG_LOGEAR   	2
 #define DIALOG_COMANDOS 	3
+#define DIALOG_STATS        4
 
 
 #pragma tabsize 0
+
+static Equipo[MAX_PLAYERS];
+
+new DB:Cuentas;
+new DB_Query[1000];
 
 enum Data
 {
@@ -32,6 +37,7 @@ enum Data
  	Nombre[MAX_PLAYER_NAME],
     Password[24],
 	ip[20],
+	fechaRegistro,
 	Admin,
 	duelosGanados,
 	duelosPerdidos,
@@ -39,7 +45,6 @@ enum Data
     bool:Registrado
 };
 new infoJugador[MAX_PLAYERS][Data];
-new DB_Query[1000];
 
 
 forward establecerVariables(playerid);
@@ -70,31 +75,100 @@ main()
 public OnPlayerConnect(playerid)
 {
 	establecerVariables(playerid);
-	
+
 	infoJugador[playerid][Nombre] = nombre(playerid);
 	infoJugador[playerid][ip] = IP(playerid);
-	
+
     new DBResult:resultado, Dialogo[240];
     format(DB_Query, sizeof(DB_Query), "SELECT * FROM cuentas WHERE nick = '%s'", infoJugador[playerid][Nombre]);
     resultado = db_query(Cuentas, DB_Query);
     printf("%d", db_num_rows(resultado));
-    
+
     if(db_num_rows(resultado)){
-    
+
 	}else{
-        format(Dialogo, sizeof(Dialogo),"Ésta cuenta no esta {C20000}registrada\n{FFFFFF}Digite una contraseña para registrarse con el siguiente nick: {7A7A7A}%s (IP:%s)", infoJugador[playerid][Nombre], infoJugador[playerid][ip]);
-        ShowPlayerDialog(playerid, DIALOG_REGISTRO, DIALOG_STYLE_PASSWORD, "Registro: ", Dialogo, "Registrar", "Cancelar");
+        format(Dialogo, sizeof(Dialogo),""GRISEADO"Escribí una {FFFFFF}contraseña si queres registrar esta cuenta, sino cancela el registro.\n");
+        ShowPlayerDialog(playerid, DIALOG_REGISTRO, DIALOG_STYLE_PASSWORD, ""GRISEADO"Cuenta no registrada:", Dialogo, "Registrar", "Cancelar");
     }
 	//GameTextForPlayer(playerid,"~w~SA-MP: ~r~Bare Script",5000,5);
 	return 1;
 }
 
+public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
+{
+    switch(dialogid)
+    {
+        case DIALOG_REGISTRO:
+        {
+        	if(!response){
+				SendClientMessage(playerid, COLOR_ROJO, "Has cancelado el registro, ten en cuenta que no se te guardaran los stats.");
+				return infoJugador[playerid][Registrado] = false;
+			}
+            if(strlen(inputtext) < 4 || strlen(inputtext) > 20){
+                SendClientMessage(playerid, COLOR_ROJO, "La contraseña debe tener de 4 a 20 letras.");
+                new Dialogo[240];
+        		format(Dialogo, sizeof(Dialogo),""GRISEADO"La contraseña que introduciste es errónea\nIntentalo devuelta ingresando otra contraseña..\n");
+        		ShowPlayerDialog(playerid, DIALOG_REGISTRO, DIALOG_STYLE_PASSWORD, "Re-intento: ", Dialogo, "Registrar", "Cancelar");
+			}else{
+                format(infoJugador[playerid][Password], 24, inputtext);
+                registrarDatos(playerid);
+                SendClientMessage(playerid, COLOR_VERDE, "Te has registrado correctamente.");
+            }
+        }
+    }
+    return 1;
+}
+
+registrarDatos(playerid)
+{
+    new str[80], anio, mes , dia;
+    getdate(anio, mes, dia); 
+    printf("%d %d %d", dia, mes, anio);
+    format(DB_Query, sizeof(DB_Query), "INSERT INTO cuentas (nick, password, ip, fechaRegistro) VALUES ");
+    format(str, sizeof(str), "('%s',", infoJugador[playerid][Nombre]);		strcat(DB_Query, str);
+    format(str, sizeof(str), "'%s',", infoJugador[playerid][Password]);     strcat(DB_Query, str);
+    format(str, sizeof(str), "'%s',", infoJugador[playerid][ip]);     		strcat(DB_Query, str);
+    format(str, sizeof(str), "%02d/%02d/%d)", dia, mes, anio);     			strcat(DB_Query, str);
+    db_query(Cuentas, DB_Query);
+
+    new DBResult:resultado;
+    format(DB_Query, sizeof(DB_Query), "SELECT id FROM Cuentas WHERE nick = '%s'", infoJugador[playerid][Nombre]);
+    resultado = db_query(Cuentas, DB_Query);
+    if(db_num_rows(resultado)) infoJugador[playerid][idDB] = db_get_field_assoc_int(resultado, "id");
+    db_free_result(resultado);
+
+    infoJugador[playerid][Admin] 			= 0;
+    infoJugador[playerid][duelosGanados] 	= 0;
+    infoJugador[playerid][duelosPerdidos] 	= 0;
+    infoJugador[playerid][puntajeRanked] 	= 0;
+    format(infoJugador[playerid][fechaRegistro], sizeof(infoJugador[playerid][fechaRegistro]), "%02d/%02d/%d)", dia, mes, anio);
+    infoJugador[playerid][Registrado] 		= true;
+    return 1;
+}
+/*
+cargarDatos(playerid)
+{
+    new DBResult:resultado;
+    format(DB_Query, sizeof(DB_Query), "SELECT * FROM Cuentas WHERE nick = '%s'", infoJugador[playerid][Nombre]);
+    resultado = db_query(Database, DB_Query);
+    if(db_num_rows(resultado)){
+        infoJugador[playerid][idDB] 			= db_get_field_assoc_int(Result, "id");
+        infoJugador[playerid][Admin] 			= db_get_field_assoc_int(Result, "nivelAdmin");
+        infoJugador[playerid][duelosGanados] 	= db_get_field_assoc_int(Result, "duelosGanados");
+        infoJugador[playerid][duelosPerdidos] 	= db_get_field_assoc_int(Result, "duelosPerdidos");
+        infoJugador[playerid][puntajeRanked] 	= db_get_field_assoc_int(Result, "puntajeRanked");
+    }
+    db_free_result(resultado);
+    infoJugador[playerid][Registrado] = true;
+    return 1;
+}
+*/
 public OnPlayerCommandPerformed(playerid, cmdtext[], success)
 {
 	if(!success)
 	{
     	PlayerPlaySound(playerid,1054,0.0,0.0,0.0);
-    	SendClientMessage(playerid, COLOR_ROJO, "El comando que escribiste no existe (/cmds)");
+    	SendClientMessage(playerid, COLOR_ROJO, "El comando que escribiste no existe!");
 	}
 	return 1;
 }
@@ -130,15 +204,15 @@ public OnPlayerRequestClass(playerid, classid)
 public OnGameModeInit()
 {
     Cuentas = db_open("jugadores/cuentas.db");
-    
+
     if(Cuentas){
         printf("La bd Cuentas ha sido abierta ");
         new DBResult:asignacion;
-		asignacion = db_query(Cuentas, "CREATE TABLE IF NOT EXISTS cuentas (id INTEGER PRIMARY KEY AUTOINCREMENT, nick TEXT, password TEXT, puntajeRanked NUMERIC, duelosGanados NUMERIC, duelosPerdidos NUMERIC)");
+		asignacion = db_query(Cuentas, "CREATE TABLE IF NOT EXISTS cuentas (id INTEGER PRIMARY KEY AUTOINCREMENT, nick TEXT, password TEXT, ip INTEGER, fechaRegistro TEXT, nivelAdmin INTEGER, puntajeRanked INTEGER, duelosGanados INTEGER, duelosPerdidos INTEGER)");
 		db_free_result(asignacion);
 	}else print("La bd Cuentas no pudo ser abierta");
 
-    
+
 	SetGameModeText("CW/TG Script");
  	SetWorldTime(15);
   	SetWeather(7);
@@ -151,17 +225,35 @@ public OnGameModeInit()
 	return 1;
 }
 
-public OnGameModeExit()
-{
+public OnGameModeExit(){
     db_close(Cuentas);
     return 1;
 }
 
 CMD:cmds(playerid, params[]){
 	//if(Admin[playerid] == 1) ShowPlayerDialog(playerid, DIALOG_COMANDOS, DIALOG_STYLE_LIST, "Comandos del sevidor", "Jugadores\nEspectador\nAdministrador nivel 1", "Selec", "Cancelar");
-	ShowPlayerDialog(playerid, DIALOG_COMANDOS, DIALOG_STYLE_LIST, "Comandos del sevidor", "Jugadores\nEspectador", "Selec", "Cancelar");
+	ShowPlayerDialog(playerid, DIALOG_COMANDOS, DIALOG_STYLE_LIST, ""GRISEADO"Comandos del sevidor", ""GRISEADO"Comandos para {00779E}Jugadores\n"GRISEADO"Comando para "BLANCO"Espectadores", "Selec.", "Cancelar");
 	return 1;
 }
+
+CMD:stats(playerid, params[]){
+    new i, stats[256];
+    if(isnull(params)) i = playerid;
+    else i = strval(params);
+	if(!IsPlayerConnected(i))
+		return SendClientMessage(playerid, COLOR_ROJO, "No existe la ID que pusiste.");
+	if(infoJugador[i][Registrado] == false)
+	    return SendClientMessage(playerid, COLOR_ROJO, "Cuenta no registrada.");
+
+    format(stats, sizeof(stats), ""GRISEADO"Nick: %s", infoJugador[i][Nombre]);
+    format(stats, sizeof(stats), ""GRISEADO"Nick: %s", infoJugador[i][Nombre]);
+    format(stats, sizeof(stats), "%s\nDuelos ganados: %i", stats, infoJugador[i][duelosGanados]);
+    format(stats, sizeof(stats), "%s\nDuelos perdidos: %i", stats, infoJugador[i][duelosPerdidos]);
+    ShowPlayerDialog(playerid, DIALOG_STATS, DIALOG_STYLE_MSGBOX, "Estadisicta:", stats, "Cerrar", "");
+    return 1;
+}
+
+
 
 
 stock IP(i){
