@@ -2359,3 +2359,939 @@ v0.3.7-R2, (C)2005-2015 SA-MP Team
 [18:46:55] [join] [WTx]Andrew_Manu2 has joined the server (0:127.0.0.1)
 [18:46:55] 0
 [18:46:57] 20 7 2019
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3.7-R2, (C)2005-2015 SA-MP Team
+
+[02:26:36] filterscripts = ""  (string)
+[02:26:36] 
+[02:26:36] Server Plugins
+[02:26:36] --------------
+[02:26:36]  Loaded 0 plugins.
+
+[02:26:36] 
+[02:26:36] Filterscripts
+[02:26:36] ---------------
+[02:26:36]   Loaded 0 filterscripts.
+
+[02:26:36] La bd Cuentas ha sido abierta 
+[02:26:36] AllowAdminTeleport() : function is deprecated. Please see OnPlayerClickMap()
+[02:26:36] 
+
+[02:26:36] Gamemode: CW/TG
+
+[02:26:36] Desarrollador: Andrew_Manu
+
+[02:26:36] Number of vehicle models: 0
+[02:27:04] [connection] 127.0.0.1:62530 requests connection cookie.
+[02:27:05] [connection] incoming connection: 127.0.0.1:62530 id: 0
+[02:27:05] [join] [WTx]Andrew_Manu has joined the server (0:127.0.0.1)
+[02:27:05] 0
+[02:27:11] 21 7 2019
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3.7-R2, (C)2005-2015 SA-MP Team
+
+[02:29:56] filterscripts = ""  (string)
+[02:29:56] 
+[02:29:56] Server Plugins
+[02:29:56] --------------
+[02:29:56]  Loaded 0 plugins.
+
+[02:29:56] 
+[02:29:56] Filterscripts
+[02:29:56] ---------------
+[02:29:56]   Loaded 0 filterscripts.
+
+[02:29:56] La bd Cuentas ha sido abierta 
+[02:29:56] AllowAdminTeleport() : function is deprecated. Please see OnPlayerClickMap()
+[02:29:56] 
+
+[02:29:56] Gamemode: CW/TG
+
+[02:29:56] Desarrollador: Andrew_Manu
+
+[02:29:56] Number of vehicle models: 0
+[02:29:57] [connection] 127.0.0.1:53476 requests connection cookie.
+[02:29:58] [connection] incoming connection: 127.0.0.1:53476 id: 0
+[02:29:58] [join] [WTx]Andrew_Manu has joined the server (0:127.0.0.1)
+[02:29:58] 1
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3.7-R2, (C)2005-2015 SA-MP Team
+
+[02:30:23] filterscripts = ""  (string)
+[02:30:23] 
+[02:30:23] Server Plugins
+[02:30:23] --------------
+[02:30:23]  Loaded 0 plugins.
+
+[02:30:23] 
+[02:30:23] Filterscripts
+[02:30:23] ---------------
+[02:30:23]   Loaded 0 filterscripts.
+
+[02:30:23] La bd Cuentas ha sido abierta 
+[02:30:23] AllowAdminTeleport() : function is deprecated. Please see OnPlayerClickMap()
+[02:30:23] 
+
+[02:30:23] Gamemode: CW/TG
+
+[02:30:23] Desarrollador: Andrew_Manu
+
+[02:30:23] Number of vehicle models: 0
+[02:30:35] [connection] 127.0.0.1:64545 requests connection cookie.
+[02:30:36] [connection] incoming connection: 127.0.0.1:64545 id: 0
+[02:30:37] [join] [WTx]Andrew_Manu has joined the server (0:127.0.0.1)
+[02:30:37] 0
+[02:30:38] 21 7 2019
+[02:30:57] [part] [WTx]Andrew_Manu has left the server (0:1)
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3.7-R2, (C)2005-2015 SA-MP Team
+
+[02:33:59] filterscripts = ""  (string)
+[02:33:59] 
+[02:33:59] Server Plugins
+[02:33:59] --------------
+[02:33:59]  Loaded 0 plugins.
+
+[02:33:59] 
+[02:33:59] Filterscripts
+[02:33:59] ---------------
+[02:33:59]   Loaded 0 filterscripts.
+
+[02:33:59] La bd Cuentas ha sido abierta 
+[02:33:59] AllowAdminTeleport() : function is deprecated. Please see OnPlayerClickMap()
+[02:33:59] 
+
+[02:33:59] Gamemode: CW/TG
+
+[02:33:59] Desarrollador: Andrew_Manu
+
+[02:33:59] Number of vehicle models: 0
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3.7-R2, (C)2005-2015 SA-MP Team
+
+[02:41:36] filterscripts = ""  (string)
+[02:41:36] 
+[02:41:36] Server Plugins
+[02:41:36] --------------
+[02:41:36]  Loaded 0 plugins.
+
+[02:41:36] 
+[02:41:36] Filterscripts
+[02:41:36] ---------------
+[02:41:36]   Loaded 0 filterscripts.
+
+[02:41:36] La bd Cuentas ha sido abierta 
+[02:41:36] AllowAdminTeleport() : function is deprecated. Please see OnPlayerClickMap()
+[02:41:36] 
+
+[02:41:36] Gamemode: CW/TG
+
+[02:41:36] Desarrollador: Andrew_Manu
+
+[02:41:36] Number of vehicle models: 0
+[02:41:54] [connection] 127.0.0.1:51489 requests connection cookie.
+[02:41:55] [connection] incoming connection: 127.0.0.1:51489 id: 0
+[02:41:56] [join] [WTx]Andrew_Manu has joined the server (0:127.0.0.1)
+[02:41:56] 1
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3.7-R2, (C)2005-2015 SA-MP Team
+
+[03:00:46] filterscripts = ""  (string)
+[03:00:46] 
+[03:00:46] Server Plugins
+[03:00:46] --------------
+[03:00:46]  Loaded 0 plugins.
+
+[03:00:46] 
+[03:00:46] Filterscripts
+[03:00:46] ---------------
+[03:00:46]   Loaded 0 filterscripts.
+
+[03:00:46] La bd Cuentas ha sido abierta 
+[03:00:46] AllowAdminTeleport() : function is deprecated. Please see OnPlayerClickMap()
+[03:00:46] 
+
+[03:00:46] Gamemode: CW/TG
+
+[03:00:46] Desarrollador: Andrew_Manu
+
+[03:00:46] Number of vehicle models: 0
+[03:01:26] [connection] 127.0.0.1:65491 requests connection cookie.
+[03:01:27] [connection] incoming connection: 127.0.0.1:65491 id: 0
+[03:01:27] [join] [WTx]Andrew_Manu has joined the server (0:127.0.0.1)
+[03:01:27] 1
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3.7-R2, (C)2005-2015 SA-MP Team
+
+[03:03:36] filterscripts = ""  (string)
+[03:03:36] 
+[03:03:36] Server Plugins
+[03:03:36] --------------
+[03:03:36]  Loaded 0 plugins.
+
+[03:03:36] 
+[03:03:36] Filterscripts
+[03:03:36] ---------------
+[03:03:36]   Loaded 0 filterscripts.
+
+[03:03:36] La bd Cuentas ha sido abierta 
+[03:03:36] AllowAdminTeleport() : function is deprecated. Please see OnPlayerClickMap()
+[03:03:36] 
+
+[03:03:36] Gamemode: CW/TG
+
+[03:03:36] Desarrollador: Andrew_Manu
+
+[03:03:36] Number of vehicle models: 0
+[03:03:53] [connection] 127.0.0.1:52655 requests connection cookie.
+[03:03:54] [connection] incoming connection: 127.0.0.1:52655 id: 0
+[03:03:54] [join] [WTx]Andrew_Manu has joined the server (0:127.0.0.1)
+[03:03:54] 1
+[03:04:36] [part] [WTx]Andrew_Manu has left the server (0:2)
+[03:05:00] [connection] 127.0.0.1:62115 requests connection cookie.
+[03:05:01] [connection] incoming connection: 127.0.0.1:62115 id: 0
+[03:05:01] [join] [WTx]Andrew_Manu has joined the server (0:127.0.0.1)
+[03:05:01] 1
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3.7-R2, (C)2005-2015 SA-MP Team
+
+[03:05:41] filterscripts = ""  (string)
+[03:05:41] 
+[03:05:41] Server Plugins
+[03:05:41] --------------
+[03:05:41]  Loaded 0 plugins.
+
+[03:05:41] 
+[03:05:41] Filterscripts
+[03:05:41] ---------------
+[03:05:41]   Loaded 0 filterscripts.
+
+[03:05:41] La bd Cuentas ha sido abierta 
+[03:05:41] AllowAdminTeleport() : function is deprecated. Please see OnPlayerClickMap()
+[03:05:41] 
+
+[03:05:41] Gamemode: CW/TG
+
+[03:05:41] Desarrollador: Andrew_Manu
+
+[03:05:41] Number of vehicle models: 0
+[03:05:48] [connection] 127.0.0.1:63272 requests connection cookie.
+[03:05:49] [connection] incoming connection: 127.0.0.1:63272 id: 0
+[03:05:50] [join] [WTx]Andrew_Manu has joined the server (0:127.0.0.1)
+[03:05:50] 0
+[03:06:00] 21 7 2019
+[03:06:29] [part] [WTx]Andrew_Manu has left the server (0:1)
+[03:12:05] [connection] 127.0.0.1:63326 requests connection cookie.
+[03:12:06] [connection] incoming connection: 127.0.0.1:63326 id: 0
+[03:12:06] [join] [WTx]Andrew_Manu has joined the server (0:127.0.0.1)
+[03:12:06] 1
+[03:12:16] [part] [WTx]Andrew_Manu has left the server (0:1)
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3.7-R2, (C)2005-2015 SA-MP Team
+
+[03:13:06] filterscripts = ""  (string)
+[03:13:06] 
+[03:13:06] Server Plugins
+[03:13:06] --------------
+[03:13:06]  Loaded 0 plugins.
+
+[03:13:06] 
+[03:13:06] Filterscripts
+[03:13:06] ---------------
+[03:13:06]   Loaded 0 filterscripts.
+
+[03:13:06] La bd Cuentas ha sido abierta 
+[03:13:06] AllowAdminTeleport() : function is deprecated. Please see OnPlayerClickMap()
+[03:13:06] 
+
+[03:13:06] Gamemode: CW/TG
+
+[03:13:06] Desarrollador: Andrew_Manu
+
+[03:13:06] Number of vehicle models: 0
+[03:13:23] [connection] 127.0.0.1:54725 requests connection cookie.
+[03:13:24] [connection] incoming connection: 127.0.0.1:54725 id: 0
+[03:13:24] [join] [WTx]Andrew_Manu has joined the server (0:127.0.0.1)
+[03:13:24] 0
+[03:13:26] 21 7 2019
+[03:13:34] Datos guardados
+[03:13:34] [part] [WTx]Andrew_Manu has left the server (0:1)
+[03:13:55] [connection] 127.0.0.1:54577 requests connection cookie.
+[03:13:56] [connection] incoming connection: 127.0.0.1:54577 id: 0
+[03:13:56] [join] [WTx]Andrew_Manu has joined the server (0:127.0.0.1)
+[03:13:56] 1
+[03:13:58] Datos guardados
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3.7-R2, (C)2005-2015 SA-MP Team
+
+[03:16:05] filterscripts = ""  (string)
+[03:16:05] 
+[03:16:05] Server Plugins
+[03:16:05] --------------
+[03:16:05]  Loaded 0 plugins.
+
+[03:16:05] 
+[03:16:05] Filterscripts
+[03:16:05] ---------------
+[03:16:05]   Loaded 0 filterscripts.
+
+[03:16:05] La bd Cuentas ha sido abierta 
+[03:16:05] AllowAdminTeleport() : function is deprecated. Please see OnPlayerClickMap()
+[03:16:05] 
+
+[03:16:05] Gamemode: CW/TG
+
+[03:16:05] Desarrollador: Andrew_Manu
+
+[03:16:05] Number of vehicle models: 0
+[03:16:08] [connection] 127.0.0.1:61131 requests connection cookie.
+[03:16:09] [connection] incoming connection: 127.0.0.1:61131 id: 0
+[03:16:09] [join] [WTx]Andrew_Manu has joined the server (0:127.0.0.1)
+[03:16:09] 1
+[03:16:11] Datos guardados
+[03:16:16] Datos guardados
+[03:16:16] [part] [WTx]Andrew_Manu has left the server (0:1)
+[03:16:36] [connection] 127.0.0.1:51115 requests connection cookie.
+[03:16:37] Blocking 127.0.0.1 due to a 'server full' attack (2)
+[03:16:38] Blocking 127.0.0.1 due to a 'server full' attack (2)
+[03:16:39] Blocking 127.0.0.1 due to a 'server full' attack (2)
+[03:16:40] [connection] incoming connection: 127.0.0.1:51115 id: 0
+[03:16:42] [join] [WTx]Andrew_Manu has joined the server (0:127.0.0.1)
+[03:16:42] 1
+[03:16:48] Datos guardados
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3.7-R2, (C)2005-2015 SA-MP Team
+
+[03:20:47] filterscripts = ""  (string)
+[03:20:47] 
+[03:20:47] Server Plugins
+[03:20:47] --------------
+[03:20:47]  Loaded 0 plugins.
+
+[03:20:47] 
+[03:20:47] Filterscripts
+[03:20:47] ---------------
+[03:20:47]   Loaded 0 filterscripts.
+
+[03:20:47] La bd Cuentas ha sido abierta 
+[03:20:47] AllowAdminTeleport() : function is deprecated. Please see OnPlayerClickMap()
+[03:20:47] 
+
+[03:20:47] Gamemode: CW/TG
+
+[03:20:47] Desarrollador: Andrew_Manu
+
+[03:20:47] Number of vehicle models: 0
+[03:20:53] [connection] 127.0.0.1:53141 requests connection cookie.
+[03:20:54] [connection] incoming connection: 127.0.0.1:53141 id: 0
+[03:20:54] [join] [WTx]Andrew_Manu has joined the server (0:127.0.0.1)
+[03:20:54] 0
+[03:20:56] 21 7 2019
+[03:20:56] Datos guardados
+[03:21:58] Datos guardados
+[03:21:58] [part] [WTx]Andrew_Manu has left the server (0:1)
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3.7-R2, (C)2005-2015 SA-MP Team
+
+[03:22:03] filterscripts = ""  (string)
+[03:22:03] 
+[03:22:03] Server Plugins
+[03:22:03] --------------
+[03:22:03]  Loaded 0 plugins.
+
+[03:22:03] 
+[03:22:03] Filterscripts
+[03:22:03] ---------------
+[03:22:03]   Loaded 0 filterscripts.
+
+[03:22:03] La bd Cuentas ha sido abierta 
+[03:22:03] AllowAdminTeleport() : function is deprecated. Please see OnPlayerClickMap()
+[03:22:03] 
+
+[03:22:03] Gamemode: CW/TG
+
+[03:22:03] Desarrollador: Andrew_Manu
+
+[03:22:03] Number of vehicle models: 0
+[03:22:22] [connection] 127.0.0.1:49752 requests connection cookie.
+[03:22:23] [connection] incoming connection: 127.0.0.1:49752 id: 0
+[03:22:23] [join] [WTx]Andrew_Manu has joined the server (0:127.0.0.1)
+[03:22:23] 1
+[03:22:26] Datos guardados
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3.7-R2, (C)2005-2015 SA-MP Team
+
+[03:22:58] filterscripts = ""  (string)
+[03:22:58] 
+[03:22:58] Server Plugins
+[03:22:58] --------------
+[03:22:58]  Loaded 0 plugins.
+
+[03:22:58] 
+[03:22:58] Filterscripts
+[03:22:58] ---------------
+[03:22:58]   Loaded 0 filterscripts.
+
+[03:22:58] La bd Cuentas ha sido abierta 
+[03:22:58] AllowAdminTeleport() : function is deprecated. Please see OnPlayerClickMap()
+[03:22:58] 
+
+[03:22:58] Gamemode: CW/TG
+
+[03:22:58] Desarrollador: Andrew_Manu
+
+[03:22:58] Number of vehicle models: 0
+[03:23:15] [connection] 127.0.0.1:65179 requests connection cookie.
+[03:23:16] [connection] incoming connection: 127.0.0.1:65179 id: 0
+[03:23:16] [join] [WTx]Andrew_Manu has joined the server (0:127.0.0.1)
+[03:23:16] 0
+[03:23:18] 21 7 2019
+[03:23:18] Datos guardados
+[03:25:00] Datos guardados
+[03:25:00] [part] [WTx]Andrew_Manu has left the server (0:1)
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3.7-R2, (C)2005-2015 SA-MP Team
+
+[03:57:17] filterscripts = ""  (string)
+[03:57:17] 
+[03:57:17] Server Plugins
+[03:57:17] --------------
+[03:57:17]  Loaded 0 plugins.
+
+[03:57:17] 
+[03:57:17] Filterscripts
+[03:57:17] ---------------
+[03:57:17]   Loaded 0 filterscripts.
+
+[03:57:17] La bd Cuentas ha sido abierta 
+[03:57:17] AllowAdminTeleport() : function is deprecated. Please see OnPlayerClickMap()
+[03:57:17] 
+
+[03:57:17] Gamemode: CW/TG
+
+[03:57:17] Desarrollador: Andrew_Manu
+
+[03:57:17] Number of vehicle models: 0
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3.7-R2, (C)2005-2015 SA-MP Team
+
+[03:57:51] filterscripts = ""  (string)
+[03:57:51] 
+[03:57:51] Server Plugins
+[03:57:51] --------------
+[03:57:51]  Loaded 0 plugins.
+
+[03:57:51] 
+[03:57:51] Filterscripts
+[03:57:51] ---------------
+[03:57:51]   Loaded 0 filterscripts.
+
+[03:57:51] La bd Cuentas ha sido abierta 
+[03:57:51] AllowAdminTeleport() : function is deprecated. Please see OnPlayerClickMap()
+[03:57:51] 
+
+[03:57:51] Gamemode: CW/TG
+
+[03:57:51] Desarrollador: Andrew_Manu
+
+[03:57:51] Number of vehicle models: 0
+[03:58:13] [connection] 127.0.0.1:49596 requests connection cookie.
+[03:58:14] [connection] incoming connection: 127.0.0.1:49596 id: 0
+[03:58:14] [join] [WTx]Andrew_Manu has joined the server (0:127.0.0.1)
+[03:58:14] 1
+[03:58:16] Datos guardados
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3.7-R2, (C)2005-2015 SA-MP Team
+
+[04:03:09] filterscripts = ""  (string)
+[04:03:09] 
+[04:03:09] Server Plugins
+[04:03:09] --------------
+[04:03:09]  Loaded 0 plugins.
+
+[04:03:09] 
+[04:03:09] Filterscripts
+[04:03:09] ---------------
+[04:03:09]   Loaded 0 filterscripts.
+
+[04:03:09] La bd Cuentas ha sido abierta 
+[04:03:09] AllowAdminTeleport() : function is deprecated. Please see OnPlayerClickMap()
+[04:03:09] 
+
+[04:03:09] Gamemode: CW/TG
+
+[04:03:09] Desarrollador: Andrew_Manu
+
+[04:03:09] Number of vehicle models: 0
+[04:03:12] [connection] 127.0.0.1:61304 requests connection cookie.
+[04:03:13] [connection] incoming connection: 127.0.0.1:61304 id: 0
+[04:03:13] [join] [WTx]Andrew_Manu has joined the server (0:127.0.0.1)
+[04:03:13] 1
+[04:03:16] Datos guardados
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3.7-R2, (C)2005-2015 SA-MP Team
+
+[04:05:50] filterscripts = ""  (string)
+[04:05:50] 
+[04:05:50] Server Plugins
+[04:05:50] --------------
+[04:05:50]  Loaded 0 plugins.
+
+[04:05:50] 
+[04:05:50] Filterscripts
+[04:05:50] ---------------
+[04:05:50]   Loaded 0 filterscripts.
+
+[04:05:50] La bd Cuentas ha sido abierta 
+[04:05:50] AllowAdminTeleport() : function is deprecated. Please see OnPlayerClickMap()
+[04:05:50] 
+
+[04:05:50] Gamemode: CW/TG
+
+[04:05:50] Desarrollador: Andrew_Manu
+
+[04:05:50] Number of vehicle models: 0
+[04:05:52] [connection] 127.0.0.1:52508 requests connection cookie.
+[04:05:53] [connection] incoming connection: 127.0.0.1:52508 id: 0
+[04:05:53] [join] [WTx]Andrew_Manu has joined the server (0:127.0.0.1)
+[04:05:53] 1
+[04:05:56] Datos guardados
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3.7-R2, (C)2005-2015 SA-MP Team
+
+[04:22:03] filterscripts = ""  (string)
+[04:22:03] 
+[04:22:03] Server Plugins
+[04:22:03] --------------
+[04:22:03]  Loaded 0 plugins.
+
+[04:22:03] 
+[04:22:03] Filterscripts
+[04:22:03] ---------------
+[04:22:03]   Loaded 0 filterscripts.
+
+[04:22:03] La bd Cuentas ha sido abierta 
+[04:22:03] AllowAdminTeleport() : function is deprecated. Please see OnPlayerClickMap()
+[04:22:03] 
+
+[04:22:03] Gamemode: CW/TG
+
+[04:22:03] Desarrollador: Andrew_Manu
+
+[04:22:03] Number of vehicle models: 0
+[04:22:05] [connection] 127.0.0.1:55021 requests connection cookie.
+[04:22:06] [connection] incoming connection: 127.0.0.1:55021 id: 0
+[04:22:06] [join] [WTx]Andrew_Manu has joined the server (0:127.0.0.1)
+[04:22:06] 1
+[04:22:08] Datos guardados
+[04:22:40] [part] [WTx]Andrew_Manu has left the server (0:1)
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3.7-R2, (C)2005-2015 SA-MP Team
+
+[04:38:36] filterscripts = ""  (string)
+[04:38:36] 
+[04:38:36] Server Plugins
+[04:38:36] --------------
+[04:38:36]  Loaded 0 plugins.
+
+[04:38:36] 
+[04:38:36] Filterscripts
+[04:38:36] ---------------
+[04:38:36]   Loaded 0 filterscripts.
+
+[04:38:36] La bd Cuentas ha sido abierta 
+[04:38:36] AllowAdminTeleport() : function is deprecated. Please see OnPlayerClickMap()
+[04:38:36] 
+
+[04:38:36] Gamemode: CW/TG
+
+[04:38:36] Desarrollador: Andrew_Manu
+
+[04:38:36] Number of vehicle models: 0
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3.7-R2, (C)2005-2015 SA-MP Team
+
+[04:40:18] filterscripts = ""  (string)
+[04:40:18] 
+[04:40:18] Server Plugins
+[04:40:18] --------------
+[04:40:18]  Loaded 0 plugins.
+
+[04:40:18] 
+[04:40:18] Filterscripts
+[04:40:18] ---------------
+[04:40:18]   Loaded 0 filterscripts.
+
+[04:40:18] La bd Cuentas ha sido abierta 
+[04:40:18] AllowAdminTeleport() : function is deprecated. Please see OnPlayerClickMap()
+[04:40:18] 
+
+[04:40:18] Gamemode: CW/TG
+
+[04:40:18] Desarrollador: Andrew_Manu
+
+[04:40:19] Number of vehicle models: 0
+[04:40:21] [connection] 127.0.0.1:64126 requests connection cookie.
+[04:40:22] [connection] incoming connection: 127.0.0.1:64126 id: 0
+[04:40:22] [join] asda has joined the server (0:127.0.0.1)
+[04:40:22] 0
+[04:40:26] 21 7 2019
+[04:40:26] Datos guardados
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3.7-R2, (C)2005-2015 SA-MP Team
+
+[04:56:47] filterscripts = ""  (string)
+[04:56:47] 
+[04:56:47] Server Plugins
+[04:56:47] --------------
+[04:56:47]  Loaded 0 plugins.
+
+[04:56:47] 
+[04:56:47] Filterscripts
+[04:56:47] ---------------
+[04:56:47]   Loaded 0 filterscripts.
+
+[04:56:47] La bd Cuentas ha sido abierta 
+[04:56:47] AllowAdminTeleport() : function is deprecated. Please see OnPlayerClickMap()
+[04:56:47] 
+
+[04:56:47] Gamemode: CW/TG
+
+[04:56:47] Desarrollador: Andrew_Manu
+
+[04:56:47] Number of vehicle models: 0
+[04:56:48] [connection] 127.0.0.1:62620 requests connection cookie.
+[04:56:49] [connection] incoming connection: 127.0.0.1:62620 id: 0
+[04:56:50] [join] asda has joined the server (0:127.0.0.1)
+[04:56:50] 1
+[04:56:51] Datos guardados
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3.7-R2, (C)2005-2015 SA-MP Team
+
+[04:57:21] filterscripts = ""  (string)
+[04:57:21] 
+[04:57:21] Server Plugins
+[04:57:21] --------------
+[04:57:21]  Loaded 0 plugins.
+
+[04:57:21] 
+[04:57:21] Filterscripts
+[04:57:21] ---------------
+[04:57:21]   Loaded 0 filterscripts.
+
+[04:57:21] La bd Cuentas ha sido abierta 
+[04:57:21] AllowAdminTeleport() : function is deprecated. Please see OnPlayerClickMap()
+[04:57:21] 
+
+[04:57:21] Gamemode: CW/TG
+
+[04:57:21] Desarrollador: Andrew_Manu
+
+[04:57:21] Number of vehicle models: 0
+[04:57:27] [connection] 127.0.0.1:62630 requests connection cookie.
+[04:57:28] [connection] incoming connection: 127.0.0.1:62630 id: 0
+[04:57:28] [join] asda has joined the server (0:127.0.0.1)
+[04:57:28] 1
+[04:57:30] Datos guardados
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3.7-R2, (C)2005-2015 SA-MP Team
+
+[04:58:50] filterscripts = ""  (string)
+[04:58:50] 
+[04:58:50] Server Plugins
+[04:58:50] --------------
+[04:58:50]  Loaded 0 plugins.
+
+[04:58:50] 
+[04:58:50] Filterscripts
+[04:58:50] ---------------
+[04:58:50]   Loaded 0 filterscripts.
+
+[04:58:50] La bd Cuentas ha sido abierta 
+[04:58:50] AllowAdminTeleport() : function is deprecated. Please see OnPlayerClickMap()
+[04:58:50] 
+
+[04:58:50] Gamemode: CW/TG
+
+[04:58:50] Desarrollador: Andrew_Manu
+
+[04:58:50] Number of vehicle models: 0
+[04:58:52] [connection] 127.0.0.1:56268 requests connection cookie.
+[04:58:53] [connection] incoming connection: 127.0.0.1:56268 id: 0
+[04:58:53] [join] asda has joined the server (0:127.0.0.1)
+[04:58:53] 1
+[04:58:55] Datos guardados
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3.7-R2, (C)2005-2015 SA-MP Team
+
+[14:29:56] filterscripts = ""  (string)
+[14:29:56] 
+[14:29:56] Server Plugins
+[14:29:56] --------------
+[14:29:56]  Loaded 0 plugins.
+
+[14:29:56] 
+[14:29:56] Filterscripts
+[14:29:56] ---------------
+[14:29:56]   Loaded 0 filterscripts.
+
+[14:29:56] La bd Cuentas ha sido abierta 
+[14:29:56] AllowAdminTeleport() : function is deprecated. Please see OnPlayerClickMap()
+[14:29:56] 
+
+[14:29:56] Gamemode: CW/TG
+
+[14:29:56] Desarrollador: Andrew_Manu
+
+[14:29:56] Number of vehicle models: 0
+[14:30:25] [connection] 127.0.0.1:59288 requests connection cookie.
+[14:30:26] [connection] incoming connection: 127.0.0.1:59288 id: 0
+[14:30:26] [join] asda has joined the server (0:127.0.0.1)
+[14:30:26] 1
+[14:30:29] Datos guardados
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3.7-R2, (C)2005-2015 SA-MP Team
+
+[14:32:12] filterscripts = ""  (string)
+[14:32:12] 
+[14:32:12] Server Plugins
+[14:32:12] --------------
+[14:32:12]  Loaded 0 plugins.
+
+[14:32:12] 
+[14:32:12] Filterscripts
+[14:32:12] ---------------
+[14:32:12]   Loaded 0 filterscripts.
+
+[14:32:12] La bd Cuentas ha sido abierta 
+[14:32:12] AllowAdminTeleport() : function is deprecated. Please see OnPlayerClickMap()
+[14:32:12] 
+
+[14:32:12] Gamemode: CW/TG
+
+[14:32:12] Desarrollador: Andrew_Manu
+
+[14:32:12] Number of vehicle models: 0
+[14:32:22] [connection] 127.0.0.1:63181 requests connection cookie.
+[14:32:23] [connection] incoming connection: 127.0.0.1:63181 id: 0
+[14:32:23] [join] asda has joined the server (0:127.0.0.1)
+[14:32:23] 1
+[14:32:27] Datos guardados
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3.7-R2, (C)2005-2015 SA-MP Team
+
+[14:39:18] filterscripts = ""  (string)
+[14:39:18] 
+[14:39:18] Server Plugins
+[14:39:18] --------------
+[14:39:18]  Loaded 0 plugins.
+
+[14:39:18] 
+[14:39:18] Filterscripts
+[14:39:18] ---------------
+[14:39:18]   Loaded 0 filterscripts.
+
+[14:39:18] La bd Cuentas ha sido abierta 
+[14:39:18] AllowAdminTeleport() : function is deprecated. Please see OnPlayerClickMap()
+[14:39:18] 
+
+[14:39:18] Gamemode: CW/TG
+
+[14:39:18] Desarrollador: Andrew_Manu
+
+[14:39:18] Number of vehicle models: 0
+[14:39:20] [connection] 127.0.0.1:55930 requests connection cookie.
+[14:39:21] [connection] incoming connection: 127.0.0.1:55930 id: 0
+[14:39:21] [join] asda has joined the server (0:127.0.0.1)
+[14:39:21] 1
+[14:39:23] Datos guardados
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3.7-R2, (C)2005-2015 SA-MP Team
+
+[14:51:52] filterscripts = ""  (string)
+[14:51:52] 
+[14:51:52] Server Plugins
+[14:51:52] --------------
+[14:51:52]  Loaded 0 plugins.
+
+[14:51:52] 
+[14:51:52] Filterscripts
+[14:51:52] ---------------
+[14:51:52]   Loaded 0 filterscripts.
+
+[14:51:52] La bd Cuentas ha sido abierta 
+[14:51:52] AllowAdminTeleport() : function is deprecated. Please see OnPlayerClickMap()
+[14:51:52] 
+
+[14:51:52] Gamemode: CW/TG
+
+[14:51:52] Desarrollador: Andrew_Manu
+
+[14:51:52] Number of vehicle models: 0
+[14:51:55] [connection] 127.0.0.1:49176 requests connection cookie.
+[14:51:56] [connection] incoming connection: 127.0.0.1:49176 id: 0
+[14:51:56] [join] asda has joined the server (0:127.0.0.1)
+[14:51:56] 1
+[14:51:59] Datos guardados
