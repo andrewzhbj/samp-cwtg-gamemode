@@ -3295,3 +3295,90 @@ v0.3.7-R2, (C)2005-2015 SA-MP Team
 [14:51:56] [join] asda has joined the server (0:127.0.0.1)
 [14:51:56] 1
 [14:51:59] Datos guardados
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3.7-R2, (C)2005-2015 SA-MP Team
+
+[15:02:51] filterscripts = ""  (string)
+[15:02:51] 
+[15:02:51] Server Plugins
+[15:02:51] --------------
+[15:02:51]  Loaded 0 plugins.
+
+[15:02:51] 
+[15:02:51] Filterscripts
+[15:02:51] ---------------
+[15:02:51]   Loaded 0 filterscripts.
+
+[15:02:51] La bd Cuentas ha sido abierta 
+[15:02:51] AllowAdminTeleport() : function is deprecated. Please see OnPlayerClickMap()
+[15:02:51] 
+
+[15:02:51] Gamemode: CW/TG
+
+[15:02:51] Desarrollador: Andrew_Manu
+
+[15:02:51] Number of vehicle models: 0
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3.7-R2, (C)2005-2015 SA-MP Team
+
+[15:03:02] filterscripts = ""  (string)
+[15:03:02] 
+[15:03:02] Server Plugins
+[15:03:02] --------------
+[15:03:02]  Loaded 0 plugins.
+
+[15:03:02] 
+[15:03:02] Filterscripts
+[15:03:02] ---------------
+[15:03:02]   Loaded 0 filterscripts.
+
+[15:03:02] La bd Cuentas ha sido abierta 
+[15:03:02] AllowAdminTeleport() : function is deprecated. Please see OnPlayerClickMap()
+[15:03:02] 
+
+[15:03:02] Gamemode: CW/TG
+
+[15:03:02] Desarrollador: Andrew_Manu
+
+[15:03:02] Number of vehicle models: 0
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3.7-R2, (C)2005-2015 SA-MP Team
+
+[15:03:05] filterscripts = ""  (string)
+[15:03:05] 
+[15:03:05] Server Plugins
+[15:03:05] --------------
+[15:03:05]  Loaded 0 plugins.
+
+[15:03:05] 
+[15:03:05] Filterscripts
+[15:03:05] ---------------
+[15:03:05]   Loaded 0 filterscripts.
+
+[15:03:05] La bd Cuentas ha sido abierta 
+[15:03:05] AllowAdminTeleport() : function is deprecated. Please see OnPlayerClickMap()
+[15:03:05] 
+
+[15:03:05] Gamemode: CW/TG
+
+[15:03:05] Desarrollador: Andrew_Manu
+
+[15:03:05] Number of vehicle models: 0
