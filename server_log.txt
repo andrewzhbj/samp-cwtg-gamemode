@@ -5355,3 +5355,39 @@ v0.3.7-R2, (C)2005-2015 SA-MP Team
 [00:35:26] Datos guardados id: 1
 [00:35:33] Nuevo clan papi soy yo, [yos] por asda2
 [00:35:33] 1
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3.7-R2, (C)2005-2015 SA-MP Team
+
+[01:00:41] filterscripts = ""  (string)
+[01:00:41] 
+[01:00:41] Server Plugins
+[01:00:41] --------------
+[01:00:41]  Loaded 0 plugins.
+
+[01:00:41] 
+[01:00:41] Filterscripts
+[01:00:41] ---------------
+[01:00:41]   Loaded 0 filterscripts.
+
+[01:00:41] Cuentas db abierto
+[01:00:41] Clanes db abierto
+[01:00:41] AllowAdminTeleport() : function is deprecated. Please see OnPlayerClickMap()
+[01:00:41] 
+
+[01:00:41] Gamemode: CW/TG
+
+[01:00:41] Desarrollador: Andrew_Manu
+
+[01:00:41] Number of vehicle models: 0
+[01:00:42] [connection] 127.0.0.1:65217 requests connection cookie.
+[01:00:43] [connection] incoming connection: 127.0.0.1:65217 id: 0
+[01:00:43] [join] asda2 has joined the server (0:127.0.0.1)
+[01:00:43] 1
+[01:00:45] Datos guardados id: 1
+[01:00:53] 1

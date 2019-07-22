@@ -110,9 +110,9 @@ public establecerColor(playerid){
 }
 
 stock establecerJugadores(){
-    totalJugadores[EQUIPO_NARANJA] 	= 0;
+    totalJugadores[EQUIPO_NARANJA] 		= 0;
     totalJugadores[EQUIPO_VERDE]		= 0;
-    totalJugadores[EQUIPO_ESPECTADOR] = 0;
+    totalJugadores[EQUIPO_ESPECTADOR] 	= 0;
 	ForPlayers(i){
 	    if(Equipo[i] == EQUIPO_NARANJA)
 			totalJugadores[EQUIPO_NARANJA]++;
@@ -292,12 +292,15 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			if(isnull(inputtext) || !strcmp(inputtext, "0")) return ShowPlayerDialog(playerid, DIALOG_INCLAN, DIALOG_STYLE_INPUT, ""ROJO"Error", "{FFFFFF}Te dije que no pongas boludeces, ingresa un nombre válido.", "Siguiente", "Cancelar");
             if(strlen(inputtext) < 4 || strlen(inputtext) > 30) return ShowPlayerDialog(playerid, DIALOG_INCLAN, DIALOG_STYLE_INPUT, ""ROJO"Error", "{FFFFFF}Te dije que no pongas boludeces, ingresa un nombre válido.", "Siguiente", "Cancelar");
+			if(clanTextoValido("nombre", inputtext)) return ShowPlayerDialog(playerid, DIALOG_INCLAN, DIALOG_STYLE_INPUT, ""ROJO"Error", "{FFFFFF}Este nombre ya existe, ingresa otro.", "Siguiente", "Cancelar");
+			else{
 				strcat(clanNuevoNombre, inputtext);
   				new string[1000];
 				strcat(string,"{FFFFFF}Ingresa el TAG completo del clan que querés registrar\n");
   				strcat(string,"{7C7C7C} No sobrepases el limite de carácteres (6)\n");
 				strcat(string,"- No ingreses los corchetes [ ]\n");
             	ShowPlayerDialog(playerid, DIALOG_TGCLAN, DIALOG_STYLE_INPUT, "Tag del clan", string, "Crear", "Cancelar");
+			}
 		}
 		case DIALOG_TGCLAN:
 		{
@@ -310,8 +313,11 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			if(isnull(inputtext) || !strcmp(inputtext, "0")) return ShowPlayerDialog(playerid, DIALOG_TGCLAN, DIALOG_STYLE_INPUT, ""ROJO"Error", "{FFFFFF}Te dije que no pongas boludeces, ingresa un TAG válido.", "Crear", "Cancelar");
             if(strlen(inputtext) < 2 || strlen(inputtext) > 6) return ShowPlayerDialog(playerid, DIALOG_TGCLAN, DIALOG_STYLE_INPUT, ""ROJO"Error", "{FFFFFF}Te dije que no pongas boludeces, ingresa un TAG válido.", "Crear", "Cancelar");
 			if(strfind(inputtext, "[", true) != -1 || strfind(inputtext, "]", true) != -1) return ShowPlayerDialog(playerid, DIALOG_TGCLAN, DIALOG_STYLE_INPUT, ""ROJO"Error", "{FFFFFF}Te dije que no pongas boludeces, ingresa un TAG válido.", "Crear", "Cancelar");
-			strcat(clanNuevoTag, inputtext);
-			registrarClan(playerid);
+            if(clanTextoValido("tag", inputtext)) return ShowPlayerDialog(playerid, DIALOG_TGCLAN, DIALOG_STYLE_INPUT, ""ROJO"Error", "{FFFFFF}Este TAG ya esta ocupado, ingresa otro.", "Crear", "Cancelar");
+			else{
+                strcat(clanNuevoTag, inputtext);
+				registrarClan(playerid);
+			}
 		}
     }
     return 1;
@@ -343,6 +349,14 @@ registrarClan(playerid){
 	db_query(Cuentas, nuevaConsulta);
 
 	return 1;
+}
+
+clanTextoValido(celda[], nombre[]){
+    new DBResult:resultado;
+    format(DB_Query, sizeof(DB_Query), "SELECT * FROM registro WHERE %s = '%s'", celda, nombre);
+    resultado = db_query(Clanes, DB_Query);
+    printf("%d", db_num_rows(resultado));
+	return db_num_rows(resultado);
 }
 registrarDatos(playerid)
 {
