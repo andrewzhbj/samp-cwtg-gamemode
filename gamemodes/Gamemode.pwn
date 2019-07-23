@@ -50,6 +50,7 @@
 
 new bool:FALSE = false;
 #define ForPlayers(%0) for(new %0; %0 <= Conectados;%0++) if(IsPlayerConnected(%0))
+#define SCMF(%0,%1,%2,%3) do{new _string[128]; format(_string,sizeof(_string),%2,%3); SendClientMessage(%0,%1,_string);} while(FALSE)
 #define SCMTAF(%0,%1,%2) do{new _string[128]; format(_string,sizeof(_string),%1,%2); SendClientMessageToAll(%0,_string);} while(FALSE)
 
 #pragma tabsize 0
@@ -113,7 +114,9 @@ enum Data
 };
 new infoJugador[MAX_PLAYERS][Data];
 
-new Text:nombreEquipos, Text:puntajeEquipos, Text:partidaRondas;
+new Text:tituloServer, Text:nombreEquipos, Text:puntajeEquipos, Text:partidaRondas;
+new PlayerText:mostrarFps[MAX_PLAYERS], PlayerText:mostrarPing[MAX_PLAYERS];
+new PlayerText:mostrarKills[MAX_PLAYERS], PlayerText:mostrarMuertes[MAX_PLAYERS];
 
 forward establecerVariables(playerid);
 public establecerVariables(playerid)
@@ -135,6 +138,7 @@ public OnGameModeInit()
 	maximaRonda = RONDA_POR_DEFECTO;
 	maximoPuntaje = PUNTAJE_POR_DEFECTO;
 	rondaActual = 1;
+	modoDeJuego = false;
 	resetearTodo();
     format(nombreEquipo[EQUIPO_NARANJA], 50, "%s", NOMBRE_EQUIPO_NARANJA);
     format(nombreEquipo[EQUIPO_VERDE], 50, "%s", NOMBRE_EQUIPO_VERDE);
@@ -155,13 +159,24 @@ public OnGameModeInit()
         db_free_result(asignacion);
 	}else printf("Clanes db no se pudo abrir");
 
-	SetGameModeText("CW/TG Script");
+	SetGameModeText("CW/TG (v0.2)");
  	SetWorldTime(15);
   	SetWeather(7);
 	ShowPlayerMarkers(1);
 	ShowNameTags(1);
 	AllowAdminTeleport(1);
-
+	
+ 	tituloServer = TextDrawCreate(100, 428, "Toxic Warriors Server CW/TG");
+	TextDrawLetterSize(tituloServer, 0.200000, 1.000000);
+	TextDrawTextSize(tituloServer, 428.000000, 0.000000);
+	TextDrawAlignment(tituloServer, 1);
+	TextDrawColor(tituloServer, -1);
+	TextDrawSetShadow(tituloServer, 0);
+	TextDrawSetOutline(tituloServer, 1);
+	TextDrawBackgroundColor(tituloServer, 51);
+	TextDrawFont(tituloServer, 1);
+	TextDrawSetProportional(tituloServer, 1);
+	
     nombreEquipos = TextDrawCreate(100, 428, "Naranja vs Verde");
 	TextDrawLetterSize(nombreEquipos, 0.200000, 1.000000);
 	TextDrawTextSize(nombreEquipos, 428.000000, 0.000000);
@@ -201,17 +216,46 @@ public OnGameModeInit()
 	return 1;
 }
 
+
+
+mostrarTextPlayer(playerid){
+	PlayerTextDrawShow(playerid, mostrarFps[playerid]);
+	PlayerTextDrawShow(playerid, mostrarPing[playerid]);
+}
+
 actualizarTextGlobales(){
-	new string[41];
+	new string[100];
     format(string, sizeof(string), "~y~%s vs ~g~%s", nombreEquipo[EQUIPO_NARANJA], nombreEquipo[EQUIPO_VERDE]);
     TextDrawSetString(nombreEquipos, string);
     format(string, sizeof(string), "P: ~y~(%d) %d ~w~- ~g~%d (%d)", dataEquipo[EQUIPO_NARANJA][Rondas], dataEquipo[EQUIPO_NARANJA][Puntaje], dataEquipo[EQUIPO_VERDE][Puntaje], dataEquipo[EQUIPO_VERDE][Rondas]);
     TextDrawSetString(puntajeEquipos, string);
     format(string, sizeof(string), "R: ~b~%d~w~/~b~%d", rondaActual, maximaRonda);
     TextDrawSetString(partidaRondas, string);
-    TextDrawShowForAll(partidaRondas);
-    TextDrawShowForAll(puntajeEquipos);
-	TextDrawShowForAll(nombreEquipos);
+	ForPlayers(i){
+ 		format(string, sizeof(string), "Kills: ~b~%d", killsJugador[i]);
+    	PlayerTextDrawSetString(i, mostrarKills[i], string);
+ 		format(string, sizeof(string), "Muertes: ~b~%d", muertesJugador[i]);
+    	PlayerTextDrawSetString(i, mostrarMuertes[i], string);
+	}
+   	ForPlayers(i){
+		TextDrawHideForPlayer(i, partidaRondas);
+		TextDrawHideForPlayer(i, puntajeEquipos);
+		TextDrawHideForPlayer(i, nombreEquipos);
+		TextDrawHideForPlayer(i, tituloServer);
+		PlayerTextDrawHide(i, mostrarKills[i]);
+		PlayerTextDrawHide(i, mostrarMuertes[i]);
+		if(modoDeJuego){
+			TextDrawShowForPlayer(i, partidaRondas);
+			TextDrawShowForPlayer(i, puntajeEquipos);
+			TextDrawShowForPlayer(i, nombreEquipos);
+		    if(Equipo[i] != EQUIPO_ESPECTADOR){
+   				PlayerTextDrawShow(i, mostrarKills[i]);
+				PlayerTextDrawShow(i, mostrarMuertes[i]);
+		    }
+		}else{
+		    TextDrawShowForPlayer(i, tituloServer);
+		}
+	}
 }
 
 resetearPuntos(){
@@ -258,13 +302,57 @@ public OnPlayerConnect(playerid)
         format(Dialogo, sizeof(Dialogo),"{7C7C7C}Escribí una {FFFFFF}contraseña {7C7C7C}si queres registrar esta cuenta, sino cancela el registro.\n");
         ShowPlayerDialog(playerid, DIALOG_REGISTRO, DIALOG_STYLE_PASSWORD, "{7C7C7C}Cuenta no registrada:", Dialogo, "Registrar", "Cancelar");
     }
-    TextDrawShowForPlayer(playerid, nombreEquipos);
+    
+   	mostrarFps[playerid] = CreatePlayerTextDraw(playerid, 500, 8, "Fps: 102");
+	PlayerTextDrawLetterSize(playerid, mostrarFps[playerid], 0.200000, 1.000000);
+	PlayerTextDrawAlignment(playerid, mostrarFps[playerid], 1);
+	PlayerTextDrawColor(playerid, mostrarFps[playerid], -1);
+	PlayerTextDrawSetShadow(playerid, mostrarFps[playerid], 0);
+	PlayerTextDrawSetOutline(playerid, mostrarFps[playerid], 1);
+	PlayerTextDrawBackgroundColor(playerid, mostrarFps[playerid], 51);
+	PlayerTextDrawFont(playerid, mostrarFps[playerid], 1);
+	PlayerTextDrawSetProportional(playerid, mostrarFps[playerid], 1);
+	PlayerTextDrawBackgroundColor(playerid, mostrarFps[playerid], 0x000000AA);
+	
+	mostrarPing[playerid] = CreatePlayerTextDraw(playerid, 540, 8, "Ms: 194 (0.3%)");
+	PlayerTextDrawLetterSize(playerid, mostrarPing[playerid], 0.200000, 1.000000);
+	PlayerTextDrawAlignment(playerid, mostrarPing[playerid], 1);
+	PlayerTextDrawColor(playerid, mostrarPing[playerid], -1);
+	PlayerTextDrawSetShadow(playerid, mostrarPing[playerid], 0);
+	PlayerTextDrawSetOutline(playerid, mostrarPing[playerid], 1);
+	PlayerTextDrawBackgroundColor(playerid, mostrarPing[playerid], 51);
+	PlayerTextDrawFont(playerid, mostrarPing[playerid], 1);
+	PlayerTextDrawSetProportional(playerid, mostrarPing[playerid], 1);
+	PlayerTextDrawBackgroundColor(playerid, mostrarPing[playerid], 0x000000AA);
+	
+	mostrarKills[playerid] = CreatePlayerTextDraw(playerid, 341.666748, 428.088806, "Kills: 14");
+	PlayerTextDrawLetterSize(playerid, mostrarKills[playerid], 0.200000, 1.000000);
+	PlayerTextDrawAlignment(playerid, mostrarKills[playerid], 1);
+	PlayerTextDrawColor(playerid, mostrarKills[playerid], -1);
+	PlayerTextDrawSetShadow(playerid, mostrarKills[playerid], 0);
+	PlayerTextDrawSetOutline(playerid, mostrarKills[playerid], 1);
+	PlayerTextDrawBackgroundColor(playerid, mostrarKills[playerid], 51);
+	PlayerTextDrawFont(playerid, mostrarKills[playerid], 1);
+	PlayerTextDrawSetProportional(playerid, mostrarKills[playerid], 1);
+	PlayerTextDrawBackgroundColor(playerid, mostrarKills[playerid], 0x000000AA);
+	
+	mostrarMuertes[playerid] = CreatePlayerTextDraw(playerid, 380.333282, 427.259277, "Muertes: 10");
+	PlayerTextDrawLetterSize(playerid, mostrarMuertes[playerid], 0.200000, 1.000000);
+	PlayerTextDrawAlignment(playerid, mostrarMuertes[playerid], 1);
+	PlayerTextDrawColor(playerid, mostrarMuertes[playerid], -1);
+	PlayerTextDrawSetShadow(playerid, mostrarMuertes[playerid], 0);
+	PlayerTextDrawSetOutline(playerid, mostrarMuertes[playerid], 1);
+	PlayerTextDrawBackgroundColor(playerid, mostrarMuertes[playerid], 51);
+	PlayerTextDrawFont(playerid, mostrarMuertes[playerid], 1);
+	PlayerTextDrawSetProportional(playerid, mostrarMuertes[playerid], 1);
+	PlayerTextDrawBackgroundColor(playerid, mostrarMuertes[playerid], 0x000000AA);
+
 	//GameTextForPlayer(playerid,"~w~SA-MP: ~r~Bare Script",5000,5);
 	return 1;
 }
 
 public OnPlayerDisconnect(playerid, reason){
-    new Mensaje[64], razonesDesconexion[3][] = {"Crash/Timeout", "Salió", "Kick/Ban"};
+    new Mensaje[124], razonesDesconexion[3][] = {"Crash/Timeout", "Salió", "Kick/Ban"};
     format(Mensaje, sizeof(Mensaje), "{%06x}%s "GRISEADO"se ha desconectado ({7C7C7C}%s"GRISEADO").", GetPlayerColor(playerid) >>> 8, infoJugador[playerid][Nombre], razonesDesconexion[reason]);
 	SendClientMessageToAll(GetPlayerColor(playerid), Mensaje);
 	guardarDatos(playerid);
@@ -295,6 +383,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                 format(infoJugador[playerid][Password], 24, inputtext);
                 registrarDatos(playerid);
                 SendClientMessage(playerid, COLOR_VERDE, "Te has registrado correctamente.");
+                mostrarTextPlayer(playerid);
             }
         }
    		case DIALOG_LOGEAR:
@@ -304,6 +393,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
             if(!strcmp(infoJugador[playerid][Password], inputtext, true, 20)){
 				infoJugador[playerid][Registrado] = true;
 				cargarDatos(playerid);
+				mostrarTextPlayer(playerid);
 			}else ShowPlayerDialog(playerid, DIALOG_LOGEAR, DIALOG_STYLE_PASSWORD, ""ROJO"Error de conexión", "{7C7C7C}La {FFFFFF}contraseña {7C7C7C}que introduciste es "ROJO"errónea{7C7C7C}, intentalo devuelta.\n", "Logear", "Salir");
         }
         case DIALOG_SEQUIPO:
@@ -332,6 +422,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 				establecerJugadores();
         		establecerColor(playerid);
+        		actualizarTextGlobales();
         		SpawnPlayer(playerid);
 			}else{
 			
@@ -708,13 +799,85 @@ guardarDatos(playerid)
     return 1;
 }
 
+stock colorEquipo(id){
+	new s[6];
+	if(id == EQUIPO_NARANJA)
+		format(s, 6, "F69521");
+	else
+	    format(s, 6, "77CC77");
+	return s;
+}
+
+verificarGanador(){
+	new ganador;
+	if(dataEquipo[Equipo[EQUIPO_NARANJA]][Rondas] > dataEquipo[Equipo[EQUIPO_VERDE]][Rondas]) ganador = EQUIPO_NARANJA;
+	else ganador = EQUIPO_NARANJA;
+	return ganador;
+}
+resetearJugadoresEnPartida(){
+	ForPlayers(i){
+	    if(Equipo[i] != EQUIPO_ESPECTADOR){
+     		killsJugador[i] = 0;
+        	muertesJugador[i] = 0;
+        	SpawnPlayer(i);
+	    }
+	}
+}
+verificarRonda(playerid){
+	new i = Equipo[playerid];
+	if(dataEquipo[Equipo[i]][Puntaje] == maximoPuntaje){
+		dataEquipo[Equipo[i]][Rondas]++;
+		resetearPuntos();
+		if(rondaActual < maximaRonda){
+  			if(totalJugadores[EQUIPO_NARANJA] == 1 && totalJugadores[EQUIPO_VERDE] == 1){
+  				new playerid2;
+				if(Equipo[playerid] == EQUIPO_NARANJA)
+					playerid2 = jugadorVerde();
+				else
+					playerid2 = jugadorNaranja();
+                SCMTAF(COLOR_BLANCO, "{%06x}%s"GRISEADO" ha ganado la %d ronda contra {%06x}%s", GetPlayerColor(playerid) >>> 8, infoJugador[playerid][Nombre], rondaActual, GetPlayerColor(playerid2) >>> 8, infoJugador[playerid2][Nombre]);
+        	}else
+      			SCMTAF(COLOR_BLANCO, ""GRISEADO"El equipo {%06x}%s"GRISEADO" ha ganado la %d ronda.", GetPlayerColor(playerid) >>> 8, nombreEquipo[i], rondaActual);
+	    	rondaActual++;
+  			SCMTAF(COLOR_BLANCO, "La partida va %d:%d, empieza la %d ronda.", dataEquipo[Equipo[EQUIPO_NARANJA]][Rondas], dataEquipo[Equipo[EQUIPO_VERDE]][Rondas], rondaActual);
+  			resetearJugadoresEnPartida();
+		}else if(rondaActual == maximaRonda){
+            SCMTAF(COLOR_BLANCO, ""GRISEADO"El equipo {%06x}%s"GRISEADO" ha ganado la ultima ronda.", GetPlayerColor(playerid) >>> 8);
+			verificarGanador();
+		}
+	}
+	actualizarTextGlobales();
+}
+
+jugadorVerde(){
+	new id;
+	ForPlayers(i){
+		if(Equipo[i] == EQUIPO_VERDE)
+  			id = i;
+	}
+	return id;
+}
+jugadorNaranja(){
+	new id;
+	ForPlayers(i){
+		if(Equipo[i] == EQUIPO_NARANJA)
+  			id = i;
+	}
+	return id;
+}
 actualizarEquipo(playerid, killerid){
     if(Equipo[playerid] == Equipo[killerid]){
         SCMTAF(COLOR_BLANCO, ""GRISEADO"El equipo {%06x}%s"GRISEADO" ha hecho teamkill.", GetPlayerColor(playerid) >>> 8);
-        dataEquipo[Equipo[playerid]][Puntaje]++;
+        new equipoOpuesto;
+        if(Equipo[playerid] == EQUIPO_NARANJA) equipoOpuesto = EQUIPO_VERDE;
+        else equipoOpuesto = EQUIPO_NARANJA;
+        dataEquipo[Equipo[equipoOpuesto]][Puntaje]++;
+    }else{
+        dataEquipo[Equipo[killerid]][Puntaje]++;
     }
-    if(dataEquipo[Equipo[playerid]][Puntaje] == maximoPuntaje)
-    if(rondaActual == maximaRonda) printf("ya se gano");
+    verificarRonda(killerid);
+    actualizarTextGlobales();
+    return 1;
 }
 
 forward establecerColor(playerid);
@@ -744,9 +907,9 @@ stock establecerJugadores(){
 stock nombreModo(){
 	new s[25];
 	if(modoDeJuego)
-		format(s, 25, "TG");
+		format(s, 25, "CW");
 	else
-		format(s,25, "CW");
+		format(s,25, "TG");
 	return s;
 }
 
@@ -761,6 +924,12 @@ public OnPlayerUpdate(playerid){
 			FPSS[playerid] = FPSSS;
 		}
 	}
+	new string[60], string2[60];
+	format(string, sizeof(string), "~w~Fps: ~g~%d", FPS[playerid]);
+	PlayerTextDrawSetString(playerid, mostrarFps[playerid], string);
+	format(string2, sizeof(string2), "~w~Ms: ~g~%d ~w~(~g~%.1f",  GetPlayerPing(playerid), NetStats_PacketLossPercent(playerid));
+	strcat(string2, "%~w~)");
+	PlayerTextDrawSetString(playerid, mostrarPing[playerid], string2);
 	return 1;
 }
 
@@ -785,6 +954,11 @@ public OnPlayerCommandPerformed(playerid, cmdtext[], success)
 
 public OnPlayerSpawn(playerid)
 {
+	GivePlayerWeapon(playerid, 22, 9999);
+	GivePlayerWeapon(playerid, 28, 9999);
+	GivePlayerWeapon(playerid, 26, 9999);
+	
+    SetPlayerHealth(playerid,100);
     SetPlayerPos(playerid, spawnMapas[mapaElegido][Equipo[playerid]][0], spawnMapas[mapaElegido][Equipo[playerid]][1], spawnMapas[mapaElegido][Equipo[playerid]][2]);
 	SetPlayerInterior(playerid,0);
 	TogglePlayerClock(playerid,0);
@@ -794,7 +968,7 @@ public OnPlayerSpawn(playerid)
 public OnPlayerDeath(playerid, killerid, reason){
 	if(killerid == INVALID_PLAYER_ID)
 		return SpawnPlayer(playerid);
-    if(Equipo[playerid] == EQUIPO_ESPECTADOR)
+    if(Equipo[playerid] == EQUIPO_ESPECTADOR || Equipo[killerid] == EQUIPO_ESPECTADOR)
 		return SpawnPlayer(playerid);
 		
     SpawnPlayer(playerid);
@@ -804,7 +978,6 @@ public OnPlayerDeath(playerid, killerid, reason){
 	
 	if(modoDeJuego)
 	    actualizarEquipo(playerid, killerid);
-
    	return 1;
 }
 
@@ -982,11 +1155,98 @@ CMD:top(playerid, params[]){
 	return mostrarTop(playerid);
 }
 
+CMD:cambiarmodo(playerid, params[]){
+	printf("%s", nombreModo());
+	if(modoDeJuego)
+		modoDeJuego = false;
+	else
+		modoDeJuego = true;
+    SCMTAF(COLOR_BLANCO, "{%06x}%s"GRISEADO" ha cambiado el modo de juego a {FFFFFF}%s", GetPlayerColor(playerid) >>> 8, infoJugador[playerid][Nombre], nombreModo());
+   	printf("%s", nombreModo());
+    actualizarTextGlobales();
+	return 1;
+}
+
+CMD:rondas(playerid, params[]){
+    if(isnull(params))
+  		return SendClientMessage(playerid, COLOR_ROJO, "Escribiste mal el comando; {FFFFFF}/rondas [1:10]");
+	new i = strval(params);
+ 	if(i > 10 || i < 1)
+		return SendClientMessage(playerid, COLOR_ROJO, "Escribiste mal el comando; {FFFFFF}/rondas [1:10]");
+    maximaRonda = i;
+	SCMTAF(COLOR_BLANCO, "{%06x}%s"GRISEADO" estableció la ronda máxima a {FFFFFF}%d",GetPlayerColor(playerid) >>> 8, infoJugador[playerid][Nombre], i);
+	SCMTAF(COLOR_BLANCO,""GRISEADO"Desde ahora se jugará: {FFFFFF}%dx%d", maximaRonda, maximoPuntaje);
+	actualizarTextGlobales();
+	return 1;
+}
+
+CMD:puntajederonda(playerid, params[]){
+    if(isnull(params))
+  		return SendClientMessage(playerid, COLOR_ROJO, "Escribiste mal el comando; {FFFFFF}/puntajederonda [1:100]");
+	new i = strval(params);
+ 	if(i > 100 || i < 1)
+		return SendClientMessage(playerid, COLOR_ROJO, "Escribiste mal el comando; {FFFFFF}/puntajederonda [1:100]");
+    maximoPuntaje = i;
+	SCMTAF(COLOR_BLANCO, "{%06x}%s"GRISEADO" estableció el puntaje máximo a {FFFFFF}%d",GetPlayerColor(playerid) >>> 8, infoJugador[playerid][Nombre], i);
+	SCMTAF(COLOR_BLANCO,""GRISEADO"Desde ahora se jugará: {FFFFFF}%dx%d", maximaRonda, maximoPuntaje);
+	actualizarTextGlobales();
+	return 1;
+}
+
+CMD:puntajenaranja(playerid, params[]){
+    if(isnull(params)){
+   		new s[64];
+		format(s, sizeof(s), "Escribiste mal el comando; {FFFFFF}/puntajenaranja [1:%d]", maximoPuntaje-1);
+		return SendClientMessage(playerid, COLOR_ROJO, s);
+    }
+	new i = strval(params);
+ 	if(i > (maximoPuntaje-1) || i < 1){
+		new s[64];
+		format(s, sizeof(s), "Escribiste mal el comando; {FFFFFF}/puntajenaranja [1:%d]", maximoPuntaje-1);
+		return SendClientMessage(playerid, COLOR_ROJO, s);
+ 	}
+ 	if(i == dataEquipo[EQUIPO_NARANJA][Puntaje])
+ 	    return SendClientMessage(playerid, COLOR_ROJO, "No establezcas el mismo valor actual");
+
+    dataEquipo[EQUIPO_NARANJA][Puntaje] = i;
+	SCMTAF(COLOR_BLANCO, "{%06x}%s"GRISEADO" estableció el puntaje del equipo {F69521}%s "GRISEADO"a {FFFFFF}%d", GetPlayerColor(playerid) >>> 8, infoJugador[playerid][Nombre], nombreEquipo[EQUIPO_NARANJA], i);
+	SCMTAF(COLOR_BLANCO,""GRISEADO"Marcador actual > {F69521}%d"GRISEADO":{77CC77}%d", dataEquipo[EQUIPO_NARANJA][Puntaje], dataEquipo[EQUIPO_VERDE][Puntaje]);
+	actualizarTextGlobales();
+	return 1;
+}
+CMD:puntajeverde(playerid, params[]){
+    if(isnull(params)){
+   		new s[64];
+		format(s, sizeof(s), "Escribiste mal el comando; {FFFFFF}/puntajeverde [1:%d]", maximoPuntaje-1);
+		return SendClientMessage(playerid, COLOR_ROJO, s);
+    }
+	new i = strval(params);
+ 	if(i > (maximoPuntaje-1) || i < 1){
+		new s[64];
+		format(s, sizeof(s), "Escribiste mal el comando; {FFFFFF}/puntajeverde [1:%d]", maximoPuntaje-1);
+		return SendClientMessage(playerid, COLOR_ROJO, s);
+ 	}
+ 	if(i == dataEquipo[EQUIPO_VERDE][Puntaje])
+ 	    return SendClientMessage(playerid, COLOR_ROJO, "No establezcas el mismo valor actual");
+
+    dataEquipo[EQUIPO_VERDE][Puntaje] = i;
+	SCMTAF(COLOR_BLANCO, "{%06x}%s"GRISEADO" estableció el puntaje del equipo {77CC77}%s "GRISEADO"a {FFFFFF}%d", GetPlayerColor(playerid) >>> 8, infoJugador[playerid][Nombre], nombreEquipo[EQUIPO_VERDE], i);
+	SCMTAF(COLOR_BLANCO,""GRISEADO"Marcador actual > {F69521}%d"GRISEADO":{77CC77}%d", dataEquipo[EQUIPO_NARANJA][Puntaje], dataEquipo[EQUIPO_VERDE][Puntaje]);
+	actualizarTextGlobales();
+	return 1;
+}
+
+
+CMD:kill(playerid, params[]){
+    SetPlayerHealth(playerid,-1);
+	return 1;
+}
 CMD:actualizar(playerid, params[]){
     format(nombreEquipo[EQUIPO_NARANJA],50,"%s",params);
     actualizarTextGlobales();
 	return 1;
 }
+
 
 CMD:rondanaranja(playerid, params[]){
 	new i = strval(params);
