@@ -9,9 +9,12 @@
 #define NOMBRE_EQUIPO_NARANJA 	"Naranja"
 #define NOMBRE_EQUIPO_VERDE 	"Verde"
 
-#define EQUIPO_ESPECTADOR  	0
-#define EQUIPO_NARANJA 		1
-#define EQUIPO_VERDE 		2
+#define EQUIPO_NARANJA   	0
+#define EQUIPO_VERDE   		1
+#define EQUIPO_ESPECTADOR  	2
+
+#define RONDA_POR_DEFECTO   1
+#define PUNTAJE_POR_DEFECTO 10
 
 #define CLAN_NOMBRE         0
 #define CLAN_TAG            1
@@ -19,7 +22,7 @@
 #define COLOR_BLANCO 		0xFFFFFFFF
 #define COLOR_NARANJA 		0xF78411FF
 #define COLOR_VERDE 		0x77CC77FF
-#define COLOR_ROJO      	0xF51111FF
+#define COLOR_ROJO      	0xBF0000FF
 
 #define GRISEADO            "{C3C3C3}"
 #define GRISEADOS           "{C7C7C7}"
@@ -39,6 +42,10 @@
 #define DIALOG_TOP          30
 #define DIALOG_TOPRANKED    31
 #define DIALOG_TOPDUELOSG   32  /* Duelos ganados */
+#define DIALOG_TOPDUELOSP   33  /* Duelos perdidos */
+#define DIALOG_TOPCKILLS    34 	/* Clan kills */
+#define DIALOG_TOPCWGANADAS 35
+#define DIALOG_TOPCWPERD    36
 
 
 new bool:FALSE = false;
@@ -50,6 +57,17 @@ new bool:FALSE = false;
 #define MAX_PLAYERS 50
 
 new Equipo[MAX_PLAYERS], nombreEquipo[3][50], totalJugadores[3], bool:equiposBloqueados;
+new bool:modoDeJuego;
+new maximoPuntaje, maximaRonda, rondaActual;
+
+enum DataE{
+	Rondas,
+	Puntaje
+};
+new dataEquipo[2][DataE];
+
+new killsJugador[MAX_PLAYERS];
+new muertesJugador[MAX_PLAYERS];
 
 new mapaElegido,
 	Float:spawnMapas[4][3][4] =
@@ -95,36 +113,13 @@ enum Data
 };
 new infoJugador[MAX_PLAYERS][Data];
 
+new Text:nombreEquipos, Text:puntajeEquipos, Text:partidaRondas;
 
 forward establecerVariables(playerid);
 public establecerVariables(playerid)
 {
 	Equipo[playerid] = EQUIPO_ESPECTADOR;
 	establecerColor(playerid);
-}
-
-forward establecerColor(playerid);
-public establecerColor(playerid){
-	if(Equipo[playerid] == EQUIPO_ESPECTADOR)
-		SetPlayerColor(playerid, COLOR_BLANCO);
-	if(Equipo[playerid] == EQUIPO_NARANJA)
-		SetPlayerColor(playerid, COLOR_NARANJA);
-	if(Equipo[playerid] == EQUIPO_VERDE)
-		SetPlayerColor(playerid, COLOR_VERDE);
-}
-
-stock establecerJugadores(){
-    totalJugadores[EQUIPO_NARANJA] 		= 0;
-    totalJugadores[EQUIPO_VERDE]		= 0;
-    totalJugadores[EQUIPO_ESPECTADOR] 	= 0;
-	ForPlayers(i){
-	    if(Equipo[i] == EQUIPO_NARANJA)
-			totalJugadores[EQUIPO_NARANJA]++;
-	    if(Equipo[i] == EQUIPO_VERDE)
-	        totalJugadores[EQUIPO_VERDE]++;
-	    if(Equipo[i] == EQUIPO_ESPECTADOR)
-	        totalJugadores[EQUIPO_ESPECTADOR]++;
-	}
 }
 
 main()
@@ -137,7 +132,10 @@ main()
 public OnGameModeInit()
 {
     mapaElegido = 2;
-    
+	maximaRonda = RONDA_POR_DEFECTO;
+	maximoPuntaje = PUNTAJE_POR_DEFECTO;
+	rondaActual = 1;
+	resetearTodo();
     format(nombreEquipo[EQUIPO_NARANJA], 50, "%s", NOMBRE_EQUIPO_NARANJA);
     format(nombreEquipo[EQUIPO_VERDE], 50, "%s", NOMBRE_EQUIPO_VERDE);
 	equiposBloqueados = false;
@@ -164,9 +162,71 @@ public OnGameModeInit()
 	ShowNameTags(1);
 	AllowAdminTeleport(1);
 
+    nombreEquipos = TextDrawCreate(100, 428, "Naranja vs Verde");
+	TextDrawLetterSize(nombreEquipos, 0.200000, 1.000000);
+	TextDrawTextSize(nombreEquipos, 428.000000, 0.000000);
+	TextDrawAlignment(nombreEquipos, 1);
+	TextDrawColor(nombreEquipos, -1);
+	TextDrawSetShadow(nombreEquipos, 0);
+	TextDrawSetOutline(nombreEquipos, 1);
+	TextDrawBackgroundColor(nombreEquipos, 51);
+	TextDrawFont(nombreEquipos, 1);
+	TextDrawSetProportional(nombreEquipos, 1);
+ 	TextDrawBackgroundColor(nombreEquipos, 0x000000AA);
+
+	puntajeEquipos = TextDrawCreate(190, 428, "Puntos: (1) 5 - 14 (2)");
+	TextDrawLetterSize(puntajeEquipos, 0.200000, 1.000000);
+	TextDrawAlignment(puntajeEquipos, 1);
+	TextDrawColor(puntajeEquipos, -1);
+	TextDrawSetShadow(puntajeEquipos, 0);
+	TextDrawSetOutline(puntajeEquipos, 1);
+	TextDrawBackgroundColor(puntajeEquipos, 51);
+	TextDrawFont(puntajeEquipos, 1);
+	TextDrawSetProportional(puntajeEquipos, 1);
+	TextDrawBackgroundColor(puntajeEquipos, 0x000000AA);
+
+	partidaRondas = TextDrawCreate(270, 428, "Ronda: 2/3");
+	TextDrawLetterSize(partidaRondas, 0.200000, 1.000000);
+	TextDrawAlignment(partidaRondas, 1);
+	TextDrawColor(partidaRondas, -1);
+	TextDrawSetShadow(partidaRondas, 0);
+	TextDrawSetOutline(partidaRondas, 1);
+	TextDrawBackgroundColor(partidaRondas, 51);
+	TextDrawFont(partidaRondas, 1);
+	TextDrawSetProportional(partidaRondas, 1);
+	TextDrawBackgroundColor(partidaRondas, 0x000000AA);
+
 	AddPlayerClass(265,1958.3783,1343.1572,15.3746,270.1425,0,0,0,0,-1,-1);
 
 	return 1;
+}
+
+actualizarTextGlobales(){
+	new string[41];
+    format(string, sizeof(string), "~y~%s vs ~g~%s", nombreEquipo[EQUIPO_NARANJA], nombreEquipo[EQUIPO_VERDE]);
+    TextDrawSetString(nombreEquipos, string);
+    format(string, sizeof(string), "P: ~y~(%d) %d ~w~- ~g~%d (%d)", dataEquipo[EQUIPO_NARANJA][Rondas], dataEquipo[EQUIPO_NARANJA][Puntaje], dataEquipo[EQUIPO_VERDE][Puntaje], dataEquipo[EQUIPO_VERDE][Rondas]);
+    TextDrawSetString(puntajeEquipos, string);
+    format(string, sizeof(string), "R: ~b~%d~w~/~b~%d", rondaActual, maximaRonda);
+    TextDrawSetString(partidaRondas, string);
+    TextDrawShowForAll(partidaRondas);
+    TextDrawShowForAll(puntajeEquipos);
+	TextDrawShowForAll(nombreEquipos);
+}
+
+resetearPuntos(){
+	for(new i=0;i<2;i++) dataEquipo[i][Puntaje] = 0;
+}
+
+resetearRondas(){
+	for(new i=0;i<2;i++) dataEquipo[i][Rondas] = 0;
+}
+
+resetearTodo(){
+	for(new i=0;i<2;i++){
+	    dataEquipo[i][Rondas] = 0;
+	    dataEquipo[i][Puntaje] = 0;
+	}
 }
 
 public OnGameModeExit(){
@@ -193,11 +253,12 @@ public OnPlayerConnect(playerid)
     if(db_num_rows(resultado)){
         db_get_field_assoc(resultado, "password", infoJugador[playerid][Password], 20);
         format(Dialogo, sizeof(Dialogo),"{7C7C7C}Escribi la {FFFFFF}contraseña {7C7C7C}para proceder.\n");
-        ShowPlayerDialog(playerid, DIALOG_LOGEAR, DIALOG_STYLE_PASSWORD, "{7C7C7C}Cuenta ya registrada:", Dialogo, "Logear", "Salir");
+        ShowPlayerDialog(playerid, DIALOG_LOGEAR, DIALOG_STYLE_PASSWORD, "{7C7C7C}Cuenta registrada", Dialogo, "Logear", "Salir");
 	}else{
         format(Dialogo, sizeof(Dialogo),"{7C7C7C}Escribí una {FFFFFF}contraseña {7C7C7C}si queres registrar esta cuenta, sino cancela el registro.\n");
         ShowPlayerDialog(playerid, DIALOG_REGISTRO, DIALOG_STYLE_PASSWORD, "{7C7C7C}Cuenta no registrada:", Dialogo, "Registrar", "Cancelar");
     }
+    TextDrawShowForPlayer(playerid, nombreEquipos);
 	//GameTextForPlayer(playerid,"~w~SA-MP: ~r~Bare Script",5000,5);
 	return 1;
 }
@@ -332,20 +393,29 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
  			if(response){
         		switch(listitem){
         		    case 0:
-					{
-					    mostrarTopRanked(playerid);
-					}
+						mostrarTopRanked(playerid);
 					case 1:
-					{
 					    mostrarTopDuelosGanados(playerid);
-					}
+					case 2:
+						mostrarTopDuelosPerdidos(playerid);
+					case 3:
+					    mostrarTopClanKills(playerid);
+					case 4:
+					    mostrarTopClanCWG(playerid);
+					case 5:
+					    mostrarTopClanCWP(playerid);
+					
 				}
 			}else{
 			}
 		}
-		case DIALOG_TOPRANKED: if(response) return ShowPlayerDialog(playerid, DIALOG_TOP, DIALOG_STYLE_LIST, "{7C7C7C}Tops", "{00779E}Ranked\n{00779E}Duelos ganados\n{00779E}Duelos perdidos\n{00779E}Clan kills\n{00779E}Clan Wars ganadas\n{00779E}Clan Wars perdidas", "Selec.", "Cancelar");
-		case DIALOG_TOPDUELOSG: if(response) return ShowPlayerDialog(playerid, DIALOG_TOP, DIALOG_STYLE_LIST, "{7C7C7C}Tops", "{00779E}Ranked\n{00779E}Duelos ganados\n{00779E}Duelos perdidos\n{00779E}Clan kills\n{00779E}Clan Wars ganadas\n{00779E}Clan Wars perdidas", "Selec.", "Cancelar");
-    }
+		case DIALOG_TOPRANKED: 		if(response) mostrarTop(playerid);
+		case DIALOG_TOPDUELOSG: 	if(response) mostrarTop(playerid);
+		case DIALOG_TOPDUELOSP: 	if(response) mostrarTop(playerid);
+		case DIALOG_TOPCKILLS: 		if(response) mostrarTop(playerid);
+		case DIALOG_TOPCWGANADAS: 	if(response) mostrarTop(playerid);
+		case DIALOG_TOPCWPERD: 		if(response) mostrarTop(playerid);
+	}
     return 1;
 }
 //, kills, cwGanadas, cwPerdidas, miembros
@@ -379,40 +449,115 @@ registrarClan(playerid)
 	return 1;
 }
 
+mostrarTop(playerid){
+    return ShowPlayerDialog(playerid, DIALOG_TOP, DIALOG_STYLE_LIST, "{7C7C7C}Tops", "{00779E}Ranked\n{00779E}Duelos ganados\n{00779E}Duelos perdidos\n{00779E}Clan kills\n{00779E}Clan Wars ganadas\n{00779E}Clan Wars perdidas", "Selec.", "Cancelar");
+}
 mostrarTopRanked(playerid){
 	new i = 1, selece[1000], string[100];
 	db_query(Cuentas, "UPDATE cuentas SET puntajeRanked = 900 WHERE id = 2");
 	new DBResult:resultado, Puntos, nNick[40];
-    resultado = db_query(Cuentas, "SELECT * FROM cuentas ORDER BY puntajeRanked DESC");
+    resultado = db_query(Cuentas, "SELECT * FROM cuentas ORDER BY puntajeRanked DESC LIMIT 20");
     strcat(selece, "{7C7C7C}pos.\t{7C7C7C}Nick\t{7C7C7C}Puntos");
 	do{
 		Puntos = db_get_field_assoc_int(resultado, "puntajeRanked");
 		db_get_field_assoc(resultado, "nick", nNick, 24);
-		format(string, sizeof(string), "\n%d\t%s\t%d", i, nNick, Puntos);
+		format(string, sizeof(string), "\n{7C7C7C}%d\t{FFFFFF}%s\t"GRISEADO"%d", i, nNick, Puntos);
 		strcat(selece, string);
 		printf("%d %s %d", i, nNick, Puntos);
 		i++;
 	}while(db_next_row(resultado));
 	db_free_result(resultado);
-	ShowPlayerDialog(playerid, DIALOG_TOPRANKED, DIALOG_STYLE_TABLIST_HEADERS, "{7C7C7C}Top players", selece, "Volver", "Cerrar");
+	ShowPlayerDialog(playerid, DIALOG_TOPRANKED, DIALOG_STYLE_TABLIST_HEADERS, "{7C7C7C}Ranked", selece, "Volver", "Cerrar");
 }
 
 mostrarTopDuelosGanados(playerid){
 	new i = 1, selece[1000], string[100];
 	db_query(Cuentas, "UPDATE cuentas SET duelosGanados = 44 WHERE id = 3");
 	new DBResult:resultado, Duelos, nNick[24];
-    resultado = db_query(Cuentas, "SELECT * FROM cuentas ORDER BY duelosGanados DESC");
+    resultado = db_query(Cuentas, "SELECT * FROM cuentas ORDER BY duelosGanados DESC LIMIT 20");
     strcat(selece, "{7C7C7C}pos.\t{7C7C7C}Nick\t{7C7C7C}Duelos");
 	do{
 		Duelos = db_get_field_assoc_int(resultado, "duelosGanados");
 		db_get_field_assoc(resultado, "nick", nNick, 24);
-		format(string, sizeof(string), "\n%d\t%s\t%d", i, nNick, Duelos);
+		format(string, sizeof(string), "\n{7C7C7C}%d\t{FFFFFF}%s\t"GRISEADO"%d", i, nNick, Duelos);
 		strcat(selece, string);
 		printf("%d %s %d", i, nNick, Duelos);
 		i++;
 	}while(db_next_row(resultado));
 	db_free_result(resultado);
-	ShowPlayerDialog(playerid, DIALOG_TOPRANKED, DIALOG_STYLE_TABLIST_HEADERS, "{7C7C7C}Top duelos ganados", selece, "Volver", "Cerrar");
+	ShowPlayerDialog(playerid, DIALOG_TOPDUELOSG, DIALOG_STYLE_TABLIST_HEADERS, "{7C7C7C}Duelos ganados", selece, "Volver", "Cerrar");
+}
+
+mostrarTopDuelosPerdidos(playerid){
+	new i = 1, selece[1000], string[100];
+	db_query(Cuentas, "UPDATE cuentas SET duelosGanados = 44 WHERE id = 3");
+	new DBResult:resultado, Duelos, nNick[24];
+    resultado = db_query(Cuentas, "SELECT * FROM cuentas ORDER BY duelosPerdidos DESC LIMIT 20");
+    strcat(selece, "{7C7C7C}pos.\t{7C7C7C}Nick\t{7C7C7C}Duelos");
+	do{
+		Duelos = db_get_field_assoc_int(resultado, "duelosPerdidos");
+		db_get_field_assoc(resultado, "nick", nNick, 24);
+		format(string, sizeof(string), "\n{7C7C7C}%d\t{FFFFFF}%s\t"GRISEADO"%d", i, nNick, Duelos);
+		strcat(selece, string);
+		printf("%d %s %d", i, nNick, Duelos);
+		i++;
+	}while(db_next_row(resultado));
+	db_free_result(resultado);
+	ShowPlayerDialog(playerid, DIALOG_TOPDUELOSP, DIALOG_STYLE_TABLIST_HEADERS, "{7C7C7C}Duelos perdidos", selece, "Volver", "Cerrar");
+}
+
+mostrarTopClanKills(playerid){
+	new i = 1, selece[1000], string[100];
+	db_query(Clanes, "UPDATE registro SET kills = 100 WHERE id = 2");
+	new DBResult:resultado, killsTotales, TAG[6];
+    resultado = db_query(Clanes, "SELECT * FROM registro ORDER BY kills DESC LIMIT 20");
+    strcat(selece, "{7C7C7C}pos.\t{7C7C7C}Clan\t{7C7C7C}Kills");
+	do{
+		killsTotales = db_get_field_assoc_int(resultado, "kills");
+		db_get_field_assoc(resultado, "tag", TAG, 6);
+		format(string, sizeof(string), "\n{7C7C7C}%d\t{FFFFFF}%s\t"GRISEADO"%d", i, TAG, killsTotales);
+		strcat(selece, string);
+		printf("%d %s %d", i, TAG, killsTotales);
+		i++;
+	}while(db_next_row(resultado));
+	db_free_result(resultado);
+	ShowPlayerDialog(playerid, DIALOG_TOPCKILLS, DIALOG_STYLE_TABLIST_HEADERS, "{7C7C7C}Clan kills", selece, "Volver", "Cerrar");
+}
+
+mostrarTopClanCWG(playerid){
+	new i = 1, selece[1000], string[100];
+	db_query(Clanes, "UPDATE registro SET cwGanadas = 2 WHERE id = 2");
+	new DBResult:resultado, clanWars, TAG[6];
+    resultado = db_query(Clanes, "SELECT * FROM registro ORDER BY cwGanadas DESC LIMIT 20");
+    strcat(selece, "{7C7C7C}pos.\t{7C7C7C}Clan\t{7C7C7C}Cantidad");
+	do{
+		clanWars = db_get_field_assoc_int(resultado, "cwGanadas");
+		db_get_field_assoc(resultado, "tag", TAG, 6);
+		format(string, sizeof(string), "\n{7C7C7C}%d\t{FFFFFF}%s\t"GRISEADO"%d", i, TAG, clanWars);
+		strcat(selece, string);
+		printf("%d %s %d", i, TAG, clanWars);
+		i++;
+	}while(db_next_row(resultado));
+	db_free_result(resultado);
+	ShowPlayerDialog(playerid, DIALOG_TOPCWGANADAS, DIALOG_STYLE_TABLIST_HEADERS, "{7C7C7C}CW's ganadas", selece, "Volver", "Cerrar");
+}
+
+mostrarTopClanCWP(playerid){
+	new i = 1, selece[1000], string[100];
+	db_query(Clanes, "UPDATE registro SET cwPerdidas = 2 WHERE id = 2");
+	new DBResult:resultado, clanWars, TAG[6];
+    resultado = db_query(Clanes, "SELECT * FROM registro ORDER BY cwPerdidas DESC LIMIT 20");
+    strcat(selece, "{7C7C7C}pos.\t{7C7C7C}Clan\t{7C7C7C}Cantidad");
+	do{
+		clanWars = db_get_field_assoc_int(resultado, "cwPerdidas");
+		db_get_field_assoc(resultado, "tag", TAG, 6);
+		format(string, sizeof(string), "\n{7C7C7C}%d\t{FFFFFF}%s\t"GRISEADO"%d", i, TAG, clanWars);
+		strcat(selece, string);
+		printf("%d %s %d", i, TAG, clanWars);
+		i++;
+	}while(db_next_row(resultado));
+	db_free_result(resultado);
+	ShowPlayerDialog(playerid, DIALOG_TOPCWPERD, DIALOG_STYLE_TABLIST_HEADERS, "{7C7C7C}CW's perdidas", selece, "Volver", "Cerrar");
 }
 
 /*
@@ -468,12 +613,25 @@ tieneClan(playerid)
     printf("Tieneclan: %d", db_num_rows(resultado));
     if(db_num_rows(resultado))
 		idClan = db_get_field_assoc_int(resultado, "clan");
-		db_free_result(resultado);
-		if(idClan > 0)
-			return 1;
-		else
-			return 0;
+	db_free_result(resultado);
+	if(idClan > 0)
+		return 1;
+	else
+		return 0;
 }
+
+sacarClanId(playerid)
+{
+	new DBResult:resultado, idClan;
+    format(DB_Query, sizeof(DB_Query), "SELECT * FROM Cuentas WHERE id = %d", infoJugador[playerid][idDB]);
+    resultado = db_query(Cuentas, DB_Query);
+    printf("Tieneclan: %d", db_num_rows(resultado));
+    if(db_num_rows(resultado))
+		idClan = db_get_field_assoc_int(resultado, "clan");
+	db_free_result(resultado);
+	return idClan;
+}
+
 clanTextoValido(celda[], nombre[]){
     new DBResult:resultado;
     format(DB_Query, sizeof(DB_Query), "SELECT * FROM registro WHERE %s = '%s'", celda, nombre);
@@ -550,6 +708,48 @@ guardarDatos(playerid)
     return 1;
 }
 
+actualizarEquipo(playerid, killerid){
+    if(Equipo[playerid] == Equipo[killerid]){
+        SCMTAF(COLOR_BLANCO, ""GRISEADO"El equipo {%06x}%s"GRISEADO" ha hecho teamkill.", GetPlayerColor(playerid) >>> 8);
+        dataEquipo[Equipo[playerid]][Puntaje]++;
+    }
+    if(dataEquipo[Equipo[playerid]][Puntaje] == maximoPuntaje)
+    if(rondaActual == maximaRonda) printf("ya se gano");
+}
+
+forward establecerColor(playerid);
+public establecerColor(playerid){
+	if(Equipo[playerid] == EQUIPO_ESPECTADOR)
+		SetPlayerColor(playerid, COLOR_BLANCO);
+	if(Equipo[playerid] == EQUIPO_NARANJA)
+		SetPlayerColor(playerid, COLOR_NARANJA);
+	if(Equipo[playerid] == EQUIPO_VERDE)
+		SetPlayerColor(playerid, COLOR_VERDE);
+}
+
+stock establecerJugadores(){
+    totalJugadores[EQUIPO_NARANJA] 		= 0;
+    totalJugadores[EQUIPO_VERDE]		= 0;
+    totalJugadores[EQUIPO_ESPECTADOR] 	= 0;
+	ForPlayers(i){
+	    if(Equipo[i] == EQUIPO_NARANJA)
+			totalJugadores[EQUIPO_NARANJA]++;
+	    if(Equipo[i] == EQUIPO_VERDE)
+	        totalJugadores[EQUIPO_VERDE]++;
+	    if(Equipo[i] == EQUIPO_ESPECTADOR)
+	        totalJugadores[EQUIPO_ESPECTADOR]++;
+	}
+}
+
+stock nombreModo(){
+	new s[25];
+	if(modoDeJuego)
+		format(s, 25, "TG");
+	else
+		format(s,25, "CW");
+	return s;
+}
+
 public OnPlayerUpdate(playerid){
 	new FPSSS = GetPlayerDrunkLevel(playerid), fps;
 	if(FPSSS < 100){
@@ -591,8 +791,20 @@ public OnPlayerSpawn(playerid)
 	return 1;
 }
 
-public OnPlayerDeath(playerid, killerid, reason)
-{
+public OnPlayerDeath(playerid, killerid, reason){
+	if(killerid == INVALID_PLAYER_ID)
+		return SpawnPlayer(playerid);
+    if(Equipo[playerid] == EQUIPO_ESPECTADOR)
+		return SpawnPlayer(playerid);
+		
+    SpawnPlayer(playerid);
+    SendDeathMessage(killerid, playerid, reason);
+   	killsJugador[killerid]++;
+	muertesJugador[playerid]++;
+	
+	if(modoDeJuego)
+	    actualizarEquipo(playerid, killerid);
+
    	return 1;
 }
 
@@ -672,6 +884,7 @@ CMD:stats(playerid, params[]){
 		return SendClientMessage(playerid, COLOR_ROJO, "No existe la ID que pusiste.");
 	if(infoJugador[i][Registrado] == false)
 	    return SendClientMessage(playerid, COLOR_ROJO, "Cuenta no registrada.");
+	    
     format(stats, sizeof(stats), "{7C7C7C}Nick: {%06x}%s", GetPlayerColor(playerid) >>> 8, infoJugador[i][Nombre]);
     format(stats, sizeof(stats), "%s\n{7C7C7C}Clan: {FFFFFF}%s", stats, tagClan(i));
     format(stats, sizeof(stats), "%s\n{7C7C7C}Ping: {FFFFFF}%d", stats, GetPlayerPing(i));
@@ -681,13 +894,14 @@ CMD:stats(playerid, params[]){
     format(stats, sizeof(stats), "%s\n{7C7C7C}Ranked: {FFFFFF}%d", stats, infoJugador[i][puntajeRanked]);
     format(stats, sizeof(stats), "%s\n{7C7C7C}Duelos ganados: {FFFFFF}%d", stats, infoJugador[i][duelosGanados]);
     format(stats, sizeof(stats), "%s\n{7C7C7C}Duelos perdidos: {FFFFFF}%d", stats, infoJugador[i][duelosPerdidos]);
+    
     ShowPlayerDialog(playerid, DIALOG_STATS, DIALOG_STYLE_MSGBOX, "Estadistica:", stats, "Cerrar", "");
     return 1;
 }
 
 CMD:creditos(playerid, params[]){
     new string[1200];
-	strcat(string,"{FFFFFF}> {7C7C7C}Creador de la GM{B8B8B8}: \n");
+	strcat(string,"{FFFFFF}> {7C7C7C}Desarrollador de la GM{B8B8B8}: \n");
 	strcat(string,"{FFFFFF}- [WTx]Andrew_Manu\n");
 	strcat(string,"\n");
 	strcat(string,"{FFFFFF}> {7C7C7C}Ubicación del hosting: \n");
@@ -714,7 +928,7 @@ stock GetPlayerFPS(playerid) return FPS[playerid];
 
 
 CMD:crearclan(playerid, params[]){
-	if(tieneClan(playerid)) return SendClientMessage(playerid, COLOR_ROJO, "Ya estas en un clan, utiliza /salirclan si queres salir.");
+	if(tieneClan(playerid) > 0) return SendClientMessage(playerid, COLOR_ROJO, "Ya estas en un clan, utiliza /salirclan si queres salir.");
 	if(procesoClan) return SendClientMessage(playerid, COLOR_BLANCO, "Ya hay alguien creando un clan, espera a que registre el suyo.");
 	if(!infoJugador[playerid][Registrado]) return SendClientMessage(playerid, COLOR_ROJO, "Debes estar registrado.");
     new string[1000];
@@ -725,34 +939,79 @@ CMD:crearclan(playerid, params[]){
 	return 1;
 }
 
-CMD:topclanes(playerid, params[]){
-	new i = 1, selece[1000], string[100];
+CMD:clan(playerid, params[]){
+	if(tieneClan(playerid) == 0)
+		return SendClientMessage(playerid, COLOR_ROJO, "No estas en ningún clan.");
+	if(infoJugador[playerid][Registrado] == false)
+	    return SendClientMessage(playerid, COLOR_ROJO, "Cuenta no registrada.");
+	    
+	printf("idclanplayerid: %d", sacarClanId(playerid));
 	
-	db_query(Clanes, "UPDATE registro SET kills = 100 WHERE id = 2");
-	new DBResult:resultado, Kills, TAG[6];
-    resultado = db_query(Clanes, "SELECT * FROM registro ORDER BY kills DESC");
-    strcat(selece, "{7C7C7C}pos.\t{7C7C7C}Clan\t{7C7C7C}Kills");
-	do{
-		Kills = db_get_field_assoc_int(resultado, "kills");
-		db_get_field_assoc(resultado, "tag", TAG, 6);
-		format(string, sizeof(string), "\n%d\t%s\t%d", i, TAG, Kills);
-		strcat(selece, string);
-		printf("%d %s %d", i, TAG, Kills);
-		i++;
-	}while(db_next_row(resultado));
-	db_free_result(resultado);
-	ShowPlayerDialog(playerid, DIALOG_SEQUIPO, DIALOG_STYLE_TABLIST_HEADERS, "Top clanes kills", selece, "Selec.", "Cerrar");
+    new DBResult:resultado, idClan = sacarClanId(playerid), consultita[1000], str[100];
+	new propietario[24], miembros, nombreClan[30], TAG[6], killsTotales, cwPerdidas, cwGanadas;
+	
+    format(consultita, sizeof(consultita), " SELECT * FROM registro WHERE id = %d", idClan);
+ 	strcat(consultita, str);
+	resultado = db_query(Clanes, consultita);
+	
+	db_get_field_assoc(resultado, "nombre", nombreClan, 30);
+	db_get_field_assoc(resultado, "propietario", propietario, 24);
+	db_get_field_assoc(resultado, "tag", TAG, 6);
+    miembros 		= db_get_field_assoc_int(resultado, "miembros");
+    killsTotales 	= db_get_field_assoc_int(resultado, "kills");
+    cwGanadas 		= db_get_field_assoc_int(resultado, "cwGanadas");
+    cwPerdidas 		= db_get_field_assoc_int(resultado, "cwPerdidas");
+    printf("nombre:%s dueño:%s tag:%s\n", nombreClan, propietario, TAG);
+    printf("kills:%d cwg:%d cwp:%d miembros:%d\n", killsTotales, cwGanadas, cwPerdidas, miembros);
+    
+	new statsClan[1000], nombreDelClan[30];
+	format(nombreDelClan, sizeof(nombreDelClan), "{7C7C7C}%s", nombreClan);
+	
+    format(statsClan, sizeof(statsClan), "{7C7C7C}Dueño: {FFFFFF}%s", propietario);
+    format(statsClan, sizeof(statsClan), "%s\n{7C7C7C}Tag: {FFFFFF}%s", statsClan, TAG);
+    format(statsClan, sizeof(statsClan), "%s\n{7C7C7C}Miembros: {FFFFFF}%d", statsClan, miembros);
+    format(statsClan, sizeof(statsClan), "%s\n{7C7C7C}Kills: {FFFFFF}%d", statsClan, killsTotales);
+    format(statsClan, sizeof(statsClan), "%s\n{7C7C7C}Clan Wars ganadas: {FFFFFF}%d", statsClan, cwGanadas);
+    format(statsClan, sizeof(statsClan), "%s\n{7C7C7C}Clan Wars perdidas: {FFFFFF}%d", statsClan, cwPerdidas);
+    ShowPlayerDialog(playerid, DIALOG_STATS, DIALOG_STYLE_MSGBOX, nombreDelClan, statsClan, "Cerrar", "");
+    db_free_result(resultado);
 	return 1;
 }
 
 CMD:top(playerid, params[]){
-	new selece[600];
-	strcat(selece, "{00779E}Ranked\n{00779E}Duelos ganados\n{00779E}Duelos perdidos\n{00779E}Clan kills\n{00779E}Clan Wars ganadas\n{00779E}Clan Wars perdidas");
-	ShowPlayerDialog(playerid, DIALOG_TOP, DIALOG_STYLE_LIST, ""GRISEADO"Tops", selece, "Selec.", "Cancelar");
+	return mostrarTop(playerid);
+}
+
+CMD:actualizar(playerid, params[]){
+    format(nombreEquipo[EQUIPO_NARANJA],50,"%s",params);
+    actualizarTextGlobales();
 	return 1;
 }
 
+CMD:rondanaranja(playerid, params[]){
+	new i = strval(params);
+    dataEquipo[EQUIPO_NARANJA][Rondas] = i;
+    actualizarTextGlobales();
+    return 1;
+}
 
+CMD:rondaverde(playerid, params[]){
+	new i = strval(params);
+    dataEquipo[EQUIPO_VERDE][Rondas] = i;
+    actualizarTextGlobales();
+}
+
+CMD:resetrondas(playerid, params[]){
+	resetearRondas();
+    actualizarTextGlobales();
+    return 1;
+}
+
+CMD:resetpuntos(playerid, params[]){
+	resetearPuntos();
+    actualizarTextGlobales();
+    return 1;
+}
 
 stock IP(i){
 	new x[20];
