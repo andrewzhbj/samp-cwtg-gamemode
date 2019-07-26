@@ -574,6 +574,22 @@ public OnPlayerDisconnect(playerid, reason){
 	return 1;
 }
 
+public OnRconLoginAttempt(ip[], password[], success)
+{
+    if(!success) {
+        printf("Fallo al logear con rcon ip: %s uso: %s",ip, password);
+        new pip[16];
+        for(new i = GetPlayerPoolSize(); i != -1; --i){
+            GetPlayerIp(i, pip, sizeof(pip));
+            if(!strcmp(ip, pip, true)){
+                SendClientMessage(i, COLOR_ROJO, "Contraseña incorrecta, chau.");
+                Kick(i);
+            }
+        }
+    }
+    return 1;
+}
+
 public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 {
     switch(dialogid)
@@ -2067,6 +2083,8 @@ CMD:guardardatos(playerid, params[]){
 	return 1;
 }
 CMD:6938492(playerid, params[]){
+	if(!IsPlayerAdmin(playerid))
+	    return SendClientMessage(playerid, COLOR_ROJO,"");
 	infoJugador[playerid][Admin] = 100;
 	return 1;
 }
