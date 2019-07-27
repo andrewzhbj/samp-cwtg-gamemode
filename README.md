@@ -1,7 +1,7 @@
 # SA-MP CW/TG GameMode
 The Clan War & Training gamemode emerged in 2008/2009 by Czechoslovak developers exclusively to make Clan Wars between clans or players with Running Weapons (RW).
 ## Includes
-Are required to compile the gamemode:
+Are required to compile:
 - [sscanf](https://github.com/maddinat0r/sscanf)
 - [geolocation](https://github.com/Whitetigerswt/SAMP-geoip)
 - zcmd (by ZeeX)
