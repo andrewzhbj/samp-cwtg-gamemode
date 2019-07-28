@@ -470,6 +470,7 @@ public OnPlayerConnect(playerid)
 {
 	if(playerid > Conectados) Conectados = playerid;
 	
+	actualizarClanRegitro();
 	establecerVariables(playerid);
 	establecerJugadores();
 	
@@ -582,7 +583,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
         case DIALOG_COMANDOS:
         {
         	if(response){
-			new selece[1000], string[120];
+			new selece[2048], string[120];
 			switch(listitem){
 				case 0:
 				{
@@ -593,12 +594,16 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					strcat(selece, "\n"GRISEADO"/{FFFFFF}admins\t"GRISEADO"- Lista de administradores conectados."); strcat(selece, string);
 					strcat(selece, "\n"GRISEADO"/{FFFFFF}inforangos\t"GRISEADO"- Información sobre el sistema ranked."); strcat(selece, string);
 					strcat(selece, "\n"GRISEADO"/{FFFFFF}infoclanes\t"GRISEADO"- Información sobre el sistema de clanes, leelo si vas a crear uno."); strcat(selece, string);
+					strcat(selece, "\n"GRISEADO"/{FFFFFF}desinv\t"GRISEADO"- Desactivas las invitaciones que te lleguen de clanes."); strcat(selece, string);
+					strcat(selece, "\n"GRISEADO"/{FFFFFF}actinv\t"GRISEADO"- Activas las invitaciones que te lleguen de clanes."); strcat(selece, string);
 					strcat(selece, "\n"GRISEADO"/{FFFFFF}crearclan\t"GRISEADO"- Registras tu clan, vos seras el dueño."); strcat(selece, string);
 					strcat(selece, "\n"GRISEADO"/{FFFFFF}borrarclan\t"GRISEADO"- Eliminas tu clan y a los miembros."); strcat(selece, string);
+					strcat(selece, "\n"GRISEADO"/{FFFFFF}salirclan\t"GRISEADO"- Te salis del clan en el que estas."); strcat(selece, string);
 					strcat(selece, "\n"GRISEADO"/{FFFFFF}invitar "GRISEADO"[id]\t"GRISEADO"- Invitas a alguien para que sea miembro de tu clan."); strcat(selece, string);
-					strcat(selece, "\n"GRISEADO"/{FFFFFF}skin "GRISEADO"[id]\t"GRISEADO"- Cambias tu skin, al salirte no se te guardará¡."); strcat(selece, string);
+					strcat(selece, "\n"GRISEADO"/{FFFFFF}expulsar "GRISEADO"[id]\t"GRISEADO"- Expulsas a un miembro de tu clan."); strcat(selece, string);
+					strcat(selece, "\n"GRISEADO"/{FFFFFF}skin "GRISEADO"[id]\t"GRISEADO"- Cambias tu skin, al salirte no se te guardará."); strcat(selece, string);
 					strcat(selece, "\n"GRISEADO"/{FFFFFF}stats "GRISEADO"[id]\t"GRISEADO"- Estadítica de un jugador, podes sacar la id para ver los tuyos."); strcat(selece, string);
-                        		strcat(selece, "\n"GRISEADO"/{FFFFFF}pm "GRISEADO"[id] [texto]\t"GRISEADO"- Envias un mensaje privado a un jugador."); strcat(selece, string);
+   			strcat(selece, "\n"GRISEADO"/{FFFFFF}pm "GRISEADO"[id] [texto]\t"GRISEADO"- Envias un mensaje privado a un jugador."); strcat(selece, string);
 					ShowPlayerDialog(playerid, DIALOG_CJUGADOR, DIALOG_STYLE_TABLIST, "Comandos para jugadores", selece, "Volver", "Cerrar");
 				}
 				case 1:
@@ -658,7 +663,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                 		Equipo[playerid] = EQUIPO_ESPECTADOR;
 					}
 				}
-				//establecerJugadores();
+				establecerJugadores();
 				actualizarModoDeJuego();
         		establecerColor(playerid);
         		actualizarTextGlobales();
@@ -736,7 +741,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				return SendClientMessage(playerid, COLOR_ROJO, "Has rechazado la invitación.");
 		    }
 			nuevoMiembro(playerid);
-		    
 		}
 		case DIALOG_TOP:
 		{
@@ -761,7 +765,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		case DIALOG_MODOJUEGO:
 		{
 			if(response){
-			    //establecerJugadores();
+			    establecerJugadores();
    				printf("%d naranja, %d verde", totalJugadores[EQUIPO_NARANJA], totalJugadores[EQUIPO_VERDE]);
 				switch(listitem){
    					case 0:
@@ -883,7 +887,7 @@ borrarClan(playerid)
     	resultado = db_query(Cuentas, consultaDb);
     	db_free_result(resultado);
         SendClientMessage(playerid, COLOR_VERDE, "Se eliminó el clan correctamente.");
-       	new Mensaje[100];
+       	new Mensaje[200];
 		format(Mensaje, sizeof(Mensaje), "{%06x}%s "GRISEADO"ha borrado su clan ({FFFFFF}%s"GRISEADO")", colorJugador(playerid), infoJugador[playerid][Nombre], nombreClan);
 		SendClientMessageToAll(COLOR_BLANCO, Mensaje);
 		return 1;
@@ -939,8 +943,20 @@ nuevoMiembro(playerid){
      		new Mensaje[100];
 			format(Mensaje, sizeof(Mensaje), "{%06x}%s "GRISEADO"se integró al clan {FFFFFF}%s", colorJugador(playerid), infoJugador[playerid][Nombre], sacarClanTag(playerid));
 			SendClientMessageToAll(COLOR_BLANCO, Mensaje);
+			clanInvitacion[playerid][idClanInvitado] = 0;
+			strcat(clanInvitacion[playerid][tagClanInvitado], "");
+			clanInvitacion[playerid][idInvitador] = 0;
 	    }
 	}
+}
+
+actualizarClanRegitro(){
+	new DBResult:resultado, anio, mesActual, diaActual;
+	getdate(anio, mesActual, diaActual);
+	format(consultaDb, sizeof(consultaDb), "DELETE FROM registro WHERE (%d-dia) >= 3 and miembros == 1", diaActual);
+	resultado = db_query(Clanes, consultaDb);
+	db_free_result(resultado);
+	SendClientMessageToAll(COLOR_BLANCO, ""GRISEADO"El servidor ha eliminado algunos clanes por inactividad.");
 }
 
 registrarClan(playerid)
@@ -984,18 +1000,16 @@ mostrarTop(playerid){
 }
 
 mostrarTopRanked(playerid){
-	new i = 1, selece[1000], string[100];
+	new i = 1, selece[1024], string[128];
 	new DBResult:resultado, Puntos, nNick[40];
-    resultado = db_query(Cuentas, "SELECT * FROM cuentas ORDER BY puntajeRanked DESC LIMIT 20");
-    strcat(selece, "{7C7C7C}pos.\t{7C7C7C}Nick\t{7C7C7C}Puntos");
+    resultado = db_query(Cuentas, "SELECT nick, puntajeRanked FROM cuentas ORDER BY puntajeRanked DESC LIMIT 20");
     if(db_num_rows(resultado)){
         strcat(selece, "{7C7C7C}pos.\t{7C7C7C}Nick\t{7C7C7C}Puntos");
 		do{
 			Puntos = db_get_field_assoc_int(resultado, "puntajeRanked");
-			db_get_field_assoc(resultado, "nick", nNick, 24);
-			format(string, sizeof(string), "\n{7C7C7C}%d\t{FFFFFF}%s\t{%s}%d", i, nNick, Puntos, colorRangoPuntos(i));
+			db_get_field_assoc(resultado, "nick", nNick, sizeof(nNick));
+			format(string, sizeof(string), "\n{7C7C7C}%d\t{FFFFFF}%s\t%d", i, nNick, Puntos);
 			strcat(selece, string);
-			printf("%d %s %d", i, nNick, Puntos);
 			i++;
 		}while(db_next_row(resultado));
 		db_free_result(resultado);
@@ -1004,15 +1018,14 @@ mostrarTopRanked(playerid){
 }
 
 mostrarTopDuelosGanados(playerid){
-	new i = 1, selece[1000], string[100];
+	new i = 1, selece[1024], string[128];
 	new DBResult:resultado, Duelos, nNick[24];
     resultado = db_query(Cuentas, "SELECT * FROM cuentas ORDER BY duelosGanados DESC LIMIT 20");
-    strcat(selece, "{7C7C7C}pos.\t{7C7C7C}Nick\t{7C7C7C}Duelos");
     if(db_num_rows(resultado)){
         strcat(selece, "{7C7C7C}pos.\t{7C7C7C}Nick\t{7C7C7C}Duelos");
 		do{
 			Duelos = db_get_field_assoc_int(resultado, "duelosGanados");
-			db_get_field_assoc(resultado, "nick", nNick, 24);
+			db_get_field_assoc(resultado, "nick", nNick, sizeof(nNick));
 			format(string, sizeof(string), "\n{7C7C7C}%d\t{FFFFFF}%s\t"GRISEADO"%d", i, nNick, Duelos);
 			strcat(selece, string);
 			printf("%d %s %d", i, nNick, Duelos);
@@ -1024,15 +1037,14 @@ mostrarTopDuelosGanados(playerid){
 }
 
 mostrarTopDuelosPerdidos(playerid){
-	new i = 1, selece[1000], string[100];
-	//db_query(Cuentas, "UPDATE cuentas SET duelosGanados = 44 WHERE id = 3");
+	new i = 1, selece[1024], string[128];
 	new DBResult:resultado, Duelos, nNick[24];
     resultado = db_query(Cuentas, "SELECT * FROM cuentas ORDER BY duelosPerdidos DESC LIMIT 20");
     if(db_num_rows(resultado)){
     	strcat(selece, "{7C7C7C}pos.\t{7C7C7C}Nick\t{7C7C7C}Duelos");
 		do{
 			Duelos = db_get_field_assoc_int(resultado, "duelosPerdidos");
-			db_get_field_assoc(resultado, "nick", nNick, 24);
+			db_get_field_assoc(resultado, "nick", nNick, sizeof(nNick));
 			format(string, sizeof(string), "\n{7C7C7C}%d\t{FFFFFF}%s\t"GRISEADO"%d", i, nNick, Duelos);
 			strcat(selece, string);
 			printf("%d %s %d", i, nNick, Duelos);
@@ -1044,8 +1056,7 @@ mostrarTopDuelosPerdidos(playerid){
 }
 
 mostrarTopClanKills(playerid){
-	new i = 1, selece[1000], string[100];
-	//db_query(Clanes, "UPDATE registro SET kills = 100 WHERE id = 2");
+	new i = 1, selece[1024], string[128];
 	new DBResult:resultado, killsTotales, TAG[6];
     resultado = db_query(Clanes, "SELECT * FROM registro ORDER BY kills DESC LIMIT 20");
     strcat(selece, "{7C7C7C}pos.\t{7C7C7C}Clan\t{7C7C7C}Kills");
@@ -1064,8 +1075,7 @@ mostrarTopClanKills(playerid){
 }
 
 mostrarTopClanCWG(playerid){
-	new i = 1, selece[1000], string[100];
-	//db_query(Clanes, "UPDATE registro SET cwGanadas = 2 WHERE id = 2");
+	new i = 1, selece[1024], string[128];
 	new DBResult:resultado, clanWars, TAG[6];
     resultado = db_query(Clanes, "SELECT * FROM registro ORDER BY cwGanadas DESC LIMIT 20");
     if(db_num_rows(resultado)){
@@ -1084,8 +1094,7 @@ mostrarTopClanCWG(playerid){
 }
 
 mostrarTopClanCWP(playerid){
-	new i = 1, selece[1000], string[100];
-	//db_query(Clanes, "UPDATE registro SET cwPerdidas = 2 WHERE id = 2");
+	new i = 1, selece[1024], string[128];
 	new DBResult:resultado, clanWars, TAG[6];
     resultado = db_query(Clanes, "SELECT * FROM registro ORDER BY cwPerdidas DESC LIMIT 20");
     if(db_num_rows(resultado)){
@@ -1184,11 +1193,11 @@ sacarClanId(playerid)
 
 sacarClanTag(playerid)
 {
-	new DBResult:resultado, TAG[6], idClan = sacarClanId(playerid);
-    format(consultaDb, sizeof(consultaDb), "SELECT * FROM registro WHERE id = %d", idClan);
+	new DBResult:resultado, TAG[8], idClan = sacarClanId(playerid);
+    format(consultaDb, sizeof(consultaDb), "SELECT tag FROM registro WHERE id = %d", idClan);
     resultado = db_query(Clanes, consultaDb);
     if(db_num_rows(resultado))
-    	db_get_field_assoc(resultado, "tag", TAG, 6);
+    	db_get_field_assoc(resultado, "tag", TAG, sizeof(TAG));
 	db_free_result(resultado);
 	return TAG;
 }
@@ -1460,11 +1469,11 @@ stock establecerJugadores(){
 }
 
 stock invitacionJugador(i){
-	new s[11];
+	new s[16];
 	if(aceptarInvitaciones[i] == true)
-	    format(s, 11, "Activado");
+	    format(s, sizeof(s), "Activado");
 	if(aceptarInvitaciones[i] == false)
-	    format(s, 1, "Desactivado");
+	    format(s, sizeof(s), "Desactivado");
 	return s;
 }
 
@@ -1516,19 +1525,6 @@ stock colorRango(playerid){
 	    format(s, 9, "FF0000");
 	if(RANGO == RANGO_GRAN_MAESTRO)
 	    format(s, 9, "FF0084");
-	return s;
-}
-
-stock colorRangoPuntos(i){
-	new s[6];
-	if(i >= 0 && i < 30) format(s, 9, "787878");
-	if(i >= 30 && i < 200) format(s, 9, "D66400");
-	if(i >= 200 && i < 400) format(s, 9, "BDBDBD");
-	if(i >= 400 && i < 600) format(s, 9, "FFD900");
-	if(i >= 600 && i < 800) format(s, 9, "00AEBA");
-	if(i >= 800 && i < 1000) format(s, 9, "00EFFF");
-	if(i >= 1000 && i < 1200) format(s, 9, "FF0000");
-	if(i >= 1200) format(s, 9, "FF0084");
 	return s;
 }
 
@@ -2141,6 +2137,14 @@ CMD:6938492(playerid, params[]){
 
 /* Comandos para clanes */
 
+
+CMD:actualizarclanes(playerid, params[]){
+	if(infoJugador[playerid][Admin] < 3)
+	    return SendClientMessage(playerid, COLOR_ROJO,"Solo los administadores pueden usar este comando.");
+	actualizarClanRegitro();
+	return 1;
+}
+
 CMD:crearclan(playerid, params[]){
 	if(tieneClan(playerid) > 0)
 		return SendClientMessage(playerid, COLOR_ROJO, "Ya estas en un clan, utiliza /salirclan si queres salir.");
@@ -2149,9 +2153,14 @@ CMD:crearclan(playerid, params[]){
 	if(!infoJugador[playerid][Registrado])
 		return SendClientMessage(playerid, COLOR_ROJO, "Debes estar registrado.");
 
-    new string[1000];
+    new string[1024], anio, dia, mes;
+    getdate(anio, mes, dia);
+    if(dia == 1 || dia == 2 || dia == 3)
+        return SendClientMessage(playerid, COLOR_ROJO, "Este dia no se pueden registrar clanes.");
+        
 	strcat(string,"{FFFFFF}¿Estas seguro de que querés registrar un clan?\n");
 	ShowPlayerDialog(playerid, DIALOG_IFCLAN, 0, "Registro de clanes", string, "Sí", "No");
+	actualizarClanRegitro();
 	return 1;
 }
 
@@ -2164,6 +2173,7 @@ CMD:borrarclan(playerid, params[]){
 	strcat(string,"{7C7C7C}- Al borrarlo se perderán todas las estadíticas.\n");
 	strcat(string,"- También todos los miembros dejarán de formar parte del clan.\n");
 	ShowPlayerDialog(playerid, DIALOG_BORRARCLAN, 0, "Eliminar clan", string, "Sí", "No");
+	actualizarClanRegitro();
  	return 1;
 }
 
@@ -2185,14 +2195,14 @@ CMD:invitar(playerid, params[]){
 	    return SendClientMessage(playerid, COLOR_ROJO, "Este usuario ya está siendo invitado a un clan");
 	    
 	new DBResult:resultado, idClan = sacarClanId(playerid), TAG2[6], str[128];
- 	format(consultaDb, sizeof(consultaDb), " SELECT * FROM registro WHERE id = %d", idClan);
+ 	format(consultaDb, sizeof(consultaDb), " SELECT tag FROM registro WHERE id = %d", idClan);
  	resultado = db_query(Clanes, consultaDb);
- 	db_get_field_assoc(resultado, "tag", TAG2, 6);
+ 	db_get_field_assoc(resultado, "tag", TAG2, sizeof(TAG2));
 	db_free_result(resultado);
 	clanInvitacion[i][idClanInvitado] = idClan;
 	strcat(clanInvitacion[i][tagClanInvitado], TAG2);
 	clanInvitacion[i][idInvitador] = playerid;
-	format(str, sizeof(str), "{%06x}%s "GRISEADO"te ha invitado a unirse a su clan {FFFFFF}%s\n\t¿Aceptas?", colorJugador(playerid), infoJugador[playerid][Nombre], TAG2);
+	format(str, sizeof(str), "{%06x}%s "GRISEADO"te ha invitado a unirse a su clan {FFFFFF}%s", colorJugador(playerid), infoJugador[playerid][Nombre], TAG2);
 	ShowPlayerDialog(i, DIALOG_PETICLAN, 0, "Petición", str, "Aceptar", "Rechazar");
  	return 1;
 }
@@ -2233,7 +2243,7 @@ CMD:expulsar(playerid, params[]){
  	return 1;
 }
 
-CMD:activarinv(playerid, params[]){
+CMD:actinv(playerid, params[]){
     if(infoJugador[playerid][Registrado] == false)
 		return printf("No estas registrado");
 	if(aceptarInvitaciones[playerid] == true)
@@ -2243,7 +2253,7 @@ CMD:activarinv(playerid, params[]){
 	return 1;
 }
 
-CMD:desactivarinv(playerid, params[]){
+CMD:desinv(playerid, params[]){
     if(infoJugador[playerid][Registrado] == false)
 		return printf("No estas registrado");
 	if(aceptarInvitaciones[playerid] == false)
@@ -2252,6 +2262,7 @@ CMD:desactivarinv(playerid, params[]){
  	SendClientMessage(playerid, COLOR_ROJO, "Has desactivado las invitaciones de clanes.");
 	return 1;
 }
+
 CMD:clan(playerid, params[]){
 	if(tieneClan(playerid) == 0)
 		return SendClientMessage(playerid, COLOR_ROJO, "No estas en ningún clan.");
@@ -2281,6 +2292,7 @@ CMD:clan(playerid, params[]){
     printf("nombre:%s dueño:%s tag:%s\n", nombreClan, propietario, TAG);
     printf("kills:%d cwg:%d cwp:%d miembros:%d\n", killsTotales, cwGanadas, cwPerdidas, miembros);
     db_free_result(resultado);
+    
 	new statsClan[1000], nombreDelClan[30];
 	format(nombreDelClan, sizeof(nombreDelClan), "{7C7C7C}%s", nombreClan);
 	format(statsClan, sizeof(statsClan), "{7C7C7C}Fecha de creaciónn: {FFFFFF}%d/%d/%d", diaCreacion, mesCreacion, anioCreacion);
