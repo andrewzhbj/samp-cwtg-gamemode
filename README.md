@@ -4,7 +4,12 @@ The Clan War & Training gamemode emerged in 2008/2009 by Czechoslovak developers
 Are required to compile:
 - [sscanf](https://github.com/maddinat0r/sscanf)
 - [geolocation](https://github.com/Whitetigerswt/SAMP-geoip)
-- zcmd (by ZeeX)
+- zcmd (by [ZeeX](https://:github.com/Zeex))
+
+## Plugins
+To test the server:
+- [crashdetect](https://github.com/Zeex/samp-plugin-crashdetect)
+
 ## New features
 This version I provide brings new things added that were not included in the original codes.
 - Ranked system
