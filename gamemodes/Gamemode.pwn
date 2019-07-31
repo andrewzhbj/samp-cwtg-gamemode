@@ -165,11 +165,13 @@ enum Data
 	duelosPerdidos,
 	puntajeRanked,
 	Clan,
-    	bool:Registrado
+	Baneado,
+	bool:Registrado
 };
 new infoJugador[MAX_PLAYERS][Data];
 
 new Text:tituloServer, Text:nombreEquipos, Text:puntajeEquipos, Text:partidaRondas;
+new Text:fondoUnoEntrada, Text:toxicWarriorsEntrada, Text:versionEntrada, Text:fondoDosEntrada;
 new PlayerText:mostrarFps[MAX_PLAYERS], PlayerText:mostrarPing[MAX_PLAYERS];
 new PlayerText:mostrarKills[MAX_PLAYERS], PlayerText:mostrarMuertes[MAX_PLAYERS], PlayerText:mostrarRatio[MAX_PLAYERS];
 
@@ -247,7 +249,7 @@ public OnGameModeInit()
 	new DBResult:asignacion;
     	if(Cuentas){
         	printf("Cuentas db abierto");
-		asignacion = db_query(Cuentas, "CREATE TABLE IF NOT EXISTS cuentas (id INTEGER PRIMARY KEY AUTOINCREMENT, nick TEXT, password TEXT, ip INTEGER, nivelAdmin INTEGER, puntajeRanked INTEGER, duelosGanados INTEGER, duelosPerdidos INTEGER, clan INTEGER)");
+		asignacion = db_query(Cuentas, "CREATE TABLE IF NOT EXISTS cuentas (id INTEGER PRIMARY KEY AUTOINCREMENT, nick TEXT, password TEXT, ip INTEGER, nivelAdmin INTEGER, puntajeRanked INTEGER, duelosGanados INTEGER, duelosPerdidos INTEGER, clan INTEGER, baneado INTEGER)");
 		db_free_result(asignacion);
 	}else print("Cuentas db no se pudo abrir");
 	if(Clanes){
@@ -268,8 +270,9 @@ public OnGameModeInit()
 	TextDrawFont(tituloServer, 1);
 	TextDrawSetProportional(tituloServer, 1);
 	
-	crearTextdrawsCW();
-    
+	crearTextDrawsCW();
+	crearTextDrawsEntrada();
+	
 	AddPlayerClass(230, 1958.3783,1343.1572,15.3746,270.1425,0,0,0,0,-1,-1);
 	AddPlayerClass(115, 1958.3783,1343.1572,15.3746,270.1425,0,0,0,0,-1,-1);
 	AddPlayerClass(122, 1958.3783,1343.1572,15.3746,270.1425,0,0,0,0,-1,-1);
@@ -321,7 +324,66 @@ crearTextdraws1vs1(){
 	TextDrawBackgroundColor(partidaRondas, 0x000000AA);
 }
 
-crearTextdrawsCW(){
+crearTextDrawsEntrada(){
+	fondoUnoEntrada = TextDrawCreate(389.000274, 351.188934, "usebox");
+	TextDrawLetterSize(fondoUnoEntrada, 0.000000, 1.982100);
+	TextDrawTextSize(fondoUnoEntrada, 247.333251, 0.000000);
+	TextDrawAlignment(fondoUnoEntrada, 1);
+	TextDrawColor(fondoUnoEntrada, 0);
+	TextDrawUseBox(fondoUnoEntrada, true);
+	TextDrawBoxColor(fondoUnoEntrada, 102);
+	TextDrawSetShadow(fondoUnoEntrada, 0);
+	TextDrawSetOutline(fondoUnoEntrada, 0);
+	TextDrawFont(fondoUnoEntrada, 0);
+	
+	toxicWarriorsEntrada = TextDrawCreate(251.333282, 353.007385, "TOXIC WARRIORS");
+	TextDrawLetterSize(toxicWarriorsEntrada, 0.449999, 1.600000);
+	TextDrawAlignment(toxicWarriorsEntrada, 1);
+	TextDrawColor(toxicWarriorsEntrada, -5963521);
+	TextDrawSetShadow(toxicWarriorsEntrada, 0);
+	TextDrawSetOutline(toxicWarriorsEntrada, 1);
+	TextDrawBackgroundColor(toxicWarriorsEntrada, 51);
+	TextDrawFont(toxicWarriorsEntrada, 1);
+	TextDrawSetProportional(toxicWarriorsEntrada, 1);
+	TextDrawBackgroundColor(toxicWarriorsEntrada, 0x000000AA);
+	
+	versionEntrada = TextDrawCreate(296.000000, 379.140747, "CW/TG v0.2");
+	TextDrawLetterSize(versionEntrada, 0.200000, 1.000000);
+	TextDrawAlignment(versionEntrada, 1);
+	TextDrawColor(versionEntrada, -1061109505);
+	TextDrawSetShadow(versionEntrada, 0);
+	TextDrawSetOutline(versionEntrada, 1);
+	TextDrawBackgroundColor(versionEntrada, 51);
+	TextDrawFont(versionEntrada, 1);
+	TextDrawSetProportional(versionEntrada, 1);
+	TextDrawBackgroundColor(versionEntrada, 0x000000AA);
+	
+	fondoDosEntrada = TextDrawCreate(343.666625, 378.566741, "usebox");
+	TextDrawLetterSize(fondoDosEntrada, 0.000000, 1.250407);
+	TextDrawTextSize(fondoDosEntrada, 290.999969, 0.000000);
+	TextDrawAlignment(fondoDosEntrada, 1);
+	TextDrawColor(fondoDosEntrada, 0);
+	TextDrawUseBox(fondoDosEntrada, true);
+	TextDrawBoxColor(fondoDosEntrada, 102);
+	TextDrawSetShadow(fondoDosEntrada, 0);
+	TextDrawSetOutline(fondoDosEntrada, 0);
+	TextDrawFont(fondoDosEntrada, 0);
+}
+
+ocultarTextDrawsEntrada(playerid){
+		TextDrawHideForPlayer(playerid, fondoUnoEntrada);
+		TextDrawHideForPlayer(playerid, fondoDosEntrada);
+		TextDrawHideForPlayer(playerid, versionEntrada);
+		TextDrawHideForPlayer(playerid, toxicWarriorsEntrada);
+}
+mostrarTextDrawsEntrada(playerid){
+		TextDrawShowForPlayer(playerid, fondoUnoEntrada);
+		TextDrawShowForPlayer(playerid, fondoDosEntrada);
+		TextDrawShowForPlayer(playerid, versionEntrada);
+		TextDrawShowForPlayer(playerid, toxicWarriorsEntrada);
+}
+
+crearTextDrawsCW(){
 	nombreEquipos = TextDrawCreate(100, 428, "Naranja vs Verde");
 	TextDrawLetterSize(nombreEquipos, 0.200000, 1.000000);
 	TextDrawTextSize(nombreEquipos, 428.000000, 0.000000);
@@ -345,6 +407,7 @@ crearTextdrawsCW(){
 	TextDrawSetProportional(puntajeEquipos, 1);
 	TextDrawBackgroundColor(puntajeEquipos, 0x000000AA);
 
+	
 	partidaRondas = TextDrawCreate(270, 428, "Ronda: 2/3");
 	TextDrawLetterSize(partidaRondas, 0.200000, 1.000000);
 	TextDrawAlignment(partidaRondas, 1);
@@ -400,7 +463,7 @@ actualizarTextGlobales(){
 		new jugadorNaranja = idJugadorNaranja(), jugadorVerde = idJugadorVerde();
     		format(string, sizeof(string), "~y~%s vs ~g~%s", infoJugador[jugadorNaranja][Nombre], infoJugador[jugadorVerde][Nombre]);
     	}else{
-		crearTextdrawsCW();
+			crearTextDrawsCW();
     		format(string, sizeof(string), "~y~%s vs ~g~%s", nombreEquipo[EQUIPO_NARANJA], nombreEquipo[EQUIPO_VERDE]);
    	}
 	TextDrawSetString(nombreEquipos, string);
@@ -476,26 +539,41 @@ public OnPlayerConnect(playerid)
 	
 	infoJugador[playerid][Nombre] = nombre(playerid);
 	infoJugador[playerid][ip] = IP(playerid);
-
+	
+	new DBResult:resultado;
+	format(consultaDb, sizeof(consultaDb), "SELECT nick FROM cuentas WHERE ip = '%s'", infoJugador[playerid][ip]);
+	resultado = db_query(Cuentas, consultaDb);
+	if(db_num_rows(resultado)){
+	    new nombreAux[30];
+	    db_get_field_assoc(resultado, "nick", nombreAux, sizeof(nombreAux));
+	    printf("nombre sacado: %s. nombre real %s", nombreAux, infoJugador[playerid][Nombre]);
+		if(strcmp(infoJugador[playerid][Nombre], nombreAux, true) != 0){
+		    printf("nombre repetido");
+		    new str[128];
+			format(str, sizeof(str), ""GRISEADO"[Anti-fake]: {%06x}%s ({%06x}%s"GRISEADO")no pudo conectarse al servidor.", colorJugador(playerid), infoJugador[playerid][Nombre], colorJugador(playerid), paisJugador(playerid));
+			SendClientMessageToAll(colorJugador(playerid), str);
+			Kick(playerid);
+		}
+	}
+	
 	new Mensaje[100];
 	format(Mensaje, sizeof(Mensaje), "{%06x}%s "GRISEADO"se conectó al servidor ({%06x}%s"GRISEADO")", colorJugador(playerid), infoJugador[playerid][Nombre], colorJugador(playerid), paisJugador(playerid));
 	SendClientMessageToAll(colorJugador(playerid), Mensaje);
+	db_free_result(resultado);
 	
-    	new DBResult:resultado;
-    	format(consultaDb, sizeof(consultaDb), "SELECT * FROM cuentas WHERE nick = '%s'", infoJugador[playerid][Nombre]);
-    	resultado = db_query(Cuentas, consultaDb);
-    	printf("%d", db_num_rows(resultado));
-    
+	format(consultaDb, sizeof(consultaDb), "SELECT * FROM cuentas WHERE nick = '%s'", infoJugador[playerid][Nombre]);
+	resultado = db_query(Cuentas, consultaDb);
+	
 	new Dialogo[240];
-    	if(db_num_rows(resultado)){
-        	db_get_field_assoc(resultado, "password", infoJugador[playerid][Password], 20);
-        	format(Dialogo, sizeof(Dialogo),"{7C7C7C}Escribi la {FFFFFF}contraseña {7C7C7C}para proceder.\n");
-        	ShowPlayerDialog(playerid, DIALOG_LOGEAR, DIALOG_STYLE_PASSWORD, "{7C7C7C}Cuenta registrada", Dialogo, "Logear", "Salir");
+ 	if(db_num_rows(resultado)){
+ 		db_get_field_assoc(resultado, "password", infoJugador[playerid][Password], 20);
+  		format(Dialogo, sizeof(Dialogo),"{7C7C7C}Escribi la {FFFFFF}contraseña {7C7C7C}para proceder.\n");
+   		ShowPlayerDialog(playerid, DIALOG_LOGEAR, DIALOG_STYLE_PASSWORD, "{7C7C7C}Cuenta registrada", Dialogo, "Logear", "Salir");
 	}else{
-        	format(Dialogo, sizeof(Dialogo),"{7C7C7C}Escribí una {FFFFFF}contraseña {7C7C7C}si queres registrar esta cuenta, sino cancela el registro.\n");
-        	ShowPlayerDialog(playerid, DIALOG_REGISTRO, DIALOG_STYLE_PASSWORD, "{7C7C7C}Cuenta no registrada:", Dialogo, "Registrar", "Cancelar");
-    	}
-    
+		format(Dialogo, sizeof(Dialogo),"{7C7C7C}Escribí una {FFFFFF}contraseña {7C7C7C}si queres registrar esta cuenta, sino cancela el registro.\n");
+  		ShowPlayerDialog(playerid, DIALOG_REGISTRO, DIALOG_STYLE_PASSWORD, "{7C7C7C}Cuenta no registrada:", Dialogo, "Registrar", "Cancelar");
+     }
+
    	mostrarFps[playerid] = CreatePlayerTextDraw(playerid, 500, 8, "Fps: 102");
 	PlayerTextDrawLetterSize(playerid, mostrarFps[playerid], 0.200000, 1.000000);
 	PlayerTextDrawAlignment(playerid, mostrarFps[playerid], 1);
@@ -603,7 +681,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					strcat(selece, "\n"GRISEADO"/{FFFFFF}expulsar "GRISEADO"[id]\t"GRISEADO"- Expulsas a un miembro de tu clan."); strcat(selece, string);
 					strcat(selece, "\n"GRISEADO"/{FFFFFF}skin "GRISEADO"[id]\t"GRISEADO"- Cambias tu skin, al salirte no se te guardará."); strcat(selece, string);
 					strcat(selece, "\n"GRISEADO"/{FFFFFF}stats "GRISEADO"[id]\t"GRISEADO"- Estadítica de un jugador, podes sacar la id para ver los tuyos."); strcat(selece, string);
-   			strcat(selece, "\n"GRISEADO"/{FFFFFF}pm "GRISEADO"[id] [texto]\t"GRISEADO"- Envias un mensaje privado a un jugador."); strcat(selece, string);
+   					strcat(selece, "\n"GRISEADO"/{FFFFFF}pm "GRISEADO"[id] [texto]\t"GRISEADO"- Envias un mensaje privado a un jugador."); strcat(selece, string);
 					ShowPlayerDialog(playerid, DIALOG_CJUGADOR, DIALOG_STYLE_TABLIST, "Comandos para jugadores", selece, "Volver", "Cerrar");
 				}
 				case 1:
@@ -617,19 +695,20 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
         case DIALOG_REGISTRO:
         {
         	if(!response){
-			SendClientMessage(playerid, COLOR_ROJO, "Has cancelado el registro, ten en cuenta que no se te guardaran los stats.");
-			return infoJugador[playerid][Registrado] = false;
-		}
-            	if(strlen(inputtext) < 4 || strlen(inputtext) > 20){
-                	SendClientMessage(playerid, COLOR_ROJO, "La contraseña debe tener de 4 a 20 letras.");
-               		new Dialogo[240];
+				SendClientMessage(playerid, COLOR_ROJO, "Has cancelado el registro, ten en cuenta que no se te guardaran los stats.");
+				return infoJugador[playerid][Registrado] = false;
+			}
+ 			if(strlen(inputtext) < 4 || strlen(inputtext) > 20){
+               	SendClientMessage(playerid, COLOR_ROJO, "La contraseña debe tener de 4 a 20 letras.");
+  				new Dialogo[240];
         		format(Dialogo, sizeof(Dialogo),"{7C7C7C}La contraseña que introduciste es errónea\nIntentalo devuelta ingresando otra contraseña..\n");
         		ShowPlayerDialog(playerid, DIALOG_REGISTRO, DIALOG_STYLE_PASSWORD, ""ROJO"Error de registro", Dialogo, "Registrar", "Cancelar");
-		}else{
-                	format(infoJugador[playerid][Password], 24, inputtext);
-                	registrarDatos(playerid);
-                	SendClientMessage(playerid, COLOR_VERDE, "Te has registrado correctamente.");
-            	}
+			}else{
+ 				format(infoJugador[playerid][Password], 24, inputtext);
+    			registrarDatos(playerid);
+      			SendClientMessage(playerid, COLOR_VERDE, "Te has registrado correctamente.");
+   				mostrarTextDrawsEntrada(playerid);
+        	}
         }
    	case DIALOG_LOGEAR:
         {
@@ -638,6 +717,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
             if(!strcmp(infoJugador[playerid][Password], inputtext, true, 20)){
 				infoJugador[playerid][Registrado] = true;
 				cargarDatos(playerid);
+   				mostrarTextDrawsEntrada(playerid);
 			}else ShowPlayerDialog(playerid, DIALOG_LOGEAR, DIALOG_STYLE_PASSWORD, ""ROJO"Error de conexión", "{7C7C7C}La {FFFFFF}contraseña {7C7C7C}que introduciste es "ROJO"errónea{7C7C7C}, intentalo devuelta.\n", "Logear", "Salir");
         }
         case DIALOG_SEQUIPO:
@@ -762,7 +842,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		case DIALOG_TOPCKILLS: 		if(response) mostrarTop(playerid);
 		case DIALOG_TOPCWGANADAS: 	if(response) mostrarTop(playerid);
 		case DIALOG_TOPCWPERD:  	if(response) mostrarTop(playerid);
-		case DIALOG_MODOJUEGO:
+  case DIALOG_MODOJUEGO:
 		{
 			if(response){
 			    establecerJugadores();
@@ -1206,16 +1286,16 @@ clanTextoValido(celda[], nombre[]){
     new DBResult:resultado;
     format(consultaDb, sizeof(consultaDb), "SELECT * FROM registro WHERE %s = '%s'", celda, nombre);
     resultado = db_query(Clanes, consultaDb);
-    printf("%d", db_num_rows(resultado));
 	return db_num_rows(resultado);
 }
 registrarDatos(playerid)
 {
     new str[80];
-    format(consultaDb, sizeof(consultaDb), "INSERT INTO cuentas (nick, password, ip, nivelAdmin, puntajeRanked, duelosGanados, duelosPerdidos, clan) VALUES ");
+    format(consultaDb, sizeof(consultaDb), "INSERT INTO cuentas (nick, password, ip, nivelAdmin, puntajeRanked, duelosGanados, duelosPerdidos, clan, baneado) VALUES ");
     format(str, sizeof(str), "('%s',", infoJugador[playerid][Nombre]);		strcat(consultaDb, str);
     format(str, sizeof(str), "'%s',", infoJugador[playerid][Password]);     strcat(consultaDb, str);
     format(str, sizeof(str), "'%s',", infoJugador[playerid][ip]);     		strcat(consultaDb, str);
+    format(str, sizeof(str), "0,");     									strcat(consultaDb, str);
     format(str, sizeof(str), "0,");     									strcat(consultaDb, str);
     format(str, sizeof(str), "0,");     									strcat(consultaDb, str);
     format(str, sizeof(str), "0,");     									strcat(consultaDb, str);
@@ -1252,6 +1332,7 @@ cargarDatos(playerid)
         	infoJugador[playerid][duelosPerdidos] 	= db_get_field_assoc_int(resultado, "duelosPerdidos");
         	infoJugador[playerid][puntajeRanked] 	= db_get_field_assoc_int(resultado, "puntajeRanked");
         	infoJugador[playerid][Clan] 			= db_get_field_assoc_int(resultado, "clan");
+        	infoJugador[playerid][Baneado] 			= db_get_field_assoc_int(resultado, "baneado");
    	 	}
     	db_free_result(resultado);
     	infoJugador[playerid][Registrado] = true;
@@ -1623,6 +1704,7 @@ public OnPlayerSpawn(playerid)
 {
 	if(eligiendoSkin[playerid] == true){
 		mostrarDataPlayer(playerid);
+		ocultarTextDrawsEntrada(playerid);
 		actualizarTextGlobales();
 	}
     eligiendoSkin[playerid] = false;
@@ -1679,7 +1761,7 @@ public OnPlayerRequestClass(playerid, classid)
 /* Comandos para jugadores */
 
 CMD:top(playerid, params[]){
-	return mostrarTop(playerid);
+	return 	mostrarTop(playerid);
 }
 
 CMD:cmds(playerid, params[]){
@@ -1834,7 +1916,8 @@ CMD:stats(playerid, params[]){
     format(stats, sizeof(stats), "%s\n{7C7C7C}Duelos ganados: {FFFFFF}%d", stats, infoJugador[i][duelosGanados]);
     format(stats, sizeof(stats), "%s\n{7C7C7C}Duelos perdidos: {FFFFFF}%d", stats, infoJugador[i][duelosPerdidos]);
     if(infoJugador[i][Admin] > 0) format(stats, sizeof(stats), "%s\n{7C7C7C}%s {7C7C7C}({FFFFFF}%d{7C7C7C})", stats, tipoAdmin(infoJugador[i][Admin]), infoJugador[i][Admin]);
-    ShowPlayerDialog(playerid, DIALOG_STATS, DIALOG_STYLE_MSGBOX, "Estadistica:", stats, "Cerrar", "");
+    
+    ShowPlayerDialog(playerid, DIALOG_STATS, DIALOG_STYLE_MSGBOX, "Stats", stats, "Cerrar", "");
     return 1;
 }
 
@@ -2097,6 +2180,16 @@ CMD:cc(playerid, params[]){
 
 /* COmandos para administradores de jugadores */
 
+CMD:ban(playerid, params[]){
+	if(infoJugador[playerid][Admin] < 3)
+	    return SendClientMessage(playerid, COLOR_ROJO,"Solo los administadores de jugadores pueden usar este comando.");
+    new id, razon[64];
+  	if(sscanf(params, "us[64]", id, razon))
+		return SendClientMessage(playerid, COLOR_ROJO,"Escribiste mal el comando; {FFFFFF}/ban ID Razón");
+ 	if(!IsPlayerConnected(id))
+		return SendClientMessage(playerid, COLOR_ROJO, "No existe la ID que pusiste.");
+	return 1;
+}
 CMD:setadmin(playerid, params[]){
 	new Nivel, i;
 	if(infoJugador[playerid][Admin] < 3)
@@ -2185,6 +2278,8 @@ CMD:invitar(playerid, params[]){
 	new i = strval(params);
  	if(!IsPlayerConnected(i))
 		return SendClientMessage(playerid, COLOR_ROJO, "No existe la ID que pusiste.");
+  	if(propietarioClan(playerid))
+    	return SendClientMessage(playerid, COLOR_ROJO, "El jugador es dueño de un clan.");
 	if(aceptarInvitaciones[i] == false)
 	    return SendClientMessage(playerid, COLOR_ROJO, "El jugador tiene desactivado las invitaciones.");
 	if(tieneClan(i) > 0)
@@ -2246,6 +2341,8 @@ CMD:expulsar(playerid, params[]){
 CMD:actinv(playerid, params[]){
     if(infoJugador[playerid][Registrado] == false)
 		return printf("No estas registrado");
+ 	if(propietarioClan(playerid))
+    	return SendClientMessage(playerid, COLOR_ROJO, "No podes activar ya que sos dueño de un clan.");
 	if(aceptarInvitaciones[playerid] == true)
 	    return SendClientMessage(playerid, COLOR_ROJO, "Ya tenes activado las invitaciones.");
 	aceptarInvitaciones[playerid] = true;
@@ -2256,22 +2353,42 @@ CMD:actinv(playerid, params[]){
 CMD:desinv(playerid, params[]){
     if(infoJugador[playerid][Registrado] == false)
 		return printf("No estas registrado");
+ 	if(propietarioClan(playerid))
+    	return SendClientMessage(playerid, COLOR_ROJO, "No podes desactivar ya que sos dueño de un clan.");
 	if(aceptarInvitaciones[playerid] == false)
 	    return SendClientMessage(playerid, COLOR_ROJO, "Ya tenes desactivado las invitaciones.");
+
 	aceptarInvitaciones[playerid] = false;
  	SendClientMessage(playerid, COLOR_ROJO, "Has desactivado las invitaciones de clanes.");
 	return 1;
 }
 
+CMD:miembros(playerid, params[]){
+	if(tieneClan(playerid) == 0)
+		return SendClientMessage(playerid, COLOR_ROJO, "No estas en ningún clan.");
+	if(infoJugador[playerid][Registrado] == false)
+	    return SendClientMessage(playerid, COLOR_ROJO, "Cuenta no registrada.");
+
+	new DBResult:resultado, nombreJugador[30], idClan = sacarClanId(playerid), str[1024], str2[30];
+	format(consultaDb, sizeof(consultaDb), " SELECT nick FROM cuentas WHERE clan = %d", idClan);
+	resultado = db_query(Cuentas, consultaDb);
+ 	if(db_num_rows(resultado)){
+ 	    do{
+			db_get_field_assoc(resultado, "nick", nombreJugador, sizeof(nombreJugador));
+			format(str2, sizeof(str2), "%s\n",nombreJugador);
+			strcat(str, str2);
+		}while(db_next_row(resultado));
+ 	}
+ 	ShowPlayerDialog(playerid, 12343124, DIALOG_STYLE_MSGBOX, "Miembros de tu clan", str, "Cerrar", "");
+	return 1;
+}
 CMD:clan(playerid, params[]){
 	if(tieneClan(playerid) == 0)
 		return SendClientMessage(playerid, COLOR_ROJO, "No estas en ningún clan.");
 	if(infoJugador[playerid][Registrado] == false)
 	    return SendClientMessage(playerid, COLOR_ROJO, "Cuenta no registrada.");
-	    
-	printf("idclanplayerid: %d", sacarClanId(playerid));
 	
-    new DBResult:resultado, idClan = sacarClanId(playerid), consultita[1000];
+ 	new DBResult:resultado, idClan = sacarClanId(playerid), consultita[1000];
 	new propietario[24], miembros, nombreClan[30], TAG[6], killsTotales, cwPerdidas, cwGanadas, diaCreacion, mesCreacion, anioCreacion;
 	
     format(consultita, sizeof(consultita), " SELECT * FROM registro WHERE id = %d", idClan);
