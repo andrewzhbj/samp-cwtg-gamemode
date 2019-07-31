@@ -4,6 +4,8 @@ The Clan War & Training gamemode emerged in 2008/2009 by Czechoslovak developers
 This version I provide brings new things added that were not included in the original codes.
 - [Ranked sytem](#ranked-system)
 - Clan system
+- Anti-fake system
+- Admin system
 ## Includes
 Are required to compile:
 - [sscanf](https://github.com/maddinat0r/sscanf)
