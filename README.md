@@ -6,6 +6,7 @@ This version I provide brings new things added that were not included in the ori
 - Clan system
 - Anti-fake system
 - Admin system
+- Ban system
 ## Includes
 Are required to compile:
 - [sscanf](https://github.com/maddinat0r/sscanf)
