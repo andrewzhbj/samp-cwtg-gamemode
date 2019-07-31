@@ -1,15 +1,33 @@
 # SA-MP CW/TG GameMode
 The Clan War & Training gamemode emerged in 2008/2009 by Czechoslovak developers exclusively to make Clan Wars between clans or players with Running Weapons (RW).
+## New features
+This version I provide brings new things added that were not included in the original codes.
+- [Ranked sytem](#ranked-system)
+- Clan system
+- Anti-fake system
+- Admin system
+- Ban system
 ## Includes
 Are required to compile:
 - [sscanf](https://github.com/maddinat0r/sscanf)
 - [geolocation](https://github.com/Whitetigerswt/SAMP-geoip)
-- zcmd (by ZeeX)
-## New features
-This version I provide brings new things added that were not included in the original codes.
-- Ranked system
-- Clan system
+- zcmd (by [ZeeX](https://:github.com/Zeex))
+## Plugins
+To test the server:
+- [crashdetect](https://github.com/Zeex/samp-plugin-crashdetect)
 ## Bugs
 Nothing.
 ## Add
 It is written in Spanish, when the gamemode is completely finished, the English translations will come out.
+
+# Ranked system
+The server saves all the data of the registered players through SQL queries, in which it will have the ranked score that is divided into 7 ranges
+- Bronze
+- Silver
+- Gold
+- Platinum
+- Diamond
+- Master
+- Grand Master
+
+The ranked score is only achieved by playing 1 vs 1
