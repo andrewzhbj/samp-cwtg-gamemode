@@ -176,6 +176,39 @@ new Text:fondoUnoEntrada, Text:toxicWarriorsEntrada, Text:versionEntrada, Text:f
 new PlayerText:mostrarFps[MAX_PLAYERS], PlayerText:mostrarPing[MAX_PLAYERS];
 new PlayerText:mostrarKills[MAX_PLAYERS], PlayerText:mostrarMuertes[MAX_PLAYERS], PlayerText:mostrarRatio[MAX_PLAYERS];
 
+
+/* Resultados CW */
+
+new Text:fondoResultado;
+new Text:textoResultado;
+new Text:textoEquipoNaranja;
+new Text:textoEquipoVerde;
+new Text:textoNickNaranja;
+new Text:textoDataNaranja;
+new Text:nicksNaranja;
+new Text:killsNaranja;
+new Text:muertesNaranja;
+new Text:ratiosNaranja;
+new Text:textoNickVerde;
+new Text:nicksVerde;
+new Text:textoDataVerde;
+new Text:killsVerde;
+new Text:muertesVerde;
+new Text:ratiosVerde;
+
+new Text:fondoInfoPartida;
+new Text:textoEquipoGanador;
+
+forward ocultarResultados();
+public ocultarResultados(){
+ 	ocultarTextResultadoCW();
+    ForPlayers(i){
+        if(Equipo[i] != EQUIPO_ESPECTADOR)
+			TogglePlayerControllable(i, 1);
+
+	}
+	return 1;
+}
 forward refrescarPosicion();
 public refrescarPosicion(){
 	ForPlayers(playerid){
@@ -273,7 +306,8 @@ public OnGameModeInit()
 	
 	crearTextDrawsCW();
 	crearTextDrawsEntrada();
-	
+    crearTextResultadoCW();
+    
 	AddPlayerClass(230, 1958.3783,1343.1572,15.3746,270.1425,0,0,0,0,-1,-1);
 	AddPlayerClass(115, 1958.3783,1343.1572,15.3746,270.1425,0,0,0,0,-1,-1);
 	AddPlayerClass(122, 1958.3783,1343.1572,15.3746,270.1425,0,0,0,0,-1,-1);
@@ -286,151 +320,6 @@ public OnGameModeInit()
 	AddPlayerClass(261, 1958.3783,1343.1572,15.3746,270.1425,0,0,0,0,-1,-1);
    	AddPlayerClass(126, 1958.3783,1343.1572,15.3746,270.1425,0,0,0,0,-1,-1);
 	return 1;
-}
-
-
-crearTextdraws1vs1(){
-   	nombreEquipos = TextDrawCreate(114.666679, 413.155517, "[WTx]Andrew_Manu vs [KDs]Nexxus");
-	TextDrawLetterSize(nombreEquipos, 0.200000, 1.000000);
-	TextDrawTextSize(nombreEquipos, 428.000000, 0.000000);
-	TextDrawAlignment(nombreEquipos, 1);
-	TextDrawColor(nombreEquipos, -1);
-	TextDrawSetShadow(nombreEquipos, 0);
-	TextDrawSetOutline(nombreEquipos, 1);
-	TextDrawBackgroundColor(nombreEquipos, 51);
-	TextDrawFont(nombreEquipos, 1);
-	TextDrawSetProportional(nombreEquipos, 1);
- 	TextDrawBackgroundColor(nombreEquipos, 0x000000AA);
-
-	puntajeEquipos = TextDrawCreate(100, 428, "Puntos: (1) 5 - 14 (2)");
-	TextDrawLetterSize(puntajeEquipos, 0.200000, 1.000000);
-	TextDrawAlignment(puntajeEquipos, 1);
-	TextDrawColor(puntajeEquipos, -1);
-	TextDrawSetShadow(puntajeEquipos, 0);
-	TextDrawSetOutline(puntajeEquipos, 1);
-	TextDrawBackgroundColor(puntajeEquipos, 51);
-	TextDrawFont(puntajeEquipos, 1);
-	TextDrawSetProportional(puntajeEquipos, 1);
-	TextDrawBackgroundColor(puntajeEquipos, 0x000000AA);
-
-	partidaRondas = TextDrawCreate(191, 428, "Ronda: 2/3");
-	TextDrawLetterSize(partidaRondas, 0.200000, 1.000000);
-	TextDrawAlignment(partidaRondas, 1);
-	TextDrawColor(partidaRondas, -1);
-	TextDrawSetShadow(partidaRondas, 0);
-	TextDrawSetOutline(partidaRondas, 1);
-	TextDrawBackgroundColor(partidaRondas, 51);
-	TextDrawFont(partidaRondas, 1);
-	TextDrawSetProportional(partidaRondas, 1);
-	TextDrawBackgroundColor(partidaRondas, 0x000000AA);
-}
-
-crearTextDrawsEntrada(){
-	fondoUnoEntrada = TextDrawCreate(389.000274, 351.188934, "usebox");
-	TextDrawLetterSize(fondoUnoEntrada, 0.000000, 1.982100);
-	TextDrawTextSize(fondoUnoEntrada, 247.333251, 0.000000);
-	TextDrawAlignment(fondoUnoEntrada, 1);
-	TextDrawColor(fondoUnoEntrada, 0);
-	TextDrawUseBox(fondoUnoEntrada, true);
-	TextDrawBoxColor(fondoUnoEntrada, 102);
-	TextDrawSetShadow(fondoUnoEntrada, 0);
-	TextDrawSetOutline(fondoUnoEntrada, 0);
-	TextDrawFont(fondoUnoEntrada, 0);
-	
-	toxicWarriorsEntrada = TextDrawCreate(251.333282, 353.007385, "TOXIC WARRIORS");
-	TextDrawLetterSize(toxicWarriorsEntrada, 0.449999, 1.600000);
-	TextDrawAlignment(toxicWarriorsEntrada, 1);
-	TextDrawColor(toxicWarriorsEntrada, -5963521);
-	TextDrawSetShadow(toxicWarriorsEntrada, 0);
-	TextDrawSetOutline(toxicWarriorsEntrada, 1);
-	TextDrawBackgroundColor(toxicWarriorsEntrada, 51);
-	TextDrawFont(toxicWarriorsEntrada, 1);
-	TextDrawSetProportional(toxicWarriorsEntrada, 1);
-	TextDrawBackgroundColor(toxicWarriorsEntrada, 0x000000AA);
-	
-	versionEntrada = TextDrawCreate(296.000000, 379.140747, "CW/TG v0.2");
-	TextDrawLetterSize(versionEntrada, 0.200000, 1.000000);
-	TextDrawAlignment(versionEntrada, 1);
-	TextDrawColor(versionEntrada, -1061109505);
-	TextDrawSetShadow(versionEntrada, 0);
-	TextDrawSetOutline(versionEntrada, 1);
-	TextDrawBackgroundColor(versionEntrada, 51);
-	TextDrawFont(versionEntrada, 1);
-	TextDrawSetProportional(versionEntrada, 1);
-	TextDrawBackgroundColor(versionEntrada, 0x000000AA);
-	
-	fondoDosEntrada = TextDrawCreate(343.666625, 378.566741, "usebox");
-	TextDrawLetterSize(fondoDosEntrada, 0.000000, 1.250407);
-	TextDrawTextSize(fondoDosEntrada, 290.999969, 0.000000);
-	TextDrawAlignment(fondoDosEntrada, 1);
-	TextDrawColor(fondoDosEntrada, 0);
-	TextDrawUseBox(fondoDosEntrada, true);
-	TextDrawBoxColor(fondoDosEntrada, 102);
-	TextDrawSetShadow(fondoDosEntrada, 0);
-	TextDrawSetOutline(fondoDosEntrada, 0);
-	TextDrawFont(fondoDosEntrada, 0);
-}
-
-ocultarTextDrawsEntrada(playerid){
-		TextDrawHideForPlayer(playerid, fondoUnoEntrada);
-		TextDrawHideForPlayer(playerid, fondoDosEntrada);
-		TextDrawHideForPlayer(playerid, versionEntrada);
-		TextDrawHideForPlayer(playerid, toxicWarriorsEntrada);
-}
-mostrarTextDrawsEntrada(playerid){
-		TextDrawShowForPlayer(playerid, fondoUnoEntrada);
-		TextDrawShowForPlayer(playerid, fondoDosEntrada);
-		TextDrawShowForPlayer(playerid, versionEntrada);
-		TextDrawShowForPlayer(playerid, toxicWarriorsEntrada);
-}
-
-crearTextDrawsCW(){
-	nombreEquipos = TextDrawCreate(100, 428, "Naranja vs Verde");
-	TextDrawLetterSize(nombreEquipos, 0.200000, 1.000000);
-	TextDrawTextSize(nombreEquipos, 428.000000, 0.000000);
-	TextDrawAlignment(nombreEquipos, 1);
-	TextDrawColor(nombreEquipos, -1);
-	TextDrawSetShadow(nombreEquipos, 0);
-	TextDrawSetOutline(nombreEquipos, 1);
-	TextDrawBackgroundColor(nombreEquipos, 51);
-	TextDrawFont(nombreEquipos, 1);
-	TextDrawSetProportional(nombreEquipos, 1);
- 	TextDrawBackgroundColor(nombreEquipos, 0x000000AA);
- 	
-	puntajeEquipos = TextDrawCreate(190, 428, "Puntos: (1) 5 - 14 (2)");
-	TextDrawLetterSize(puntajeEquipos, 0.200000, 1.000000);
-	TextDrawAlignment(puntajeEquipos, 1);
-	TextDrawColor(puntajeEquipos, -1);
-	TextDrawSetShadow(puntajeEquipos, 0);
-	TextDrawSetOutline(puntajeEquipos, 1);
-	TextDrawBackgroundColor(puntajeEquipos, 51);
-	TextDrawFont(puntajeEquipos, 1);
-	TextDrawSetProportional(puntajeEquipos, 1);
-	TextDrawBackgroundColor(puntajeEquipos, 0x000000AA);
-
-	
-	partidaRondas = TextDrawCreate(270, 428, "Ronda: 2/3");
-	TextDrawLetterSize(partidaRondas, 0.200000, 1.000000);
-	TextDrawAlignment(partidaRondas, 1);
-	TextDrawColor(partidaRondas, -1);
-	TextDrawSetShadow(partidaRondas, 0);
-	TextDrawSetOutline(partidaRondas, 1);
-	TextDrawBackgroundColor(partidaRondas, 51);
-	TextDrawFont(partidaRondas, 1);
-	TextDrawSetProportional(partidaRondas, 1);
-	TextDrawBackgroundColor(partidaRondas, 0x000000AA);
-}
-
-eliminarTextDrawsPartida(){
-	TextDrawDestroy(nombreEquipos);
-	TextDrawDestroy(puntajeEquipos);
-	TextDrawDestroy(partidaRondas);
-}
-
-
-mostrarDataPlayer(playerid){
-	PlayerTextDrawShow(playerid, mostrarFps[playerid]);
-	PlayerTextDrawShow(playerid, mostrarPing[playerid]);
 }
 
 actualizarModoDeJuego(){
@@ -506,9 +395,10 @@ actualizarTextGlobales(){
 	}
 }
 
-resetearPuntos(){ for(new i=0;i<2;i++) dataEquipo[i][Puntaje] = 0; }
-resetearRondas(){ for(new i=0;i<2;i++) dataEquipo[i][Rondas] = 0; }
-resetearTodo(){
+stock eliminarListaDeKills(){ for(new l=0; l<6; l++) SendDeathMessage(202, 202, 202); }
+stock resetearPuntos(){ for(new i=0;i<2;i++) dataEquipo[i][Puntaje] = 0; }
+stock resetearRondas(){ for(new i=0;i<2;i++) dataEquipo[i][Rondas] = 0; }
+stock resetearTodo(){
 	for(new i=0;i<2;i++){
 	    dataEquipo[i][Rondas] = 0;
 	    dataEquipo[i][Puntaje] = 0;
@@ -522,14 +412,15 @@ public OnGameModeExit(){
     return 1;
 }
 
-paisJugador(playerid){
+stock paisJugador(playerid){
 	new s[30];
 	GetPlayerCountry(playerid, s, sizeof(s));
 	return s;
 }
-colorJugador(playerid){
+stock colorJugador(playerid){
 	return GetPlayerColor(playerid) >>> 8;
 }
+
 public OnPlayerConnect(playerid)
 {
 	if(playerid > Conectados) Conectados = playerid;
@@ -1402,6 +1293,58 @@ establecerPuntosObtenidos(ganador, perdedor){
  	else
  	    format(str, sizeof(str), ""GRISEADO"Se te restó {FFFFFF}-%d "GRISEADO"puntos por tu derrota ({FFFFFF}%d{FFFFFF})", puntosPerdedor, infoJugador[perdedor][puntajeRanked]);
  	SendClientMessage(perdedor, COLOR_BLANCO, str);
+ 	guardarDatos(ganador);
+ 	guardarDatos(perdedor);
+}
+
+crearResultadoCW(ganador){
+    eliminarListaDeKills();
+   	ForPlayers(i) TogglePlayerControllable(i, 0);
+   	new nombreStr[2][MAX_PLAYER_NAME*10],
+		killStr[2][MAX_PLAYER_NAME*10],
+		muerteStr[2][MAX_PLAYER_NAME*10],
+		ratioStr[2][MAX_PLAYER_NAME*10],
+		idMejor,
+		Float:maxPuntos = 0.00;
+		
+	ForPlayers(i){
+	    if(Equipo[i] != EQUIPO_ESPECTADOR){
+			format(nombreStr[Equipo[i]],300, "%s%s~n~", nombreStr[Equipo[i]],infoJugador[i][Nombre]);
+			format(killStr[Equipo[i]],300, "%s%d~n~", killStr[Equipo[i]], killsJugador[i]);
+			format(muerteStr[Equipo[i]],300, "%s%d~n~", muerteStr[Equipo[i]], muertesJugador[i]);
+			new Float:ratio;
+			if(muertesJugador[i] == 0)
+				ratio = killsJugador[i];
+			else
+				ratio = float(killsJugador[i])/float(muertesJugador[i]);
+			format(ratioStr[Equipo[i]], 300, "%s%0.2f~n~", ratioStr[Equipo[i]], ratio);
+			if(ratio > maxPuntos){
+			    maxPuntos = ratio;
+			    idMejor = i;
+			}
+	    }
+	}
+	TextDrawSetString(nicksNaranja, nombreStr[EQUIPO_NARANJA]);
+	TextDrawSetString(killsNaranja, killStr[EQUIPO_NARANJA]);
+	TextDrawSetString(muertesNaranja, muerteStr[EQUIPO_NARANJA]);
+	TextDrawSetString(ratiosNaranja, ratioStr[EQUIPO_NARANJA]);
+	TextDrawSetString(nicksVerde, nombreStr[EQUIPO_VERDE]);
+	TextDrawSetString(killsVerde, killStr[EQUIPO_VERDE]);
+	TextDrawSetString(muertesVerde, muerteStr[EQUIPO_VERDE]);
+	TextDrawSetString(ratiosVerde, ratioStr[EQUIPO_VERDE]);
+	
+	new ganadorColor[5];
+	if(ganador == EQUIPO_NARANJA) format(ganadorColor, 5, "~y~");
+	else format(ganadorColor, 5, "~g~");
+	new strInfoPartida[1024], ministr[100];
+	format(strInfoPartida[0], 1024, "~w~Equipo ganador: %s%s~n~~w~Mejor jugador: ~b~~w~%s~n~~w~Puntaje total: ~y~%d~w~:~g~%d ~w~(~y~%d~w~:~g~%d~w~)",
+	nombreEquipo[ganador], ganadorColor, infoJugador[idMejor][Nombre], dataEquipo[EQUIPO_NARANJA][Puntaje], dataEquipo[EQUIPO_VERDE][Puntaje], dataEquipo[EQUIPO_NARANJA][Rondas], dataEquipo[EQUIPO_VERDE][Rondas]);
+	format(ministr[0], 100, "~n~Tipo de partida: ~b~~w~%d~w~x~b~~w~%d~n~~w~Mapa: ~b~~w~%s", maximaRonda, maximoPuntaje, nombreMapa(mapaElegido));
+	strcat(strInfoPartida, ministr);
+	TextDrawSetString(textoEquipoGanador, strInfoPartida[0]);
+    mostrarTextResultadoCW();
+    SetTimer("ocultarResultados", 30000, false);
+    SendClientMessageToAll(COLOR_BLANCO, "La tabla de resultados se ocultarà en 30 segundos.");
 }
 
 verificarGanador(){
@@ -1414,7 +1357,8 @@ verificarGanador(){
  		equipoPerdedor = EQUIPO_NARANJA;
 	}
 	if(modoDeJuego == CLAN_WAR){
-		SCMTAF(COLOR_BLANCO, ""GRISEADO"El equipo {%s}%s"GRISEADO" ha ganado la clan war contra .", colorEquipo(equipoGanador), nombreEquipo[equipoGanador], colorEquipo(equipoPerdedor), nombreEquipo[equipoPerdedor]);
+		SCMTAF(COLOR_BLANCO, ""GRISEADO"El equipo {%s}%s"GRISEADO" ha ganado la clan war contra {%s}%s", colorEquipo(equipoGanador), nombreEquipo[equipoGanador], colorEquipo(equipoPerdedor), nombreEquipo[equipoPerdedor]);
+		crearResultadoCW(equipoGanador);
 	}else if(modoDeJuego == UNO_VS_UNO){
 		new ganador, perdedor;
 		if(equipoGanador == EQUIPO_NARANJA){
@@ -1440,6 +1384,7 @@ resetearTodosJugadores(){
 resetearJugadoresEnPartida(){
 	ForPlayers(i){
 	    if(Equipo[i] != EQUIPO_ESPECTADOR){
+	    	SetPlayerHealth(i, 100);
      		killsJugador[i] = 0;
         	muertesJugador[i] = 0;
         	SpawnPlayer(i);
@@ -1508,12 +1453,12 @@ actualizarEquipo(playerid, killerid){
 				    id = idJugadorVerde();
 				    id2 = idJugadorNaranja();
 				}
-				SCMTAF(COLOR_BLANCO, "{%06x}%s"GRISEADO" ha ganado la {FFFFFF}%d ronda contra {%06x}%s", colorJugador(id), infoJugador[id][Nombre], rondaActual, colorJugador(id2), infoJugador[id2][Nombre]);
+				SCMTAF(COLOR_BLANCO, "{%06x}%s"GRISEADO" ha ganado la {FFFFFF}%d "GRISEADO"ronda contra {%06x}%s", colorJugador(id), infoJugador[id][Nombre], rondaActual, colorJugador(id2), infoJugador[id2][Nombre]);
 			}else{
 				SCMTAF(COLOR_BLANCO, ""GRISEADO"El equipo {%06x}%s"GRISEADO" ha ganado la %d ronda.", colorJugador(i), nombreEquipo[i], rondaActual);
 			}
 	    	rondaActual++;
-  			SCMTAF(COLOR_BLANCO, "La partida va > %d:%d, empieza la %d ronda.", dataEquipo[Equipo[EQUIPO_NARANJA]][Rondas], dataEquipo[Equipo[EQUIPO_VERDE]][Rondas], rondaActual);
+  			SCMTAF(COLOR_BLANCO, ""GRISEADO"Empieza la %d ronda.", rondaActual);
   			resetearJugadoresEnPartida();
 		}
 		else if(rondaActual == maximaRonda){
@@ -2179,6 +2124,15 @@ CMD:traer(playerid, params[]){
     return 1;
 }
 
+CMD:ocultar(playerid,params[]){
+        ocultarTextResultadoCW();
+	return 1;
+}
+
+CMD:mostrar(playerid,params[]){
+        crearResultadoCW(0);
+	return 1;
+}
 CMD:cc(playerid, params[]){
 	if(infoJugador[playerid][Admin] < 2)
 	    return SendClientMessage(playerid, COLOR_ROJO,"Solo los administadores generales pueden usar este comando.");
@@ -2764,3 +2718,393 @@ stock sscanf(string[], format[], {Float,_}:...)
         return 0;
 }
 
+crearTextResultadoCW(){
+	fondoResultado = TextDrawCreate(479.000274, 100.225967, "usebox");
+	TextDrawLetterSize(fondoResultado, 0.000000, 19.933347);
+	TextDrawTextSize(fondoResultado, 140.666580, 0.000000);
+	TextDrawAlignment(fondoResultado, 1);
+	TextDrawColor(fondoResultado, 0);
+	TextDrawUseBox(fondoResultado, true);
+	TextDrawBoxColor(fondoResultado, 102);
+	TextDrawSetShadow(fondoResultado, 0);
+	TextDrawSetOutline(fondoResultado, 0);
+	TextDrawFont(fondoResultado, 0);
+	
+	textoResultado = TextDrawCreate(247.333297, 104.533332, "RESULTADOS DE LA PARTIDA");
+	TextDrawLetterSize(textoResultado, 0.200000, 1.000000);
+	TextDrawAlignment(textoResultado, 1);
+	TextDrawColor(textoResultado, -1);
+	TextDrawSetShadow(textoResultado, 0);
+	TextDrawSetOutline(textoResultado, 1);
+	TextDrawBackgroundColor(textoResultado, 51);
+	TextDrawFont(textoResultado, 2);
+	TextDrawSetProportional(textoResultado, 1);
+	TextDrawBackgroundColor(textoResultado, 0x000000AA);
+	
+	textoEquipoNaranja = TextDrawCreate(203.333328, 118, "Equipo Naranja");
+	TextDrawLetterSize(textoEquipoNaranja, 0.200000, 1.000000);
+	TextDrawAlignment(textoEquipoNaranja, 1);
+	TextDrawColor(textoEquipoNaranja, -5963521);
+	TextDrawSetShadow(textoEquipoNaranja, 0);
+	TextDrawSetOutline(textoEquipoNaranja, 1);
+	TextDrawBackgroundColor(textoEquipoNaranja, 51);
+	TextDrawFont(textoEquipoNaranja, 1);
+	TextDrawSetProportional(textoEquipoNaranja, 1);
+	TextDrawBackgroundColor(textoEquipoNaranja, 0x000000AA);
+	
+	textoEquipoVerde = TextDrawCreate(357.666534, 118, "Equipo Verde");
+	TextDrawLetterSize(textoEquipoVerde, 0.200000, 1.000000);
+	TextDrawAlignment(textoEquipoVerde, 1);
+	TextDrawColor(textoEquipoVerde, 8388863);
+	TextDrawSetShadow(textoEquipoVerde, 0);
+	TextDrawSetOutline(textoEquipoVerde, 1);
+	TextDrawBackgroundColor(textoEquipoVerde, 51);
+	TextDrawFont(textoEquipoVerde, 1);
+	TextDrawSetProportional(textoEquipoVerde, 1);
+	TextDrawBackgroundColor(textoEquipoVerde, 0x000000AA);
+	
+	textoNickNaranja = TextDrawCreate(176.333328, 128, "Nick");
+	TextDrawLetterSize(textoNickNaranja, 0.200000, 1.000000);
+	TextDrawAlignment(textoNickNaranja, 1);
+	TextDrawColor(textoNickNaranja, -2139062017);
+	TextDrawSetShadow(textoNickNaranja, 0);
+	TextDrawSetOutline(textoNickNaranja, 1);
+	TextDrawBackgroundColor(textoNickNaranja, 51);
+	TextDrawFont(textoNickNaranja, 1);
+	TextDrawSetProportional(textoNickNaranja, 1);
+	TextDrawBackgroundColor(textoNickNaranja, 0x000000AA);
+	
+	textoDataNaranja = TextDrawCreate(228.666824, 128, "K     M     R");
+	TextDrawLetterSize(textoDataNaranja, 0.200000, 1.000000);
+	TextDrawAlignment(textoDataNaranja, 1);
+	TextDrawColor(textoDataNaranja, -2139062017);
+	TextDrawSetShadow(textoDataNaranja, 0);
+	TextDrawSetOutline(textoDataNaranja, 1);
+	TextDrawBackgroundColor(textoDataNaranja, 51);
+	TextDrawFont(textoDataNaranja, 1);
+	TextDrawSetProportional(textoDataNaranja, 1);
+	TextDrawBackgroundColor(textoDataNaranja, 0x000000AA);
+	
+	nicksNaranja = TextDrawCreate(145.333343, 143.940734, "[WTx]Andrew_Manu");
+	TextDrawLetterSize(nicksNaranja, 0.200000, 1.000000);
+	TextDrawAlignment(nicksNaranja, 1);
+	TextDrawColor(nicksNaranja, -5963521);
+	TextDrawSetShadow(nicksNaranja, 0);
+	TextDrawSetOutline(nicksNaranja, 1);
+	TextDrawBackgroundColor(nicksNaranja, 51);
+	TextDrawFont(nicksNaranja, 1);
+	TextDrawSetProportional(nicksNaranja, 1);
+	TextDrawBackgroundColor(nicksNaranja, 0x000000AA);
+	
+	killsNaranja = TextDrawCreate(228.333374, 143, "5");
+	TextDrawLetterSize(killsNaranja, 0.200000, 1.000000);
+	TextDrawAlignment(killsNaranja, 1);
+	TextDrawColor(killsNaranja, -1061109505);
+	TextDrawSetShadow(killsNaranja, 0);
+	TextDrawSetOutline(killsNaranja, 1);
+	TextDrawBackgroundColor(killsNaranja, 51);
+	TextDrawFont(killsNaranja, 1);
+	TextDrawSetProportional(killsNaranja, 1);
+	TextDrawBackgroundColor(killsNaranja, 0x000000AA);
+
+	muertesNaranja = TextDrawCreate(250.000015, 143, "7");
+	TextDrawLetterSize(muertesNaranja, 0.200000, 1.000000);
+	TextDrawAlignment(muertesNaranja, 1);
+	TextDrawColor(muertesNaranja, -1061109505);
+	TextDrawSetShadow(muertesNaranja, 0);
+	TextDrawSetOutline(muertesNaranja, 1);
+	TextDrawBackgroundColor(muertesNaranja, 51);
+	TextDrawFont(muertesNaranja, 1);
+	TextDrawSetProportional(muertesNaranja, 1);
+	TextDrawBackgroundColor(muertesNaranja, 0x000000AA);
+	
+	ratiosNaranja = TextDrawCreate(266.333190, 143, "1.23");
+	TextDrawLetterSize(ratiosNaranja, 0.200000, 1.000000);
+	TextDrawAlignment(ratiosNaranja, 1);
+	TextDrawColor(ratiosNaranja, -1061109505);
+	TextDrawSetShadow(ratiosNaranja, 0);
+	TextDrawSetOutline(ratiosNaranja, 1);
+	TextDrawBackgroundColor(ratiosNaranja, 51);
+	TextDrawFont(ratiosNaranja, 1);
+	TextDrawSetProportional(ratiosNaranja, 1);
+	TextDrawBackgroundColor(ratiosNaranja, 0x000000AA);
+	
+	textoNickVerde = TextDrawCreate(332.000366, 128, "Nick");
+	TextDrawLetterSize(textoNickVerde, 0.200000, 1.000000);
+	TextDrawAlignment(textoNickVerde, 1);
+	TextDrawColor(textoNickVerde, -2139062017);
+	TextDrawSetShadow(textoNickVerde, 0);
+	TextDrawSetOutline(textoNickVerde, 1);
+	TextDrawBackgroundColor(textoNickVerde, 51);
+	TextDrawFont(textoNickVerde, 1);
+	TextDrawSetProportional(textoNickVerde, 1);
+	TextDrawBackgroundColor(textoNickVerde, 0x000000AA);
+	
+	nicksVerde = TextDrawCreate(298.333251, 143, "[WTx]ScorpioN");
+	TextDrawLetterSize(nicksVerde, 0.200000, 1.000000);
+	TextDrawAlignment(nicksVerde, 1);
+	TextDrawColor(nicksVerde, 8388863);
+	TextDrawSetShadow(nicksVerde, 0);
+	TextDrawSetOutline(nicksVerde, 1);
+	TextDrawBackgroundColor(nicksVerde, 51);
+	TextDrawFont(nicksVerde, 1);
+	TextDrawSetProportional(nicksVerde, 1);
+	TextDrawBackgroundColor(nicksVerde, 0x000000AA);
+	
+	textoDataVerde = TextDrawCreate(387.666717, 128, "K     M     R");
+	TextDrawLetterSize(textoDataVerde, 0.200000, 1.000000);
+	TextDrawAlignment(textoDataVerde, 1);
+	TextDrawColor(textoDataVerde, -2139062017);
+	TextDrawSetShadow(textoDataVerde, 0);
+	TextDrawSetOutline(textoDataVerde, 1);
+	TextDrawBackgroundColor(textoDataVerde, 51);
+	TextDrawFont(textoDataVerde, 1);
+	TextDrawSetProportional(textoDataVerde, 1);
+	TextDrawBackgroundColor(textoDataVerde, 0x000000AA);
+	
+	killsVerde = TextDrawCreate(387.999664, 141.451873, "6");
+	TextDrawLetterSize(killsVerde, 0.200000, 1.000000);
+	TextDrawAlignment(killsVerde, 1);
+	TextDrawColor(killsVerde, -1);
+	TextDrawSetShadow(killsVerde, 0);
+	TextDrawSetOutline(killsVerde, 1);
+	TextDrawBackgroundColor(killsVerde, 51);
+	TextDrawFont(killsVerde, 1);
+	TextDrawSetProportional(killsVerde, 1);
+	TextDrawBackgroundColor(killsVerde, 0x000000AA);
+	
+	muertesVerde = TextDrawCreate(409.333038, 141.451843, "8");
+	TextDrawLetterSize(muertesVerde, 0.200000, 1.000000);
+	TextDrawAlignment(muertesVerde, 1);
+	TextDrawColor(muertesVerde, -1);
+	TextDrawSetShadow(muertesVerde, 0);
+	TextDrawSetOutline(muertesVerde, 1);
+	TextDrawBackgroundColor(muertesVerde, 51);
+	TextDrawFont(muertesVerde, 1);
+	TextDrawSetProportional(muertesVerde, 1);
+	TextDrawBackgroundColor(muertesVerde, 0x000000AA);
+	
+	ratiosVerde = TextDrawCreate(425.000061, 141.866638, "1.24");
+	TextDrawLetterSize(ratiosVerde, 0.200000, 1.000000);
+	TextDrawAlignment(ratiosVerde, 1);
+	TextDrawColor(ratiosVerde, -1);
+	TextDrawSetShadow(ratiosVerde, 0);
+	TextDrawSetOutline(ratiosVerde, 1);
+	TextDrawBackgroundColor(ratiosVerde, 51);
+	TextDrawFont(ratiosVerde, 1);
+	TextDrawSetProportional(ratiosVerde, 1);
+	TextDrawBackgroundColor(ratiosVerde, 0x000000AA);
+
+	fondoInfoPartida = TextDrawCreate(393.333312, 292.285095, "usebox");
+	TextDrawLetterSize(fondoInfoPartida, 0.000000, 5.733328);
+	TextDrawTextSize(fondoInfoPartida, 215.666687, 0.000000);
+	TextDrawAlignment(fondoInfoPartida, 1);
+	TextDrawColor(fondoInfoPartida, 0);
+	TextDrawUseBox(fondoInfoPartida, true);
+	TextDrawBoxColor(fondoInfoPartida, 102);
+	TextDrawSetShadow(fondoInfoPartida, 0);
+	TextDrawSetOutline(fondoInfoPartida, 0);
+	TextDrawFont(fondoInfoPartida, 3);
+
+	textoEquipoGanador = TextDrawCreate(228, 296.177978, "Equipo ganador: Naranja");
+	TextDrawLetterSize(textoEquipoGanador, 0.200000, 1.000000);
+	TextDrawAlignment(textoEquipoGanador, 1);
+	TextDrawColor(textoEquipoGanador, -1);
+	TextDrawSetShadow(textoEquipoGanador, 1);
+	TextDrawSetOutline(textoEquipoGanador, 0);
+	TextDrawBackgroundColor(textoEquipoGanador, 51);
+	TextDrawFont(textoEquipoGanador, 1);
+	TextDrawSetProportional(textoEquipoGanador, 1);
+	TextDrawBackgroundColor(ratiosVerde, 0x000000AA);
+}
+
+mostrarTextResultadoCW(){
+    TextDrawShowForAll(fondoResultado);
+    TextDrawShowForAll(textoResultado);
+	TextDrawShowForAll(textoEquipoNaranja);
+    TextDrawShowForAll(textoEquipoVerde);
+
+    TextDrawShowForAll(textoNickNaranja);
+    TextDrawShowForAll(textoDataNaranja);
+    TextDrawShowForAll(nicksNaranja);
+    TextDrawShowForAll(killsNaranja);
+	TextDrawShowForAll(muertesNaranja);
+    TextDrawShowForAll(ratiosNaranja);
+    
+    TextDrawShowForAll(textoNickVerde);
+    TextDrawShowForAll(textoDataVerde);
+    TextDrawShowForAll(nicksVerde);
+    TextDrawShowForAll(killsVerde);
+	TextDrawShowForAll(muertesVerde);
+    TextDrawShowForAll(ratiosVerde);
+    
+    TextDrawShowForAll(fondoInfoPartida);
+	TextDrawShowForAll(textoEquipoGanador);
+}
+
+ocultarTextResultadoCW(){
+    TextDrawHideForAll(fondoResultado);
+    TextDrawHideForAll(textoResultado);
+	TextDrawHideForAll(textoEquipoNaranja);
+    TextDrawHideForAll(textoEquipoVerde);
+
+    TextDrawHideForAll(textoNickNaranja);
+    TextDrawHideForAll(textoDataNaranja);
+    TextDrawHideForAll(nicksNaranja);
+    TextDrawHideForAll(killsNaranja);
+	TextDrawHideForAll(muertesNaranja);
+    TextDrawHideForAll(ratiosNaranja);
+
+    TextDrawHideForAll(textoNickVerde);
+    TextDrawHideForAll(textoDataVerde);
+    TextDrawHideForAll(nicksVerde);
+    TextDrawHideForAll(killsVerde);
+	TextDrawHideForAll(muertesVerde);
+    TextDrawHideForAll(ratiosVerde);
+
+    TextDrawHideForAll(fondoInfoPartida);
+	TextDrawHideForAll(textoEquipoGanador);
+}
+
+crearTextdraws1vs1(){
+   	nombreEquipos = TextDrawCreate(114.666679, 413.155517, "[WTx]Andrew_Manu vs [KDs]Nexxus");
+	TextDrawLetterSize(nombreEquipos, 0.200000, 1.000000);
+	TextDrawTextSize(nombreEquipos, 428.000000, 0.000000);
+	TextDrawAlignment(nombreEquipos, 1);
+	TextDrawColor(nombreEquipos, -1);
+	TextDrawSetShadow(nombreEquipos, 0);
+	TextDrawSetOutline(nombreEquipos, 1);
+	TextDrawBackgroundColor(nombreEquipos, 51);
+	TextDrawFont(nombreEquipos, 1);
+	TextDrawSetProportional(nombreEquipos, 1);
+ 	TextDrawBackgroundColor(nombreEquipos, 0x000000AA);
+
+	puntajeEquipos = TextDrawCreate(100, 428, "Puntos: (1) 5 - 14 (2)");
+	TextDrawLetterSize(puntajeEquipos, 0.200000, 1.000000);
+	TextDrawAlignment(puntajeEquipos, 1);
+	TextDrawColor(puntajeEquipos, -1);
+	TextDrawSetShadow(puntajeEquipos, 0);
+	TextDrawSetOutline(puntajeEquipos, 1);
+	TextDrawBackgroundColor(puntajeEquipos, 51);
+	TextDrawFont(puntajeEquipos, 1);
+	TextDrawSetProportional(puntajeEquipos, 1);
+	TextDrawBackgroundColor(puntajeEquipos, 0x000000AA);
+
+	partidaRondas = TextDrawCreate(191, 428, "Ronda: 2/3");
+	TextDrawLetterSize(partidaRondas, 0.200000, 1.000000);
+	TextDrawAlignment(partidaRondas, 1);
+	TextDrawColor(partidaRondas, -1);
+	TextDrawSetShadow(partidaRondas, 0);
+	TextDrawSetOutline(partidaRondas, 1);
+	TextDrawBackgroundColor(partidaRondas, 51);
+	TextDrawFont(partidaRondas, 1);
+	TextDrawSetProportional(partidaRondas, 1);
+	TextDrawBackgroundColor(partidaRondas, 0x000000AA);
+}
+
+crearTextDrawsEntrada(){
+	fondoUnoEntrada = TextDrawCreate(389.000274, 351.188934, "usebox");
+	TextDrawLetterSize(fondoUnoEntrada, 0.000000, 1.982100);
+	TextDrawTextSize(fondoUnoEntrada, 247.333251, 0.000000);
+	TextDrawAlignment(fondoUnoEntrada, 1);
+	TextDrawColor(fondoUnoEntrada, 0);
+	TextDrawUseBox(fondoUnoEntrada, true);
+	TextDrawBoxColor(fondoUnoEntrada, 102);
+	TextDrawSetShadow(fondoUnoEntrada, 0);
+	TextDrawSetOutline(fondoUnoEntrada, 0);
+	TextDrawFont(fondoUnoEntrada, 0);
+
+	toxicWarriorsEntrada = TextDrawCreate(251.333282, 353.007385, "TOXIC WARRIORS");
+	TextDrawLetterSize(toxicWarriorsEntrada, 0.449999, 1.600000);
+	TextDrawAlignment(toxicWarriorsEntrada, 1);
+	TextDrawColor(toxicWarriorsEntrada, -5963521);
+	TextDrawSetShadow(toxicWarriorsEntrada, 0);
+	TextDrawSetOutline(toxicWarriorsEntrada, 1);
+	TextDrawBackgroundColor(toxicWarriorsEntrada, 51);
+	TextDrawFont(toxicWarriorsEntrada, 1);
+	TextDrawSetProportional(toxicWarriorsEntrada, 1);
+	TextDrawBackgroundColor(toxicWarriorsEntrada, 0x000000AA);
+
+	versionEntrada = TextDrawCreate(296.000000, 379.140747, "CW/TG v0.2");
+	TextDrawLetterSize(versionEntrada, 0.200000, 1.000000);
+	TextDrawAlignment(versionEntrada, 1);
+	TextDrawColor(versionEntrada, -1061109505);
+	TextDrawSetShadow(versionEntrada, 0);
+	TextDrawSetOutline(versionEntrada, 1);
+	TextDrawBackgroundColor(versionEntrada, 51);
+	TextDrawFont(versionEntrada, 1);
+	TextDrawSetProportional(versionEntrada, 1);
+	TextDrawBackgroundColor(versionEntrada, 0x000000AA);
+
+	fondoDosEntrada = TextDrawCreate(343.666625, 378.566741, "usebox");
+	TextDrawLetterSize(fondoDosEntrada, 0.000000, 1.250407);
+	TextDrawTextSize(fondoDosEntrada, 290.999969, 0.000000);
+	TextDrawAlignment(fondoDosEntrada, 1);
+	TextDrawColor(fondoDosEntrada, 0);
+	TextDrawUseBox(fondoDosEntrada, true);
+	TextDrawBoxColor(fondoDosEntrada, 102);
+	TextDrawSetShadow(fondoDosEntrada, 0);
+	TextDrawSetOutline(fondoDosEntrada, 0);
+	TextDrawFont(fondoDosEntrada, 0);
+}
+
+ocultarTextDrawsEntrada(playerid){
+		TextDrawHideForPlayer(playerid, fondoUnoEntrada);
+		TextDrawHideForPlayer(playerid, fondoDosEntrada);
+		TextDrawHideForPlayer(playerid, versionEntrada);
+		TextDrawHideForPlayer(playerid, toxicWarriorsEntrada);
+}
+mostrarTextDrawsEntrada(playerid){
+		TextDrawShowForPlayer(playerid, fondoUnoEntrada);
+		TextDrawShowForPlayer(playerid, fondoDosEntrada);
+		TextDrawShowForPlayer(playerid, versionEntrada);
+		TextDrawShowForPlayer(playerid, toxicWarriorsEntrada);
+}
+
+crearTextDrawsCW(){
+	nombreEquipos = TextDrawCreate(100, 428, "Naranja vs Verde");
+	TextDrawLetterSize(nombreEquipos, 0.200000, 1.000000);
+	TextDrawTextSize(nombreEquipos, 428.000000, 0.000000);
+	TextDrawAlignment(nombreEquipos, 1);
+	TextDrawColor(nombreEquipos, -1);
+	TextDrawSetShadow(nombreEquipos, 0);
+	TextDrawSetOutline(nombreEquipos, 1);
+	TextDrawBackgroundColor(nombreEquipos, 51);
+	TextDrawFont(nombreEquipos, 1);
+	TextDrawSetProportional(nombreEquipos, 1);
+ 	TextDrawBackgroundColor(nombreEquipos, 0x000000AA);
+
+	puntajeEquipos = TextDrawCreate(194, 428, "Puntos: (1) 5 - 14 (2)");
+	TextDrawLetterSize(puntajeEquipos, 0.200000, 1.000000);
+	TextDrawAlignment(puntajeEquipos, 1);
+	TextDrawColor(puntajeEquipos, -1);
+	TextDrawSetShadow(puntajeEquipos, 0);
+	TextDrawSetOutline(puntajeEquipos, 1);
+	TextDrawBackgroundColor(puntajeEquipos, 51);
+	TextDrawFont(puntajeEquipos, 1);
+	TextDrawSetProportional(puntajeEquipos, 1);
+	TextDrawBackgroundColor(puntajeEquipos, 0x000000AA);
+
+	partidaRondas = TextDrawCreate(270, 428, "Ronda: 2/3");
+	TextDrawLetterSize(partidaRondas, 0.200000, 1.000000);
+	TextDrawAlignment(partidaRondas, 1);
+	TextDrawColor(partidaRondas, -1);
+	TextDrawSetShadow(partidaRondas, 0);
+	TextDrawSetOutline(partidaRondas, 1);
+	TextDrawBackgroundColor(partidaRondas, 51);
+	TextDrawFont(partidaRondas, 1);
+	TextDrawSetProportional(partidaRondas, 1);
+	TextDrawBackgroundColor(partidaRondas, 0x000000AA);
+}
+
+eliminarTextDrawsPartida(){
+	TextDrawDestroy(nombreEquipos);
+	TextDrawDestroy(puntajeEquipos);
+	TextDrawDestroy(partidaRondas);
+}
+
+
+mostrarDataPlayer(playerid){
+	PlayerTextDrawShow(playerid, mostrarFps[playerid]);
+	PlayerTextDrawShow(playerid, mostrarPing[playerid]);
+}
