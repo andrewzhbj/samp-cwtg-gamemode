@@ -68,6 +68,7 @@
 #define DIALOG_PETICLAN     	12  /* Invitación de un clan */
 #define DIALOG_CJUGADOR  		13
 #define DIALOG_CESPECTADOR  	14
+#define DIALOG_CADPARTIDAS      15
 #define DIALOG_TOP          	30
 #define DIALOG_TOPRANKED    	31
 #define DIALOG_TOPDUELOSG   	32  /* Duelos ganados */
@@ -143,6 +144,23 @@ new mapaElegido,
 			{-2092.7380, -107.3132, 44.5237}
 		}
 	};
+	
+	
+new marcadores[12],
+	Float:spawnMarcadores[11][4] =
+	{
+ 		{320.31, -2833.04, 21.24, -180.0},    	/* Omega */
+ 		{1098.42, 1281.47, 12.5,90.0},      	/* Las Venturas */
+ 		{751.61, -2777.31, 15.5, 90.0},     	/* Jardin Mágico */
+ 		{1590.75, 1522.60, 12.91,-140.0},   	/* Aero LV */
+ 		{-1335.29, -636.29, 16.17, 180.0},
+ 		{-1396.88, -636.29, 16.17, 180.0},
+ 		{-1234.09, -84.41, 16.39,-44.94},
+ 		{2007.66, -2230.02, 16.15,0.00},  /* LS */
+ 		{1921.54, -2231.34, 16.15,0.00},  /* LS */
+ 		{-2096.01, -188.82, 37.45,90.04},
+ 		{-2011.62, -189.27, 37.45,-90.04}
+};
 //{{843.9710,-2835.3689,12.79},{760.48,-2720.81,12.79},{733.13,-2775.95,25.3693}},	JardÃ­n-mÃ¡gico */
 
 new DB:Cuentas;
@@ -293,20 +311,21 @@ public OnGameModeInit()
 	}else printf("Clanes db no se pudo abrir");
 
 	
- 	tituloServer = TextDrawCreate(100, 428, "TOXIC WARRIORS SERVER CW/TG 0.2 BETA");
+ 	tituloServer = TextDrawCreate(100, 428, "TOXIC WARRIORS PUBLIC SERVER");
 	TextDrawLetterSize(tituloServer, 0.200000, 1.000000);
 	TextDrawTextSize(tituloServer, 428.000000, 0.000000);
 	TextDrawAlignment(tituloServer, 1);
 	TextDrawColor(tituloServer, -1);
 	TextDrawSetShadow(tituloServer, 0);
 	TextDrawSetOutline(tituloServer, 1);
-	TextDrawBackgroundColor(tituloServer, 51);
-	TextDrawFont(tituloServer, 1);
+	TextDrawBackgroundColor(tituloServer, 0x000000AA);
+	TextDrawFont(tituloServer, 2);
 	TextDrawSetProportional(tituloServer, 1);
 	
 	crearTextDrawsCW();
 	crearTextDrawsEntrada();
     crearTextResultadoCW();
+    actualizarMarcador();
     
 	AddPlayerClass(230, 1958.3783,1343.1572,15.3746,270.1425,0,0,0,0,-1,-1);
 	AddPlayerClass(115, 1958.3783,1343.1572,15.3746,270.1425,0,0,0,0,-1,-1);
@@ -322,30 +341,34 @@ public OnGameModeInit()
 	return 1;
 }
 
-actualizarModoDeJuego(){
+stock actualizarModoDeJuego(){
 	new id = totalJugadores[EQUIPO_NARANJA], id2 = totalJugadores[EQUIPO_VERDE], aux = 0;
 	if(id == 1 && id2 == 1){
 		if(modoDeJuego != UNO_VS_UNO){
 	    		modoDeJuego = UNO_VS_UNO;
 	    		aux = 1;
-		}
-		else modoDeJuego = UNO_VS_UNO;
-	}
-	if((id == 0 && id2 == 0) || (id == 0 && id2 == 1) || (id == 1 && id2 == 0)){
- 		if(modoDeJuego != ENTRENAMIENTO){
-		 	modoDeJuego = ENTRENAMIENTO;
+		}else
+			modoDeJuego = UNO_VS_UNO;
+	}else{
+	    if(modoDeJuego != ENTRENAMIENTO){
+ 		 	modoDeJuego = ENTRENAMIENTO;
   			aux = 1;
-		 }
-	}
-	if((id > 1 && id2 > 1) || (id > id2 || id < id2)){
-		if(modoDeJuego != CLAN_WAR){
-           		modoDeJuego = CLAN_WAR;
-			aux = 1;
-		}
+	    }
 	}
 	if(aux != 0) SCMTAF(COLOR_BLANCO,"{FFFFFF}Server"GRISEADO" ha cambiado el modo de juego a {FFFFFF}%s", nombreModo());
 }
-actualizarTextGlobales(){
+
+stock actualizarMarcador(){
+	new str[200];
+	format(str, 200, "{FF8B00}%d{FFFFFF}:{007C0E}%d{FFFFFF}\n{E17B00}%d{FFFFFF}:{005904}%d{FFFFFF}",
+	dataEquipo[EQUIPO_NARANJA][Puntaje], dataEquipo[EQUIPO_VERDE][Puntaje], dataEquipo[EQUIPO_NARANJA][Rondas], dataEquipo[EQUIPO_VERDE][Rondas]);
+	for(new i; i < 11;i++){
+		DestroyObject(marcadores[i]);
+		marcadores[i] = CreateObject(7914, spawnMarcadores[i][0], spawnMarcadores[i][1], spawnMarcadores[i][2],   0.00, 0.00,  spawnMarcadores[i][3]);
+		SetObjectMaterialText(marcadores[i],str, 0, OBJECT_MATERIAL_SIZE_256x128, "Arial", 60, 0, 0x00000000, 0x00000000, OBJECT_MATERIAL_TEXT_ALIGN_CENTER);
+	}
+}
+stock actualizarTextGlobales(){
 	new string[124];
 	eliminarTextDrawsPartida();
     	if(modoDeJuego == UNO_VS_UNO){
@@ -432,7 +455,7 @@ public OnPlayerConnect(playerid)
 	infoJugador[playerid][Nombre] = nombre(playerid);
 	infoJugador[playerid][ip] = IP(playerid);
 	
-	new DBResult:resultado;
+	new DBResult:resultado, bool:real = false;
 	format(consultaDb, sizeof(consultaDb), "SELECT nick FROM cuentas WHERE ip = '%s'", infoJugador[playerid][ip]);
 	resultado = db_query(Cuentas, consultaDb);
 	if(db_num_rows(resultado)){
@@ -445,12 +468,14 @@ public OnPlayerConnect(playerid)
 			format(str, sizeof(str), ""GRISEADO"[Anti-fake]: {%06x}%s ({%06x}%s"GRISEADO")no pudo conectarse al servidor.", colorJugador(playerid), infoJugador[playerid][Nombre], colorJugador(playerid), paisJugador(playerid));
 			SendClientMessageToAll(colorJugador(playerid), str);
 			Kick(playerid);
-		}
+		}else
+		    real = true;
 	}
-	
-	new Mensaje[100];
-	format(Mensaje, sizeof(Mensaje), "{%06x}%s "GRISEADO"se conectó al servidor ({%06x}%s"GRISEADO")", colorJugador(playerid), infoJugador[playerid][Nombre], colorJugador(playerid), paisJugador(playerid));
-	SendClientMessageToAll(colorJugador(playerid), Mensaje);
+	if(real){
+		new Mensaje[100];
+		format(Mensaje, sizeof(Mensaje), "{%06x}%s "GRISEADO"se conectó al servidor ({%06x}%s"GRISEADO")", colorJugador(playerid), infoJugador[playerid][Nombre], colorJugador(playerid), paisJugador(playerid));
+		SendClientMessageToAll(colorJugador(playerid), Mensaje);
+	}
 	db_free_result(resultado);
 	
 	format(consultaDb, sizeof(consultaDb), "SELECT * FROM cuentas WHERE nick = '%s'", infoJugador[playerid][Nombre]);
@@ -553,33 +578,58 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
         case DIALOG_COMANDOS:
         {
         	if(response){
-			new selece[2048], string[120];
+			new selece[2048];
 			switch(listitem){
 				case 0:
 				{
-					strcat(selece, ""GRISEADO"/{FFFFFF}equipo\t"GRISEADO"- Cambias de equipo (switch)."); strcat(selece, string);
-					strcat(selece, "\n"GRISEADO"/{FFFFFF}kill\t"GRISEADO"- Te suicidas por pendejo."); strcat(selece, string);
-					strcat(selece, "\n"GRISEADO"/{FFFFFF}top\t"GRISEADO"- Lista de tops del servidor, clanes y jugadores."); strcat(selece, string);
-					strcat(selece, "\n"GRISEADO"/{FFFFFF}creditos\t"GRISEADO"- Información sobre el servidor."); strcat(selece, string);
-					strcat(selece, "\n"GRISEADO"/{FFFFFF}admins\t"GRISEADO"- Lista de administradores conectados."); strcat(selece, string);
-					strcat(selece, "\n"GRISEADO"/{FFFFFF}inforangos\t"GRISEADO"- Información sobre el sistema ranked."); strcat(selece, string);
-					strcat(selece, "\n"GRISEADO"/{FFFFFF}infoclanes\t"GRISEADO"- Información sobre el sistema de clanes, leelo si vas a crear uno."); strcat(selece, string);
-					strcat(selece, "\n"GRISEADO"/{FFFFFF}desinv\t"GRISEADO"- Desactivas las invitaciones que te lleguen de clanes."); strcat(selece, string);
-					strcat(selece, "\n"GRISEADO"/{FFFFFF}actinv\t"GRISEADO"- Activas las invitaciones que te lleguen de clanes."); strcat(selece, string);
-					strcat(selece, "\n"GRISEADO"/{FFFFFF}crearclan\t"GRISEADO"- Registras tu clan, vos seras el dueño."); strcat(selece, string);
-					strcat(selece, "\n"GRISEADO"/{FFFFFF}borrarclan\t"GRISEADO"- Eliminas tu clan y a los miembros."); strcat(selece, string);
-					strcat(selece, "\n"GRISEADO"/{FFFFFF}salirclan\t"GRISEADO"- Te salis del clan en el que estas."); strcat(selece, string);
-					strcat(selece, "\n"GRISEADO"/{FFFFFF}invitar "GRISEADO"[id]\t"GRISEADO"- Invitas a alguien para que sea miembro de tu clan."); strcat(selece, string);
-					strcat(selece, "\n"GRISEADO"/{FFFFFF}expulsar "GRISEADO"[id]\t"GRISEADO"- Expulsas a un miembro de tu clan."); strcat(selece, string);
-					strcat(selece, "\n"GRISEADO"/{FFFFFF}skin "GRISEADO"[id]\t"GRISEADO"- Cambias tu skin, al salirte no se te guardará."); strcat(selece, string);
-					strcat(selece, "\n"GRISEADO"/{FFFFFF}stats "GRISEADO"[id]\t"GRISEADO"- Estadítica de un jugador, podes sacar la id para ver los tuyos."); strcat(selece, string);
-   					strcat(selece, "\n"GRISEADO"/{FFFFFF}pm "GRISEADO"[id] [texto]\t"GRISEADO"- Envias un mensaje privado a un jugador."); strcat(selece, string);
+					strcat(selece, ""GRISEADO"/{FFFFFF}equipo\t"GRISEADO"- Cambias de equipo (switch)."); 
+					strcat(selece, "\n"GRISEADO"/{FFFFFF}kill\t"GRISEADO"- Te suicidas por pendejo.");
+					strcat(selece, "\n"GRISEADO"/{FFFFFF}top\t"GRISEADO"- Lista de tops del servidor, clanes y jugadores."); 
+					strcat(selece, "\n"GRISEADO"/{FFFFFF}creditos\t"GRISEADO"- Información sobre el servidor.");
+					strcat(selece, "\n"GRISEADO"/{FFFFFF}admins\t"GRISEADO"- Lista de administradores conectados."); 
+					strcat(selece, "\n"GRISEADO"/{FFFFFF}inforangos\t"GRISEADO"- Información sobre el sistema ranked."); 
+					strcat(selece, "\n"GRISEADO"/{FFFFFF}infoclanes\t"GRISEADO"- Información sobre el sistema de clanes, leelo si vas a crear uno.");
+					strcat(selece, "\n"GRISEADO"/{FFFFFF}desinv\t"GRISEADO"- Desactivas las invitaciones que te lleguen de clanes.");
+					strcat(selece, "\n"GRISEADO"/{FFFFFF}actinv\t"GRISEADO"- Activas las invitaciones que te lleguen de clanes."); 
+					strcat(selece, "\n"GRISEADO"/{FFFFFF}crearclan\t"GRISEADO"- Registras tu clan, vos seras el dueño."); 
+					strcat(selece, "\n"GRISEADO"/{FFFFFF}borrarclan\t"GRISEADO"- Eliminas tu clan y a los miembros.");
+					strcat(selece, "\n"GRISEADO"/{FFFFFF}salirclan\t"GRISEADO"- Te salis del clan en el que estas."); 
+					strcat(selece, "\n"GRISEADO"/{FFFFFF}invitar "GRISEADO"[id]\t"GRISEADO"- Invitas a alguien para que sea miembro de tu clan.");
+					strcat(selece, "\n"GRISEADO"/{FFFFFF}expulsar "GRISEADO"[id]\t"GRISEADO"- Expulsas a un miembro de tu clan."); 
+					strcat(selece, "\n"GRISEADO"/{FFFFFF}skin "GRISEADO"[id]\t"GRISEADO"- Cambias tu skin, al salirte no se te guardará."); 
+					strcat(selece, "\n"GRISEADO"/{FFFFFF}stats "GRISEADO"[id]\t"GRISEADO"- Estadítica de un jugador, podes sacar la id para ver los tuyos.");
+   					strcat(selece, "\n"GRISEADO"/{FFFFFF}fps "GRISEADO"[id]\t"GRISEADO"- Te dice la cantidad de fps de un jugador.");
+   					strcat(selece, "\n"GRISEADO"/{FFFFFF}pl "GRISEADO"[id]\t"GRISEADO"- Te dice la cantidad de packet loss de un jugador.");
+   					strcat(selece, "\n"GRISEADO"/{FFFFFF}pm "GRISEADO"[id] [texto]\t"GRISEADO"- Envias un mensaje privado a un jugador.");
 					ShowPlayerDialog(playerid, DIALOG_CJUGADOR, DIALOG_STYLE_TABLIST, "Comandos para jugadores", selece, "Volver", "Cerrar");
 				}
 				case 1:
 				{
-					strcat(selece, ""GRISEADO"No disponible todavia"); strcat(selece, string);
+					strcat(selece, ""GRISEADO"No disponible todavia");
     				ShowPlayerDialog(playerid, DIALOG_CJUGADOR, DIALOG_STYLE_TABLIST, "Comandos para espectadores", selece, "Volver", "Cerrar");
+				}
+   				case 2:
+				{
+					strcat(selece, ""GRISEADO"/{FFFFFF}modo\t"GRISEADO"- Cambias el modo de juego.");
+					strcat(selece, "\n"GRISEADO"/{FFFFFF}mapa\t"GRISEADO"- Cambias el mapa del servidor (solo en entrenamiento).");
+					strcat(selece, "\n"GRISEADO"/{FFFFFF}fpsall\t"GRISEADO"- Muestra los fps de todos los jugadores.");
+					strcat(selece, "\n"GRISEADO"/{FFFFFF}plall\t"GRISEADO"- Muestra el packetloss de todos los jugadores.");
+					strcat(selece, "\n"GRISEADO"/{FFFFFF}hpall\t"GRISEADO"- Establece la vida de todos los jugadores.");
+					strcat(selece, "\n"GRISEADO"/{FFFFFF}armourall\t"GRISEADO"- Establece la armadura de todos los jugadores.");
+					strcat(selece, "\n"GRISEADO"/{FFFFFF}spawnall\t"GRISEADO"- Respawnea a todos los jugadores.");
+					strcat(selece, "\n"GRISEADO"/{FFFFFF}spawn "GRISEADO"[id]\t"GRISEADO"- Spawneas a un jugador específico.");
+					strcat(selece, "\n"GRISEADO"/{FFFFFF}hp "GRISEADO"[id] [num]\t"GRISEADO"- Estableces la cantidad de vida a un jugador.");
+					strcat(selece, "\n"GRISEADO"/{FFFFFF}armour "GRISEADO"[id] [num]\t"GRISEADO"- Estableces la cantidad de armadura a un jugador.");
+					strcat(selece, "\n"GRISEADO"/{FFFFFF}naranja "GRISEADO"[id]\t"GRISEADO"- Cambias a un jugador al equipo naranja.");
+					strcat(selece, "\n"GRISEADO"/{FFFFFF}verde "GRISEADO"[id]\t"GRISEADO"- Cambias a un jugador al equipo verde.");
+					strcat(selece, "\n"GRISEADO"/{FFFFFF}espectador "GRISEADO"[id]\t"GRISEADO"- Cambias a un jugador al equipo espectador.");
+					strcat(selece, "\n"GRISEADO"/{FFFFFF}rondas "GRISEADO"[num]\t"GRISEADO"- Estableces la maxima cantidad de rondas que se podrá jugar.");
+					strcat(selece, "\n"GRISEADO"/{FFFFFF}puntajederonda "GRISEADO"[num]\t"GRISEADO"- Estableces la maxima cantidad de puntaje para que se termine la ronda.");
+					strcat(selece, "\n"GRISEADO"/{FFFFFF}rondasnaranja "GRISEADO"[num]\t"GRISEADO"- Estableces la cantidad de rondas del equipo naranja.");
+					strcat(selece, "\n"GRISEADO"/{FFFFFF}puntajenaranja "GRISEADO"[num]\t"GRISEADO"- Estableces la cantidad de puntaje del equipo naranja.");
+					strcat(selece, "\n"GRISEADO"/{FFFFFF}rondasverde "GRISEADO"[num]\t"GRISEADO"- Estableces la cantidad de rondas del equipo verde.");
+					strcat(selece, "\n"GRISEADO"/{FFFFFF}puntajeverde "GRISEADO"[num]\t"GRISEADO"- Estableces la cantidad de puntaje del equipo verde.");
+    				ShowPlayerDialog(playerid, DIALOG_CADPARTIDAS, DIALOG_STYLE_TABLIST, "Comandos para Adm. de partida", selece, "Volver", "Cerrar");
 				}
 			}
 		}
@@ -637,8 +687,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 				establecerJugadores();
 				actualizarModoDeJuego();
+ 				actualizarTextGlobales();
+ 				actualizarMarcador();
         		establecerColor(playerid);
-        		actualizarTextGlobales();
         		SpawnPlayer(playerid);
 			}else{
 			
@@ -754,6 +805,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						modoDeJuego = CLAN_WAR;
 						SCMTAF(COLOR_BLANCO,"{%06x}%s"GRISEADO" ha cambiado el modo de juego a {FFFFFF}%s", colorJugador(playerid), infoJugador[playerid][Nombre], nombreModo());
     					actualizarTextGlobales();
+    					actualizarMarcador();
     					resetearJugadoresEnPartida();
 					}
 					case 1:
@@ -769,6 +821,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						modoDeJuego = UNO_VS_UNO;
 						SCMTAF(COLOR_BLANCO,"{%06x}%s"GRISEADO" ha cambiado el modo de juego a {FFFFFF}%s", colorJugador(playerid), infoJugador[playerid][Nombre], nombreModo());
                         actualizarTextGlobales();
+                        actualizarMarcador();
                         resetearJugadoresEnPartida();
 					}
 					case 2:
@@ -780,6 +833,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						modoDeJuego = ENTRENAMIENTO;
 						SCMTAF(COLOR_BLANCO,"{%06x}%s"GRISEADO" ha cambiado el modo de juego a {FFFFFF}%s", colorJugador(playerid), infoJugador[playerid][Nombre], nombreModo());
                         actualizarTextGlobales();
+                        actualizarMarcador();
                         resetearJugadoresEnPartida();
 					}
 				}
@@ -788,6 +842,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		case DIALOG_SELECMAPA:
 		{
 		    if(response){
+   				actualizarTextGlobales();
+        		actualizarMarcador();
+          		resetearTodosJugadores();
 		        switch(listitem){
 		            case 0:
 		            {
@@ -797,8 +854,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		                }
 		                mapaElegido = LAS_VENTURAS;
 						SCMTAF(COLOR_BLANCO,"{%06x}%s"GRISEADO" ha cambiado el mapa a {FFFFFF}%s", colorJugador(playerid), infoJugador[playerid][Nombre], nombreMapa(mapaElegido));
-                        actualizarTextGlobales();
-                        resetearTodosJugadores();
 					}
   					case 1:
 		            {
@@ -808,8 +863,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		                }
 		                mapaElegido = AEROPUERTO_LV;
 						SCMTAF(COLOR_BLANCO,"{%06x}%s"GRISEADO" ha cambiado el mapa a {FFFFFF}%s", colorJugador(playerid), infoJugador[playerid][Nombre], nombreMapa(mapaElegido));
-                        actualizarTextGlobales();
-                        resetearTodosJugadores();
 					}
   					case 2:
 		            {
@@ -819,8 +872,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		                }
 		                mapaElegido = AEROPUERTO_SF;
 						SCMTAF(COLOR_BLANCO,"{%06x}%s"GRISEADO" ha cambiado el mapa a {FFFFFF}%s", colorJugador(playerid), infoJugador[playerid][Nombre], nombreMapa(mapaElegido));
-                        actualizarTextGlobales();
-                        resetearTodosJugadores();
 					}
   					case 3:
 		            {
@@ -830,8 +881,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		                }
 		                mapaElegido = AUTO_ESCUELA;
 						SCMTAF(COLOR_BLANCO,"{%06x}%s"GRISEADO" ha cambiado el mapa a {FFFFFF}%s", colorJugador(playerid), infoJugador[playerid][Nombre], nombreMapa(mapaElegido));
-                        actualizarTextGlobales();
-                        resetearTodosJugadores();
 					}
 		        }
 		    }
@@ -969,10 +1018,12 @@ registrarClan(playerid)
 }
 
 mostrarTop(playerid){
-    return ShowPlayerDialog(playerid, DIALOG_TOP, DIALOG_STYLE_LIST, "{7C7C7C}Tops", "{00779E}Ranked Mundial\n{00779E}Ranked Nacional (No disponible)", "Selec.", "Cancelar");
+    return ShowPlayerDialog(playerid, DIALOG_TOP, DIALOG_STYLE_LIST, "{7C7C7C}Tops", "{00779E}Ranked Mundial\n{00779E}Ranked Nacional (No hay jugadores suficientes)", "Selec.", "Cancelar");
 }
 //{00779E}Clan kills\n{00779E}Clan Wars Ganadas\n{00779E}Clan Wars Perdidas
 //{00779E}Duelos ganados\n{00779E}Duelos perdidos
+
+
 mostrarTopRankedMundial(playerid){
 	new i = 1, selece[1024], string[128];
 	new DBResult:resultado, Puntos, nNick[40], nPais[60];
@@ -1336,6 +1387,7 @@ crearResultadoCW(ganador){
 	new ganadorColor[5];
 	if(ganador == EQUIPO_NARANJA) format(ganadorColor, 5, "~y~");
 	else format(ganadorColor, 5, "~g~");
+	
 	new strInfoPartida[1024], ministr[100];
 	format(strInfoPartida[0], 1024, "~w~Equipo ganador: %s%s~n~~w~Mejor jugador: ~b~~w~%s~n~~w~Puntaje total: ~y~%d~w~:~g~%d ~w~(~y~%d~w~:~g~%d~w~)",
 	nombreEquipo[ganador], ganadorColor, infoJugador[idMejor][Nombre], dataEquipo[EQUIPO_NARANJA][Puntaje], dataEquipo[EQUIPO_VERDE][Puntaje], dataEquipo[EQUIPO_NARANJA][Rondas], dataEquipo[EQUIPO_VERDE][Rondas]);
@@ -1470,6 +1522,7 @@ actualizarEquipo(playerid, killerid){
 		}
 	}
     actualizarTextGlobales();
+    actualizarMarcador();
     return 1;
 }
 
@@ -1718,6 +1771,26 @@ CMD:top(playerid, params[]){
 	return 	mostrarTop(playerid);
 }
 
+CMD:fps(playerid, params[]){
+	if(isnull(params))
+	   	return SendClientMessage(playerid, COLOR_ROJO, "Escribiste mal el comando; {FFFFFF}/fps ID");
+	new i = strval(params);
+ 	if(!IsPlayerConnected(i))
+		return SendClientMessage(playerid, COLOR_ROJO, "No existe la ID que pusiste.");
+	SCMTAF(COLOR_BLANCO, "- {%06x}%s {FFFFFF}> "GRISEADO"%d {FFFFFF}FPS", colorJugador(i), infoJugador[i][Nombre], GetPlayerFPS(i));
+	return 1;
+}
+
+CMD:pl(playerid, params[]){
+	if(isnull(params))
+	   	return SendClientMessage(playerid, COLOR_ROJO, "Escribiste mal el comando; {FFFFFF}/pl ID");
+	new i = strval(params);
+ 	if(!IsPlayerConnected(i))
+		return SendClientMessage(playerid, COLOR_ROJO, "No existe la ID que pusiste.");
+	SCMTAF(COLOR_BLANCO, "- {%06x}%s {FFFFFF}> "GRISEADO"%.2f{FFFFFF}%", colorJugador(i), infoJugador[i][Nombre], NetStats_PacketLossPercent(i));
+	return 1;
+}
+
 CMD:cmds(playerid, params[]){
 	new selece[600], string[100], Nivel = infoJugador[playerid][Admin];
 	strcat(selece, "{00779E}Jugadores\n{FFFFFF}Espectadores (No disponible)");
@@ -1938,8 +2011,158 @@ CMD:fpsall(playerid, params[]){
 }
 stock GetPlayerFPS(playerid) return FPS[playerid];
 
+CMD:plall(playerid, params[]){
+	if(infoJugador[playerid][Admin] < 1)
+	    return SendClientMessage(playerid, COLOR_ROJO,"Solo los administadores de partidas pueden usar este comando.");
+	SendClientMessageToAll(COLOR_BLANCO,"> PL:");
+	ForPlayers(i)
+		SCMTAF(COLOR_BLANCO, "- {%06x}%s {FFFFFF}> "GRISEADO"%.2f{FFFFFF}%", colorJugador(i), infoJugador[i][Nombre], NetStats_PacketLossPercent(i));
+	return 1;
+}
 
-CMD:reseteartodos(playerid, params[]){
+CMD:spawn(playerid, params[]){
+	if(infoJugador[playerid][Admin] < 1)
+	    return SendClientMessage(playerid, COLOR_ROJO,"Solo los administadores de partidas pueden usar este comando.");
+	if(isnull(params))
+  		return SendClientMessage(playerid, COLOR_ROJO, "Escribiste mal el comando; {FFFFFF}/spawn ID");
+	new i = strval(params);
+ 	if(!IsPlayerConnected(i))
+		return SendClientMessage(playerid, COLOR_ROJO, "No existe la ID que pusiste.");
+	SpawnPlayer(i);
+	SetPlayerHealth(i,100);
+   	SCMTAF(COLOR_BLANCO, "{%06x}%s"GRISEADO" ha respawneado a {%06x}%s", colorJugador(playerid), infoJugador[playerid][Nombre], colorJugador(i), infoJugador[i][Nombre]);
+	return 1;
+}
+
+CMD:spawnall(playerid, params[]){
+	if(infoJugador[playerid][Admin] < 1)
+	    return SendClientMessage(playerid, COLOR_ROJO,"Solo los administadores de partidas pueden usar este comando.");
+	ForPlayers(i){
+		if(Equipo[i] != EQUIPO_ESPECTADOR){
+			SpawnPlayer(i);
+			SetPlayerHealth(i, 100);
+		}
+	}
+	SCMTAF(COLOR_BLANCO, "{%06x}%s"GRISEADO" ha respawneado a todos los jugadores.", colorJugador(playerid), infoJugador[playerid][Nombre]);
+	return 1;
+}
+
+CMD:hp(playerid, params[]){
+	new i, cantidad;
+	if(infoJugador[playerid][Admin] < 1)
+	    return SendClientMessage(playerid, COLOR_ROJO,"Solo los administadores de partidas pueden usar este comando.");
+	if(sscanf(params, "ii", i, cantidad))
+		return SendClientMessage(playerid, COLOR_ROJO,"Escribiste mal el comando; {FFFFFF}/hp ID cantidad");
+ 	if(!IsPlayerConnected(i))
+		return SendClientMessage(playerid, COLOR_ROJO, "No existe la ID que pusiste.");
+	if(cantidad > 100 || cantidad < 1)
+		return SendClientMessage(playerid, COLOR_ROJO, "No podes ponerle esa vida.");
+	SetPlayerHealth(i, cantidad);
+   	SCMTAF(COLOR_BLANCO, "{%06x}%s"GRISEADO" estableció la vida de {%06x}%s "GRISEADO"a {FFFFFF}%d", colorJugador(playerid), infoJugador[playerid][Nombre], colorJugador(i), infoJugador[i][Nombre], cantidad);
+	return 1;
+}
+
+CMD:hpall(playerid, params[]){
+	if(infoJugador[playerid][Admin] < 1)
+	    return SendClientMessage(playerid, COLOR_ROJO,"Solo los administadores de partidas pueden usar este comando.");
+	ForPlayers(i){
+		if(Equipo[i] != EQUIPO_ESPECTADOR)
+			SetPlayerHealth(i, 100);
+	}
+	SCMTAF(COLOR_BLANCO, "{%06x}%s"GRISEADO" restableció la vida de todos los jugadores.", colorJugador(playerid), infoJugador[playerid][Nombre]);
+	return 1;
+}
+
+CMD:armour(playerid, params[]){
+	new i, cantidad;
+	if(infoJugador[playerid][Admin] < 1)
+	    return SendClientMessage(playerid, COLOR_ROJO,"Solo los administadores de partidas pueden usar este comando.");
+	if(sscanf(params, "ii", i, cantidad))
+		return SendClientMessage(playerid, COLOR_ROJO,"Escribiste mal el comando; {FFFFFF}/armour ID cantidad");
+ 	if(!IsPlayerConnected(i))
+		return SendClientMessage(playerid, COLOR_ROJO, "No existe la ID que pusiste.");
+	if(cantidad > 100 || cantidad < 1)
+		return SendClientMessage(playerid, COLOR_ROJO, "No podes ponerle esa armadura.");
+	SetPlayerArmour(i, cantidad);
+   	SCMTAF(COLOR_BLANCO, "{%06x}%s"GRISEADO" estableció la armadura de {%06x}%s "GRISEADO"a {FFFFFF}%d", colorJugador(playerid), infoJugador[playerid][Nombre], colorJugador(i), infoJugador[i][Nombre], cantidad);
+	return 1;
+}
+
+CMD:armourall(playerid, params[]){
+	if(infoJugador[playerid][Admin] < 1)
+	    return SendClientMessage(playerid, COLOR_ROJO,"Solo los administadores de partidas pueden usar este comando.");
+	ForPlayers(i){
+		if(Equipo[i] != EQUIPO_ESPECTADOR)
+			SetPlayerArmour(i, 100);
+	}
+	SCMTAF(COLOR_BLANCO, "{%06x}%s"GRISEADO" restableció la armadura de todos los jugadores.", colorJugador(playerid), infoJugador[playerid][Nombre]);
+	return 1;
+}
+
+CMD:naranja(playerid, params[]){
+	if(infoJugador[playerid][Admin] < 1)
+	    return SendClientMessage(playerid, COLOR_ROJO, "Solo los administradores de partidas pueden usar este comando.");
+	if(isnull(params))
+	   	return SendClientMessage(playerid, COLOR_ROJO, "Escribiste mal el comando; {FFFFFF}/naranja ID");
+	new i = strval(params);
+	if(!IsPlayerConnected(i))
+		return SendClientMessage(playerid, COLOR_ROJO, "No existe la ID que pusiste.");
+	if(Equipo[i] == EQUIPO_NARANJA)
+		return SendClientMessage(playerid, COLOR_ROJO, "El jugador ya está en este equipo.");
+   	SCMTAF(COLOR_BLANCO, "{%06x}%s"GRISEADO" envió a {%06x}%s "GRISEADO"al equipo {F69521}%s", colorJugador(playerid), infoJugador[playerid][Nombre], colorJugador(i), infoJugador[i][Nombre], nombreEquipo[EQUIPO_NARANJA]);
+	Equipo[i] = EQUIPO_NARANJA;
+	establecerJugadores();
+	actualizarModoDeJuego();
+	actualizarTextGlobales();
+	actualizarMarcador();
+	establecerColor(i);
+	SpawnPlayer(i);
+	return 1;
+}
+
+CMD:verde(playerid, params[]){
+	if(infoJugador[playerid][Admin] < 1)
+	    return SendClientMessage(playerid, COLOR_ROJO, "Solo los administradores de partidas pueden usar este comando.");
+	if(isnull(params))
+	   	return SendClientMessage(playerid, COLOR_ROJO, "Escribiste mal el comando; {FFFFFF}/verde ID");
+	new i = strval(params);
+	if(!IsPlayerConnected(i))
+		return SendClientMessage(playerid, COLOR_ROJO, "No existe la ID que pusiste.");
+	if(Equipo[i] == EQUIPO_VERDE)
+		return SendClientMessage(playerid, COLOR_ROJO, "El jugador ya está en este equipo.");
+   	SCMTAF(COLOR_BLANCO, "{%06x}%s"GRISEADO" envió a {%06x}%s "GRISEADO"al equipo {007C0E}%s", colorJugador(playerid), infoJugador[playerid][Nombre], colorJugador(i), infoJugador[i][Nombre], nombreEquipo[EQUIPO_VERDE]);
+	Equipo[i] = EQUIPO_VERDE;
+	establecerJugadores();
+	actualizarModoDeJuego();
+	actualizarTextGlobales();
+	actualizarMarcador();
+	establecerColor(i);
+	SpawnPlayer(i);
+	return 1;
+}
+
+CMD:espectador(playerid, params[]){
+	if(infoJugador[playerid][Admin] < 1)
+	    return SendClientMessage(playerid, COLOR_ROJO, "Solo los administradores de partidas pueden usar este comando.");
+	if(isnull(params))
+	   	return SendClientMessage(playerid, COLOR_ROJO, "Escribiste mal el comando; {FFFFFF}/espectador ID");
+	new i = strval(params);
+	if(!IsPlayerConnected(i))
+		return SendClientMessage(playerid, COLOR_ROJO, "No existe la ID que pusiste.");
+	if(Equipo[i] == EQUIPO_ESPECTADOR)
+		return SendClientMessage(playerid, COLOR_ROJO, "El jugador ya está en este equipo.");
+   	SCMTAF(COLOR_BLANCO, "{%06x}%s"GRISEADO" envió a {%06x}%s "GRISEADO"al equipo {FFFFFF}Espectador", colorJugador(playerid), infoJugador[playerid][Nombre], colorJugador(i), infoJugador[i][Nombre]);
+	Equipo[i] = EQUIPO_ESPECTADOR;
+	establecerJugadores();
+	actualizarModoDeJuego();
+	actualizarTextGlobales();
+	actualizarMarcador();
+	establecerColor(i);
+	SpawnPlayer(i);
+	return 1;
+}
+
+CMD:reseteartodo(playerid, params[]){
 	if(infoJugador[playerid][Admin] == 0)
 	    return SendClientMessage(playerid, COLOR_ROJO, "Solo los administradores de partidas pueden usar este comando.");
 	resetearTodo();
@@ -1947,6 +2170,7 @@ CMD:reseteartodos(playerid, params[]){
    	SCMTAF(COLOR_BLANCO, "{%06x}%s"GRISEADO" ha reseteado toda la partida.", colorJugador(playerid), infoJugador[playerid][Nombre]);
     return 1;
 }
+
 
 CMD:resetrondas(playerid, params[]){
 	if(infoJugador[playerid][Admin] == 0)
@@ -1966,24 +2190,6 @@ CMD:resetpuntos(playerid, params[]){
     return 1;
 }
 
-CMD:(playerid, params[])
-{
- 	new Float:cxp, Float:cyp, Float:czp, string2[125];
- 	GetPlayerCameraPos(playerid, cxp, cyp, czp);
- 	format(string2, sizeof(string2), "X:%f  Y:%f Z:%f\n", cxp, cyp, czp);
-  	SendClientMessage(playerid, COLOR_BLANCO, string2);
- return 1;
-}
-
-CMD:fang(playerid,params)
-{
-    new Float:Ai;
-	GetPlayerFacingAngle(playerid, Ai);
-	new string2[125];
-	format(string2,sizeof(string2),"%f",Ai);
-	SendClientMessage(playerid,-1,string2);
-	return 1;
-}
 
 CMD:modo(playerid, params[]){
 	if(infoJugador[playerid][Admin] == 0)
@@ -2011,8 +2217,58 @@ CMD:rondas(playerid, params[]){
 		return SendClientMessage(playerid, COLOR_ROJO, "Escribiste mal el comando; {FFFFFF}/rondas [1:10]");
     maximaRonda = i;
 	SCMTAF(COLOR_BLANCO, "{%06x}%s"GRISEADO" estableció la ronda máxima a {FFFFFF}%d", colorJugador(playerid), infoJugador[playerid][Nombre], i);
-	SCMTAF(COLOR_BLANCO,""GRISEADO"Desde ahora se jugará¡: {FFFFFF}%dx%d", maximaRonda, maximoPuntaje);
+	SCMTAF(COLOR_BLANCO,""GRISEADO"Desde ahora se jugará: {FFFFFF}%dx%d", maximaRonda, maximoPuntaje);
 	actualizarTextGlobales();
+	return 1;
+}
+
+CMD:rondasnaranja(playerid, params[]){
+	if(infoJugador[playerid][Admin] == 0)
+	    return SendClientMessage(playerid, COLOR_ROJO, "Solo los administradores de partidas pueden usar este comando.");
+    if(isnull(params)){
+   		new s[64];
+		format(s, sizeof(s), "Escribiste mal el comando; {FFFFFF}/rondasnaranja [0:%d]", maximaRonda-1);
+		return SendClientMessage(playerid, COLOR_ROJO, s);
+    }
+	new i = strval(params);
+ 	if(i > (maximaRonda-1) || i < 0){
+		new s[64];
+		format(s, sizeof(s), "Escribiste mal el comando; {FFFFFF}/rondasnaranja [0:%d]", maximaRonda-1);
+		return SendClientMessage(playerid, COLOR_ROJO, s);
+ 	}
+ 	if(i == dataEquipo[EQUIPO_NARANJA][Rondas])
+ 	    return SendClientMessage(playerid, COLOR_ROJO, "No establezcas el mismo valor actual");
+
+    dataEquipo[EQUIPO_NARANJA][Rondas] = i;
+	SCMTAF(COLOR_BLANCO, "{%06x}%s"GRISEADO" estableció las rondas del equipo {F69521}%s "GRISEADO"a {FFFFFF}%d", colorJugador(playerid), infoJugador[playerid][Nombre], nombreEquipo[EQUIPO_NARANJA], i);
+	SCMTAF(COLOR_BLANCO,""GRISEADO"Rondas actual = {F69521}%d"GRISEADO":{77CC77}%d", dataEquipo[EQUIPO_NARANJA][Rondas], dataEquipo[EQUIPO_VERDE][Rondas]);
+	actualizarTextGlobales();
+	actualizarMarcador();
+	return 1;
+}
+
+CMD:rondasverde(playerid, params[]){
+	if(infoJugador[playerid][Admin] == 0)
+	    return SendClientMessage(playerid, COLOR_ROJO, "Solo los administradores de partidas pueden usar este comando.");
+    if(isnull(params)){
+   		new s[64];
+		format(s, sizeof(s), "Escribiste mal el comando; {FFFFFF}/rondasverde [0:%d]", maximaRonda-1);
+		return SendClientMessage(playerid, COLOR_ROJO, s);
+    }
+	new i = strval(params);
+ 	if(i > (maximaRonda-1) || i < 0){
+		new s[64];
+		format(s, sizeof(s), "Escribiste mal el comando; {FFFFFF}/rondasverde [0:%d]", maximaRonda-1);
+		return SendClientMessage(playerid, COLOR_ROJO, s);
+ 	}
+ 	if(i == dataEquipo[EQUIPO_VERDE][Rondas])
+ 	    return SendClientMessage(playerid, COLOR_ROJO, "No establezcas el mismo valor actual");
+
+    dataEquipo[EQUIPO_VERDE][Rondas] = i;
+	SCMTAF(COLOR_BLANCO, "{%06x}%s"GRISEADO" estableció las rondas del equipo {F69521}%s "GRISEADO"a {FFFFFF}%d", colorJugador(playerid), infoJugador[playerid][Nombre], nombreEquipo[EQUIPO_VERDE], i);
+	SCMTAF(COLOR_BLANCO,""GRISEADO"Rondas actual = {F69521}%d"GRISEADO":{77CC77}%d", dataEquipo[EQUIPO_NARANJA][Rondas], dataEquipo[EQUIPO_VERDE][Rondas]);
+	actualizarTextGlobales();
+	actualizarMarcador();
 	return 1;
 }
 
@@ -2026,7 +2282,7 @@ CMD:puntajederonda(playerid, params[]){
 		return SendClientMessage(playerid, COLOR_ROJO, "Escribiste mal el comando; {FFFFFF}/puntajederonda [1:100]");
     maximoPuntaje = i;
 	SCMTAF(COLOR_BLANCO, "{%06x}%s"GRISEADO" estableció el puntaje máxima a  {FFFFFF}%d", colorJugador(playerid), infoJugador[playerid][Nombre], i);
-	SCMTAF(COLOR_BLANCO,""GRISEADO"Desde ahora se jugará¡: {FFFFFF}%dx%d", maximaRonda, maximoPuntaje);
+	SCMTAF(COLOR_BLANCO,""GRISEADO"Desde ahora se jugará: {FFFFFF}%dx%d", maximaRonda, maximoPuntaje);
 	actualizarTextGlobales();
 	return 1;
 }
@@ -2052,6 +2308,7 @@ CMD:puntajenaranja(playerid, params[]){
 	SCMTAF(COLOR_BLANCO, "{%06x}%s"GRISEADO" estableció el puntaje del equipo {F69521}%s "GRISEADO"a {FFFFFF}%d", colorJugador(playerid), infoJugador[playerid][Nombre], nombreEquipo[EQUIPO_NARANJA], i);
 	SCMTAF(COLOR_BLANCO,""GRISEADO"Marcador actual > {F69521}%d"GRISEADO":{77CC77}%d", dataEquipo[EQUIPO_NARANJA][Puntaje], dataEquipo[EQUIPO_VERDE][Puntaje]);
 	actualizarTextGlobales();
+	actualizarMarcador();
 	return 1;
 }
 
@@ -2127,6 +2384,11 @@ CMD:traer(playerid, params[]){
 CMD:ocultar(playerid,params[]){
         ocultarTextResultadoCW();
 	return 1;
+}
+
+CMD:cambiarmodo(playerid, params[]){
+	modoDeJuego = strval(params);
+	actualizarTextGlobales();
 }
 
 CMD:mostrar(playerid,params[]){
@@ -2231,7 +2493,8 @@ CMD:crearclan(playerid, params[]){
 		return SendClientMessage(playerid, COLOR_BLANCO, "Ya hay alguien creando un clan, espera a que registre el suyo.");
 	if(!infoJugador[playerid][Registrado])
 		return SendClientMessage(playerid, COLOR_ROJO, "Debes estar registrado.");
-
+	if(sacarRango(playerid) < RANGO_ORO)
+	    return SendClientMessage(playerid, COLOR_ROJO, "No tenes rango.");
     new string[1024], anio, dia, mes;
     getdate(anio, mes, dia);
     if(dia == 1 || dia == 2 || dia == 3)
@@ -3074,7 +3337,7 @@ crearTextDrawsCW(){
 	TextDrawSetProportional(nombreEquipos, 1);
  	TextDrawBackgroundColor(nombreEquipos, 0x000000AA);
 
-	puntajeEquipos = TextDrawCreate(194, 428, "Puntos: (1) 5 - 14 (2)");
+	puntajeEquipos = TextDrawCreate(180, 428, "Puntos: (1) 5 - 14 (2)");
 	TextDrawLetterSize(puntajeEquipos, 0.200000, 1.000000);
 	TextDrawAlignment(puntajeEquipos, 1);
 	TextDrawColor(puntajeEquipos, -1);
@@ -3085,7 +3348,7 @@ crearTextDrawsCW(){
 	TextDrawSetProportional(puntajeEquipos, 1);
 	TextDrawBackgroundColor(puntajeEquipos, 0x000000AA);
 
-	partidaRondas = TextDrawCreate(270, 428, "Ronda: 2/3");
+	partidaRondas = TextDrawCreate(273, 428, "Ronda: 2/3");
 	TextDrawLetterSize(partidaRondas, 0.200000, 1.000000);
 	TextDrawAlignment(partidaRondas, 1);
 	TextDrawColor(partidaRondas, -1);
