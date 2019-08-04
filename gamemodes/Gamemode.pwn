@@ -43,6 +43,11 @@
 #define CLAN_MAX_CHAR_TAG    	6
 #define CLAN_MAX_CHAR_NOMBRE    30
 
+/* - Arenas de duelos - */
+
+#define ARENA_WAREHOUSE         1
+
+
 /* - Colores - */
 #define COLOR_BLANCO 			0xFFFFFFFF
 #define COLOR_NARANJA 			0xF78411FF
@@ -78,6 +83,7 @@
 #define DIALOG_TOPCWPERD    	36
 #define DIALOG_MODOJUEGO    	37
 #define DIALOG_SELECMAPA    	38
+#define DIALOG_DUELOARENAS      39
 
 /* - Funciones - */
 new bool:FALSE = false;
@@ -109,9 +115,21 @@ new maximaRonda;
 new rondaActual;
 new modoDeJuego;
 
+new estaEnDuelo[MAX_PLAYERS];
+new jugadoresArena[2],
+	Float:warehouseSpawns[][] =
+	{
+		{1361.3468, -46.1324, 1000.9240},
+		{1408.0518, -34.1221, 1001.1148},
+		{1414.5874, 1.0335, 1002.1307},
+		{1363.0325, 0.7593, 1001.6202},
+		{1392.8837, -25.6937, 1000.2111}
+	};
+	
 new skinJugador[MAX_PLAYERS];
 new killsJugador[MAX_PLAYERS];
 new muertesJugador[MAX_PLAYERS];
+
 enum DataInv{
 	idClanInvitado,
 	tagClanInvitado[6],
@@ -217,13 +235,30 @@ new Text:ratiosVerde;
 new Text:fondoInfoPartida;
 new Text:textoEquipoGanador;
 
+
+new Text:fondoResultado1vs1;
+new Text:textoResultado1vs1;
+new Text:nombreNaranja1vs1;
+new Text:nombreVerde1vs1;
+new Text:textoVersus1vs1;
+new Text:dataNara1vs1;
+new Text:dataVerd1vs1;
+new Text:killsNara1vs1;
+new Text:muertesNara1vs1;
+new Text:ratioNara1vs1;
+new Text:killsVerd1vs1;
+new Text:muertesVerd1vs1;
+new Text:ratioVerd1vs1;
+new Text:fondoInfo1vs1;
+new Text:textoInfo1vs1;
+
 forward ocultarResultados();
 public ocultarResultados(){
  	ocultarTextResultadoCW();
+ 	ocultarTextResultado1vs1();
     ForPlayers(i){
         if(Equipo[i] != EQUIPO_ESPECTADOR)
 			TogglePlayerControllable(i, 1);
-
 	}
 	return 1;
 }
@@ -252,6 +287,7 @@ forward establecerVariables(playerid);
 public establecerVariables(playerid)
 {
 	Equipo[playerid] = EQUIPO_ESPECTADOR;
+	estaEnDuelo[playerid] = 0;
 	skinJugador[playerid] = -1;
 	eligiendoSkin[playerid] = true;
 	clanInvitacion[playerid][idClanInvitado] = 0;
@@ -324,6 +360,7 @@ public OnGameModeInit()
 	
 	crearTextDrawsCW();
 	crearTextDrawsEntrada();
+	crearTextResultado1vs1();
     crearTextResultadoCW();
     actualizarMarcador();
     
@@ -456,16 +493,23 @@ public OnPlayerConnect(playerid)
 	infoJugador[playerid][ip] = IP(playerid);
 	
 	new DBResult:resultado, bool:real = false;
-	format(consultaDb, sizeof(consultaDb), "SELECT nick FROM cuentas WHERE ip = '%s'", infoJugador[playerid][ip]);
+	format(consultaDb, sizeof(consultaDb), "SELECT * FROM cuentas WHERE ip = '%s'", infoJugador[playerid][ip]);
 	resultado = db_query(Cuentas, consultaDb);
 	if(db_num_rows(resultado)){
-	    new nombreAux[30];
+	    new nombreAux[30], cuentaBaneada = 0;
 	    db_get_field_assoc(resultado, "nick", nombreAux, sizeof(nombreAux));
+	   cuentaBaneada = db_get_field_assoc_int(resultado, "baneado");
 	    printf("nombre sacado: %s. nombre real %s", nombreAux, infoJugador[playerid][Nombre]);
 		if(strcmp(infoJugador[playerid][Nombre], nombreAux, true) != 0){
 		    printf("nombre repetido");
 		    new str[128];
-			format(str, sizeof(str), ""GRISEADO"[Anti-fake]: {%06x}%s ({%06x}%s"GRISEADO")no pudo conectarse al servidor.", colorJugador(playerid), infoJugador[playerid][Nombre], colorJugador(playerid), paisJugador(playerid));
+			format(str, sizeof(str), ""GRISEADO"[Anti-fake]: {%06x}%s ({%06x}%s"GRISEADO") no pudo conectarse al servidor.", colorJugador(playerid), infoJugador[playerid][Nombre], colorJugador(playerid), paisJugador(playerid));
+			SendClientMessageToAll(colorJugador(playerid), str);
+			Kick(playerid);
+		}else if(cuentaBaneada == 1){
+		    printf("Cuenta baneada");
+		    new str[128];
+			format(str, sizeof(str), ""GRISEADO"[Baneado]: {%06x}%s ({%06x}%s"GRISEADO") no pudo conectarse al servidor.", colorJugador(playerid), infoJugador[playerid][Nombre], colorJugador(playerid), paisJugador(playerid));
 			SendClientMessageToAll(colorJugador(playerid), str);
 			Kick(playerid);
 		}else
@@ -583,6 +627,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				case 0:
 				{
 					strcat(selece, ""GRISEADO"/{FFFFFF}equipo\t"GRISEADO"- Cambias de equipo (switch)."); 
+					strcat(selece, "\n"GRISEADO"/{FFFFFF}x1\t"GRISEADO"- Vas a una arena de duelo.");
 					strcat(selece, "\n"GRISEADO"/{FFFFFF}kill\t"GRISEADO"- Te suicidas por pendejo.");
 					strcat(selece, "\n"GRISEADO"/{FFFFFF}top\t"GRISEADO"- Lista de tops del servidor, clanes y jugadores."); 
 					strcat(selece, "\n"GRISEADO"/{FFFFFF}creditos\t"GRISEADO"- Información sobre el servidor.");
@@ -791,6 +836,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			if(response){
 			    establecerJugadores();
    				printf("%d naranja, %d verde", totalJugadores[EQUIPO_NARANJA], totalJugadores[EQUIPO_VERDE]);
+   				respawnearJugadores();
 				switch(listitem){
    					case 0:
    					{
@@ -806,7 +852,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						SCMTAF(COLOR_BLANCO,"{%06x}%s"GRISEADO" ha cambiado el modo de juego a {FFFFFF}%s", colorJugador(playerid), infoJugador[playerid][Nombre], nombreModo());
     					actualizarTextGlobales();
     					actualizarMarcador();
-    					resetearJugadoresEnPartida();
 					}
 					case 1:
    					{
@@ -822,7 +867,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						SCMTAF(COLOR_BLANCO,"{%06x}%s"GRISEADO" ha cambiado el modo de juego a {FFFFFF}%s", colorJugador(playerid), infoJugador[playerid][Nombre], nombreModo());
                         actualizarTextGlobales();
                         actualizarMarcador();
-                        resetearJugadoresEnPartida();
 					}
 					case 2:
    					{
@@ -834,7 +878,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						SCMTAF(COLOR_BLANCO,"{%06x}%s"GRISEADO" ha cambiado el modo de juego a {FFFFFF}%s", colorJugador(playerid), infoJugador[playerid][Nombre], nombreModo());
                         actualizarTextGlobales();
                         actualizarMarcador();
-                        resetearJugadoresEnPartida();
 					}
 				}
 			}
@@ -885,12 +928,47 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		        }
 		    }
 		}
-	}
+		case DIALOG_DUELOARENAS:
+		{
+		    if(response){
+		        switch(listitem){
+		            case 0:
+		            {
+		                new c = jugadoresArena[ARENA_WAREHOUSE];
+		                if(c == 2)
+							return SendClientMessage(playerid, COLOR_ROJO, "Ya hay un duelo en curso en esta arena.");
+						else{
+						    estaEnDuelo[playerid] = ARENA_WAREHOUSE;
+                            jugadoresArena[ARENA_WAREHOUSE]++;
+                            SetPlayerVirtualWorld(playerid,3);
+                    		SetPlayerInterior(playerid,1);
+                      		new Random = random(sizeof(warehouseSpawns));
+                    		SetPlayerPos(playerid, warehouseSpawns[Random][0], warehouseSpawns[Random][1], warehouseSpawns[Random][2]);
+                            darArmasRW(playerid);
+                      		SetPlayerHealth(playerid, 100);
+                      		SetPlayerArmour(playerid, 100);
+						}
+		            }
+		        }
+				if(estaEnDuelo[playerid] != 0){
+				    new s[256];
+				    format(s, sizeof(s), "{%06x}%s"GRISEADO" fue a la arena {FFFFFF}%s", colorJugador(playerid), infoJugador[playerid][Nombre], nombreArenaX1(estaEnDuelo[playerid]));
+     				SendClientMessageToAll(COLOR_BLANCO, s);
+				}
+		    }
+		}
+  	}
     return 1;
 }
 //, kills, cwGanadas, cwPerdidas, miembros
 
 
+stock darArmasRW(playerid){
+	ResetPlayerWeapons(playerid);
+	GivePlayerWeapon(playerid, 22, 9999);
+	GivePlayerWeapon(playerid, 28, 9999);
+	GivePlayerWeapon(playerid, 26, 9999);
+}
 
 borrarClan(playerid)
 {
@@ -1340,7 +1418,7 @@ establecerPuntosObtenidos(ganador, perdedor){
  	format(str, sizeof(str), ""GRISEADO"Se te sumó {FFFFFF}+%d "GRISEADO"puntos por tu victoria ({FFFFFF}%d{FFFFFF})", puntosGanador, infoJugador[ganador][puntajeRanked]);
  	SendClientMessage(ganador, COLOR_BLANCO, str);
  	if(infoJugador[perdedor][puntajeRanked] == 0)
-        format(str, sizeof(str), ""GRISEADO"No se te resto puntos porque no tenes ({FFFFFF}%d{FFFFFF})", puntosPerdedor, infoJugador[perdedor][puntajeRanked]);
+        format(str, sizeof(str), ""GRISEADO"No se te resto puntos porque no tenes ({FFFFFF}-%d{FFFFFF})", puntosPerdedor, infoJugador[perdedor][puntajeRanked]);
  	else
  	    format(str, sizeof(str), ""GRISEADO"Se te restó {FFFFFF}-%d "GRISEADO"puntos por tu derrota ({FFFFFF}%d{FFFFFF})", puntosPerdedor, infoJugador[perdedor][puntajeRanked]);
  	SendClientMessage(perdedor, COLOR_BLANCO, str);
@@ -1348,7 +1426,56 @@ establecerPuntosObtenidos(ganador, perdedor){
  	guardarDatos(perdedor);
 }
 
-crearResultadoCW(ganador){
+stock crearResultado1vs1(ganador){
+	eliminarListaDeKills();
+	new str[24], str2[24];
+	ForPlayers(i){
+	    if(Equipo[i] == EQUIPO_NARANJA){
+			format(str, 24, "%s", infoJugador[i][Nombre]);
+			TextDrawSetString(nombreNaranja1vs1, str);
+			format(str, 24, "%d", killsJugador[i]);
+			TextDrawSetString(killsNara1vs1, str);
+			format(str, 24, "%d", muertesJugador[i]);
+			TextDrawSetString(muertesNara1vs1, str);
+			new Float:ratio;
+			if(muertesJugador[i] == 0)
+				ratio = killsJugador[i];
+			else
+				ratio = float(killsJugador[i])/float(muertesJugador[i]);
+			format(str, 24, "%.2f", ratio);
+			TextDrawSetString(ratioNara1vs1, str);
+	    }
+	    if(Equipo[i] == EQUIPO_VERDE){
+			format(str2, 24, "%s", infoJugador[i][Nombre]);
+			TextDrawSetString(nombreVerde1vs1, str2);
+			format(str2, 24, "%d", killsJugador[i]);
+			TextDrawSetString(killsVerd1vs1, str2);
+			format(str2, 24, "%d", killsJugador[i]);
+			TextDrawSetString(muertesVerd1vs1, str2);
+			new Float:ratio;
+			if(muertesJugador[i] == 0)
+				ratio = killsJugador[i];
+			else
+				ratio = float(killsJugador[i])/float(muertesJugador[i]);
+			format(str2, 24, "%.2f", ratio);
+			TextDrawSetString(ratioVerd1vs1, str);
+	    }
+	}
+	new strInfo[700], ministr[258], ganadorColor[5];
+	if(Equipo[ganador] == EQUIPO_NARANJA) format(ganadorColor, 5, "~y~");
+	else format(ganadorColor, 5, "~g~");
+	format(strInfo[0], sizeof(strInfo), "~w~Ganador: %s%s~n~~w~Puntaje total: ~y~%d~w~:~g~%d ~w~(~y~%d~w~:~g~%d~w~)",
+	ganadorColor, infoJugador[ganador][Nombre], dataEquipo[EQUIPO_NARANJA][Puntaje], dataEquipo[EQUIPO_VERDE][Puntaje], dataEquipo[EQUIPO_NARANJA][Rondas], dataEquipo[EQUIPO_VERDE][Rondas]);
+	format(ministr[0], 100, "~n~~w~Tipo de partida: ~b~~w~%d~w~x~b~~w~%d~n~~w~Mapa: ~b~~w~%s", maximaRonda, maximoPuntaje, nombreMapa(mapaElegido));
+	strcat(strInfo, ministr);
+	TextDrawSetString(textoInfo1vs1, strInfo[0]);
+ 	mostrarTextResultado1vs1();
+	SetTimer("ocultarResultados", 30000, false);
+ 	SendClientMessageToAll(COLOR_BLANCO, "La tabla de resultados se ocultarà en 30 segundos.");
+	resetearPartida();
+}
+
+stock crearResultadoCW(ganador){
     eliminarListaDeKills();
    	ForPlayers(i) TogglePlayerControllable(i, 0);
    	new nombreStr[2][MAX_PLAYER_NAME*10],
@@ -1390,13 +1517,14 @@ crearResultadoCW(ganador){
 	
 	new strInfoPartida[1024], ministr[100];
 	format(strInfoPartida[0], 1024, "~w~Equipo ganador: %s%s~n~~w~Mejor jugador: ~b~~w~%s~n~~w~Puntaje total: ~y~%d~w~:~g~%d ~w~(~y~%d~w~:~g~%d~w~)",
-	nombreEquipo[ganador], ganadorColor, infoJugador[idMejor][Nombre], dataEquipo[EQUIPO_NARANJA][Puntaje], dataEquipo[EQUIPO_VERDE][Puntaje], dataEquipo[EQUIPO_NARANJA][Rondas], dataEquipo[EQUIPO_VERDE][Rondas]);
+	ganadorColor, nombreEquipo[ganador], infoJugador[idMejor][Nombre], dataEquipo[EQUIPO_NARANJA][Puntaje], dataEquipo[EQUIPO_VERDE][Puntaje], dataEquipo[EQUIPO_NARANJA][Rondas], dataEquipo[EQUIPO_VERDE][Rondas]);
 	format(ministr[0], 100, "~n~Tipo de partida: ~b~~w~%d~w~x~b~~w~%d~n~~w~Mapa: ~b~~w~%s", maximaRonda, maximoPuntaje, nombreMapa(mapaElegido));
 	strcat(strInfoPartida, ministr);
 	TextDrawSetString(textoEquipoGanador, strInfoPartida[0]);
     mostrarTextResultadoCW();
     SetTimer("ocultarResultados", 30000, false);
     SendClientMessageToAll(COLOR_BLANCO, "La tabla de resultados se ocultarà en 30 segundos.");
+    resetearPartida();
 }
 
 verificarGanador(){
@@ -1422,18 +1550,29 @@ verificarGanador(){
 		}
 		SCMTAF(COLOR_BLANCO, "{%06x}%s"GRISEADO" ha ganado el 1 vs 1 contra {%06x}%s", colorJugador(ganador), infoJugador[ganador][Nombre], colorJugador(perdedor), infoJugador[perdedor][Nombre]);
 		establecerPuntosObtenidos(ganador, perdedor);
+		crearResultado1vs1(ganador);
 	}
+}
+
+stock respawnearJugadores(){
+	ForPlayers(i){
+	    if(Equipo[i] != EQUIPO_ESPECTADOR){
+	    	SetPlayerHealth(i, 100);
+        	SpawnPlayer(i);
+	    }
+	}
+}
+stock resetearPartida(){
 	resetearTodo();
 	resetearJugadoresEnPartida();
 	actualizarTextGlobales();
 }
-
-resetearTodosJugadores(){
+stock resetearTodosJugadores(){
 	ForPlayers(i)
 		SpawnPlayer(i);
 }
 
-resetearJugadoresEnPartida(){
+stock resetearJugadoresEnPartida(){
 	ForPlayers(i){
 	    if(Equipo[i] != EQUIPO_ESPECTADOR){
 	    	SetPlayerHealth(i, 100);
@@ -1444,7 +1583,7 @@ resetearJugadoresEnPartida(){
 	}
 }
 
-idJugadorVerde(){
+stock idJugadorVerde(){
 	new id;
 	ForPlayers(i){
 		if(Equipo[i] == EQUIPO_VERDE) id = i;
@@ -1511,7 +1650,7 @@ actualizarEquipo(playerid, killerid){
 			}
 	    	rondaActual++;
   			SCMTAF(COLOR_BLANCO, ""GRISEADO"Empieza la %d ronda.", rondaActual);
-  			resetearJugadoresEnPartida();
+  			respawnearJugadores();
 		}
 		else if(rondaActual == maximaRonda){
 		    if(modoDeJuego == UNO_VS_UNO)
@@ -1519,6 +1658,7 @@ actualizarEquipo(playerid, killerid){
 		    else
             	SCMTAF(COLOR_BLANCO, ""GRISEADO"El equipo {%06x}%s"GRISEADO" ha ganado la ultima ronda.", colorJugador(i), nombreEquipo[i]);
 			verificarGanador();
+			respawnearJugadores();
 		}
 	}
     actualizarTextGlobales();
@@ -1648,9 +1788,24 @@ stock nombreMapa(id){
         format(s, 20, "Aeropuerto SF");
     if(id == AUTO_ESCUELA)
     	format(s, 20, "Auto escuela");
+	new rconS[40];
+	format(rconS, 40, "mapname %s", s);
+	SendRconCommand(rconS);
 	return s;
 }
 
+stock tipoDuelo(id){
+	new s[3];
+	if(id >= 1 && id <= 3)
+		format(s, 3, "RW");
+	return s;
+}
+stock nombreArenaX1(id){
+	new s[25];
+	if(id == 1)
+		format(s, 25, "Warehouse");
+	return s;
+}
 stock nombreModo(){
 	new s[25];
 	if(modoDeJuego == CLAN_WAR)
@@ -1692,11 +1847,10 @@ public OnPlayerText(playerid, text[]){
 
 public OnPlayerCommandPerformed(playerid, cmdtext[], success)
 {
-	if(!success)
-	{
+	if(!success){
     	PlayerPlaySound(playerid,1054,0.0,0.0,0.0);
-    	SendClientMessage(playerid, COLOR_ROJO, "El comando que escribiste no existe!");
-	}
+    	SendClientMessage(playerid, COLOR_BLANCO, ""GRISEADO"Comando incorrecto, usa {FFFFFF}/cmds");
+ 	}
 	return 1;
 }
 
@@ -1704,30 +1858,46 @@ public OnPlayerCommandPerformed(playerid, cmdtext[], success)
 public OnPlayerSpawn(playerid)
 {
 	if(eligiendoSkin[playerid] == true){
-    new string[1200];
-	strcat(string,"{FFFFFF}El servidor se encuentra en fase BETA\n");
-	strcat(string,"{FFFFFF}Estará en desarrollo los siguientes días\n");
-	strcat(string,"{FFFFFF}Comandos: /cmds\n");
-	ShowPlayerDialog(playerid, DIALOG_CREDITOS, 0, "Información sobre el servidor", string, "Ok", "");
-	    
+    	new string[400];
+		strcat(string,"{FFFFFF}El servidor se encuentra en fase BETA\n");
+		strcat(string,"{FFFFFF}Estará en desarrollo los siguientes días\n");
+		strcat(string,"{FFFFFF}Comandos: /cmds\n");
+		ShowPlayerDialog(playerid, DIALOG_CREDITOS, 0, "Información sobre el servidor", string, "Ok", "");
 		mostrarDataPlayer(playerid);
 		ocultarTextDrawsEntrada(playerid);
 		actualizarTextGlobales();
-	}
-    eligiendoSkin[playerid] = false;
+  		eligiendoSkin[playerid] = false;
+ 	}
     if(skinJugador[playerid] != -1)
 		SetPlayerSkin(playerid, skinJugador[playerid]);
+		
+    if(estaEnDuelo[playerid] != 0){
+		new i = estaEnDuelo[playerid];
+		jugadoresArena[i]--;
+		estaEnDuelo[playerid] = 0;
+    }
     
-	GivePlayerWeapon(playerid, 22, 9999);
-	GivePlayerWeapon(playerid, 28, 9999);
-	GivePlayerWeapon(playerid, 26, 9999);
+    if(Equipo[playerid] != EQUIPO_ESPECTADOR){
+    	GivePlayerWeapon(playerid, 22, 9999);
+		GivePlayerWeapon(playerid, 28, 9999);
+		GivePlayerWeapon(playerid, 26, 9999);
+    }
 	
     SetPlayerHealth(playerid,100);
     SetPlayerPos(playerid, spawnMapas[mapaElegido][Equipo[playerid]][0], spawnMapas[mapaElegido][Equipo[playerid]][1], spawnMapas[mapaElegido][Equipo[playerid]][2]);
 	SetPlayerFacingAngle(playerid, spawnMapas[mapaElegido][Equipo[playerid]][3]);
 	SetPlayerInterior(playerid,0);
 	TogglePlayerClock(playerid,0);
+	SetPlayerVirtualWorld(playerid, 0);
 	return 1;
+}
+
+public OnPlayerTakeDamage(playerid, issuerid, Float: amount, weaponid, bodypart)
+{
+    if(issuerid != INVALID_PLAYER_ID)
+		if(weaponid > 21 && weaponid < 35)
+			PlayerPlaySound(issuerid, 17802, 0.0, 0.0, 0.0);
+    return 1;
 }
 
 public OnPlayerDeath(playerid, killerid, reason){
@@ -1735,18 +1905,32 @@ public OnPlayerDeath(playerid, killerid, reason){
 		return SpawnPlayer(playerid);
     if(Equipo[playerid] == EQUIPO_ESPECTADOR)
 		return SpawnPlayer(playerid);
-
-    SpawnPlayer(playerid);
-    SendDeathMessage(killerid, playerid, reason);
+ 	if(estaEnDuelo[playerid] != 0){
+		new Float:Vida, Float:Armor, s[388], a = estaEnDuelo[playerid];
+		GetPlayerHealth(killerid, Vida);
+		GetPlayerArmour(killerid, Armor);
+		format(s, sizeof(s), ""GRISEADO"[%s"GRISEADO"] {FFFFFF}%s "GRISEADO"ganó el duelo contra {FFFFFF}%s"GRISEADO" [V: {FFFFFF}%.2f"GRISEADO"/C: {ffffff}%.2f"GRISEADO"]",
+		nombreArenaX1(a), infoJugador[killerid][Nombre], infoJugador[playerid][Nombre], Vida, Armor);
+		SendClientMessageToAll(COLOR_BLANCO, s);
+		infoJugador[killerid][duelosGanados]++;
+		infoJugador[playerid][duelosPerdidos]++;
+		SpawnPlayer(killerid);
+		SpawnPlayer(playerid);
+		guardarDatos(playerid);
+		guardarDatos(killerid);
+	}
 	if(modoDeJuego != ENTRENAMIENTO){
 		killsJugador[killerid]++;
 		muertesJugador[playerid]++;
 		actualizarEquipo(playerid, killerid);
 	}
+	
 	if(tieneClan(playerid) > 0){
   //format(consultaDb, sizeof(consultaDb), "UPDATE registros SET clan = 0 WHERE clan = %d", idClan);
     	//resultado = db_query(Cuentas, consultaDb);
- }
+ 	}
+  	SpawnPlayer(playerid);
+    SendDeathMessage(killerid, playerid, reason);
    	return 1;
 }
 
@@ -1769,6 +1953,38 @@ public OnPlayerRequestClass(playerid, classid)
 
 CMD:top(playerid, params[]){
 	return 	mostrarTop(playerid);
+}
+
+CMD:saber(playerid, params[]){
+	printf("cantidad %d", jugadoresArena[ARENA_WAREHOUSE]);
+	return 1;
+}
+CMD:x1(playerid, params[]){
+	if(Equipo[playerid] != EQUIPO_ESPECTADOR)
+		return SendClientMessage(playerid, COLOR_ROJO, "Los duelos solamente son para {FFFFFF}Espectadores");
+	if(estaEnDuelo[playerid] > 0){
+	    new str[128], num = estaEnDuelo[playerid];
+    	format(str, sizeof(str), ""GRISEADO"Ya estàs en la arena {FFFFFF}%s"GRISEADO", usa {FFFFFF}/salir", nombreArenaX1(num));
+    	return SendClientMessage(playerid, COLOR_ROJO, str);
+	}
+	new string[128], selece[200];
+	strcat(selece, "{7C7C7C}Arena\t{7C7C7C}Jugadores\n");
+	format(string, sizeof(string), "{B8B8B8}Warehouse\t{7C7C7C}%d", jugadoresArena[ARENA_WAREHOUSE]);
+	strcat(selece, string);
+    ShowPlayerDialog(playerid, DIALOG_DUELOARENAS, DIALOG_STYLE_TABLIST_HEADERS, "{7C7C7C}Arenas de duelo", selece, "Selec.", "Cerrar");
+	return 1;
+}
+
+CMD:salir(playerid, params[]){
+	if(Equipo[playerid] != EQUIPO_ESPECTADOR)
+		return SendClientMessage(playerid, COLOR_ROJO, "Los duelos solamente son para {FFFFFF}Espectadores");
+	if(estaEnDuelo[playerid] == 0)
+		return SendClientMessage(playerid, COLOR_ROJO, "No estas en ninguna arena para salir.");
+	new s[128], num = estaEnDuelo[playerid];
+	format(s, sizeof(s), "%s "GRISEADO"salió de la arena {FFFFFF}%s", infoJugador[playerid][Nombre], nombreArenaX1(num));
+	SendClientMessageToAll(COLOR_BLANCO, s);
+	SpawnPlayer(playerid);
+	return 1;
 }
 
 CMD:fps(playerid, params[]){
@@ -1922,9 +2138,11 @@ CMD:admins(playerid, params[]){
 	ShowPlayerDialog(playerid, 2343, DIALOG_STYLE_TABLIST_HEADERS, strTitulo, strAdmins, "Cerrar", "");
 	return 1;
 }
-
-CMD:stats(playerid, params[]){
+CMD:guardarmisdatos(playerid, params[]){
 	guardarDatos(playerid);
+	return 1;
+}
+CMD:stats(playerid, params[]){
     new i, stats[1000];
     if(isnull(params)) i = playerid;
     else i = strval(params);
@@ -1943,8 +2161,11 @@ CMD:stats(playerid, params[]){
     format(stats, sizeof(stats), "%s\n{7C7C7C}Rango: {%s}%s {7C7C7C}({FFFFFF}%d{7C7C7C})", stats, colorRango(i), nombreRango(i), infoJugador[i][puntajeRanked]);
     format(stats, sizeof(stats), "%s\n{7C7C7C}Duelos ganados: {FFFFFF}%d", stats, infoJugador[i][duelosGanados]);
     format(stats, sizeof(stats), "%s\n{7C7C7C}Duelos perdidos: {FFFFFF}%d", stats, infoJugador[i][duelosPerdidos]);
+    if(estaEnDuelo[i] > 0){
+        if(jugadoresArena[estaEnDuelo[i]] == 1) format(stats, sizeof(stats), "%s\n{7C7C7C}Esperando en {FFFFFF}%s {7C7C7C}({FFFFFF}%s{7C7C7C})", stats, nombreArenaX1(estaEnDuelo[i]), tipoDuelo(estaEnDuelo[i]));
+        else format(stats, sizeof(stats), "%s\n{7C7C7C}Dueleando en {FFFFFF}%s {7C7C7C}({FFFFFF}%s{7C7C7C})", stats, nombreArenaX1(estaEnDuelo[i]), tipoDuelo(estaEnDuelo[i]));
+	}
     if(infoJugador[i][Admin] > 0) format(stats, sizeof(stats), "%s\n{7C7C7C}%s {7C7C7C}({FFFFFF}%d{7C7C7C})", stats, tipoAdmin(infoJugador[i][Admin]), infoJugador[i][Admin]);
-    
     ShowPlayerDialog(playerid, DIALOG_STATS, DIALOG_STYLE_MSGBOX, "Stats", stats, "Cerrar", "");
     return 1;
 }
@@ -2354,7 +2575,7 @@ CMD:ir(playerid, params[]){
     new str[128];
     format(str, sizeof(str), ""GRISEADO"Fuiste a la posición de {%06x}%s", colorJugador(i), infoJugador[i][Nombre]);
     SendClientMessage(playerid, COLOR_BLANCO, str);
-    format(str, sizeof(str), "{%06x}%s "GRISEADO" vino a tu posición", colorJugador(playerid), infoJugador[playerid][Nombre]);
+    format(str, sizeof(str), "{%06x}%s "GRISEADO"vino a tu posición", colorJugador(playerid), infoJugador[playerid][Nombre]);
     SendClientMessage(i, COLOR_BLANCO, str);
     return 1;
 }
@@ -2381,20 +2602,6 @@ CMD:traer(playerid, params[]){
     return 1;
 }
 
-CMD:ocultar(playerid,params[]){
-        ocultarTextResultadoCW();
-	return 1;
-}
-
-CMD:cambiarmodo(playerid, params[]){
-	modoDeJuego = strval(params);
-	actualizarTextGlobales();
-}
-
-CMD:mostrar(playerid,params[]){
-        crearResultadoCW(0);
-	return 1;
-}
 CMD:cc(playerid, params[]){
 	if(infoJugador[playerid][Admin] < 2)
 	    return SendClientMessage(playerid, COLOR_ROJO,"Solo los administadores generales pueden usar este comando.");
@@ -2409,23 +2616,34 @@ CMD:cc(playerid, params[]){
 CMD:kick(playerid, params[]){
 	if(infoJugador[playerid][Admin] < 3)
 	    return SendClientMessage(playerid, COLOR_ROJO,"Solo los administadores de jugadores pueden usar este comando.");
-    new id, razon[64];
-  	if(sscanf(params, "us[64]", id, razon))
+    new i, razon[64];
+  	if(sscanf(params, "is", i, razon))
 		return SendClientMessage(playerid, COLOR_ROJO,"Escribiste mal el comando; {FFFFFF}/ban ID Razón");
- 	if(!IsPlayerConnected(id))
+ 	if(!IsPlayerConnected(i))
 		return SendClientMessage(playerid, COLOR_ROJO, "No existe la ID que pusiste.");
-	Kick(id);
+	new str[328];
+	format(str, sizeof(str), "{%06x}%s"GRISEADO" ha kickeado a {%06x}%s "GRISEADO" razón: {FFFFFF}%s", colorJugador(playerid), infoJugador[playerid][Nombre], colorJugador(i), infoJugador[i][Nombre], razon);
+	SendClientMessageToAll(COLOR_BLANCO, str);
+	ShowPlayerDialog(i, 3453, 0, "Kickeado", str, "Ok", "");
+	printf("%s ha kickeado a %s por la razon %s",infoJugador[playerid][Nombre],infoJugador[i][Nombre], razon);
+	Kick(i);
 	return 1;
 }
 
 CMD:ban(playerid, params[]){
 	if(infoJugador[playerid][Admin] < 3)
 	    return SendClientMessage(playerid, COLOR_ROJO,"Solo los administadores de jugadores pueden usar este comando.");
-    new id, razon[64];
-  	if(sscanf(params, "us[64]", id, razon))
+    new i, razon[64];
+  	if(sscanf(params, "is", i, razon))
 		return SendClientMessage(playerid, COLOR_ROJO,"Escribiste mal el comando; {FFFFFF}/ban ID Razón");
- 	if(!IsPlayerConnected(id))
+ 	if(!IsPlayerConnected(i))
 		return SendClientMessage(playerid, COLOR_ROJO, "No existe la ID que pusiste.");
+	new str[328];
+	format(str, sizeof(str), "{%06x}%s"GRISEADO" ha baneado a {%06x}%s "GRISEADO" razón: {FFFFFF}%s", colorJugador(playerid), infoJugador[playerid][Nombre], colorJugador(i), infoJugador[i][Nombre], razon);
+	SendClientMessageToAll(COLOR_BLANCO, str);
+	printf("%s ha baneado a %s por la razon %s",infoJugador[playerid][Nombre],infoJugador[i][Nombre], razon);
+	infoJugador[playerid][Baneado] = 1;
+	BanEx(i, razon);
 	return 1;
 }
 CMD:setadmin(playerid, params[]){
@@ -2981,6 +3199,204 @@ stock sscanf(string[], format[], {Float,_}:...)
         return 0;
 }
 
+crearTextResultado1vs1(){
+	fondoResultado1vs1 = TextDrawCreate(433.333374, 158.714721, "usebox");
+	TextDrawLetterSize(fondoResultado1vs1, 0.000000, 7.933328);
+	TextDrawTextSize(fondoResultado1vs1, 211.666687, 0.000000);
+	TextDrawAlignment(fondoResultado1vs1, 1);
+	TextDrawColor(fondoResultado1vs1, 0);
+	TextDrawUseBox(fondoResultado1vs1, true);
+	TextDrawBoxColor(fondoResultado1vs1, 102);
+	TextDrawSetShadow(fondoResultado1vs1, 0);
+	TextDrawSetOutline(fondoResultado1vs1, 0);
+	TextDrawFont(fondoResultado1vs1, 0);
+
+	textoResultado1vs1 = TextDrawCreate(258.666717, 162.607421, "Resultados de la partida");
+	TextDrawLetterSize(textoResultado1vs1, 0.200000, 1.000000);
+	TextDrawAlignment(textoResultado1vs1, 1);
+	TextDrawColor(textoResultado1vs1, -1);
+	TextDrawSetShadow(textoResultado1vs1, 0);
+	TextDrawSetOutline(textoResultado1vs1, 1);
+	TextDrawBackgroundColor(textoResultado1vs1, 0x000000AA);
+	TextDrawFont(textoResultado1vs1, 2);
+	TextDrawSetProportional(textoResultado1vs1, 1);
+
+	nombreNaranja1vs1 = TextDrawCreate(226.666656, 180, "[WTx]Andrew_Manu");
+	TextDrawLetterSize(nombreNaranja1vs1, 0.200000, 1.000000);
+	TextDrawAlignment(nombreNaranja1vs1, 1);
+	TextDrawColor(nombreNaranja1vs1, -5963521);
+	TextDrawSetShadow(nombreNaranja1vs1, 0);
+	TextDrawSetOutline(nombreNaranja1vs1, 1);
+	TextDrawBackgroundColor(nombreNaranja1vs1, 0x000000AA);
+	TextDrawFont(nombreNaranja1vs1, 1);
+	TextDrawSetProportional(nombreNaranja1vs1, 1);
+
+	nombreVerde1vs1 = TextDrawCreate(340.999938, 180, "[WTx]ScorpioN_");
+	TextDrawLetterSize(nombreVerde1vs1, 0.200000, 1.000000);
+	TextDrawAlignment(nombreVerde1vs1, 1);
+	TextDrawColor(nombreVerde1vs1, 8388863);
+	TextDrawSetShadow(nombreVerde1vs1, 0);
+	TextDrawSetOutline(nombreVerde1vs1, 1);
+	TextDrawBackgroundColor(nombreVerde1vs1, 0x000000AA);
+	TextDrawFont(nombreVerde1vs1, 1);
+	TextDrawSetProportional(nombreVerde1vs1, 1);
+
+	textoVersus1vs1 = TextDrawCreate(313.666687, 180, "vs");
+	TextDrawLetterSize(textoVersus1vs1, 0.200000, 1.000000);
+	TextDrawAlignment(textoVersus1vs1, 1);
+	TextDrawColor(textoVersus1vs1, -1061109505);
+	TextDrawSetShadow(textoVersus1vs1, 0);
+	TextDrawSetOutline(textoVersus1vs1, 1);
+	TextDrawBackgroundColor(textoVersus1vs1, 0x000000AA);
+	TextDrawFont(textoVersus1vs1, 2);
+	TextDrawSetProportional(textoVersus1vs1, 1);
+
+	dataNara1vs1 = TextDrawCreate(226.000015, 192, "Kills   Muertes   Ratio");
+	TextDrawLetterSize(dataNara1vs1, 0.200000, 1.000000);
+	TextDrawAlignment(dataNara1vs1, 1);
+	TextDrawColor(dataNara1vs1, -2139062017);
+	TextDrawSetShadow(dataNara1vs1, 0);
+	TextDrawSetOutline(dataNara1vs1, 1);
+	TextDrawBackgroundColor(dataNara1vs1, 0x000000AA);
+	TextDrawFont(dataNara1vs1, 1);
+	TextDrawSetProportional(dataNara1vs1, 1);
+
+	dataVerd1vs1 = TextDrawCreate(338.000122, 192, "Kills   Muertes   Ratio");
+	TextDrawLetterSize(dataVerd1vs1, 0.200000, 1.000000);
+	TextDrawAlignment(dataVerd1vs1, 1);
+	TextDrawColor(dataVerd1vs1, -2139062017);
+	TextDrawSetShadow(dataVerd1vs1, 0);
+	TextDrawSetOutline(dataVerd1vs1, 1);
+	TextDrawBackgroundColor(dataVerd1vs1, 0x000000AA);
+	TextDrawFont(dataVerd1vs1, 1);
+	TextDrawSetProportional(dataVerd1vs1, 1);
+
+	killsNara1vs1 = TextDrawCreate(228.999954, 205, "12");
+	TextDrawLetterSize(killsNara1vs1, 0.200000, 1.000000);
+	TextDrawAlignment(killsNara1vs1, 1);
+	TextDrawColor(killsNara1vs1, -1061109505);
+	TextDrawSetShadow(killsNara1vs1, 0);
+	TextDrawSetOutline(killsNara1vs1, 1);
+	TextDrawBackgroundColor(killsNara1vs1, 0x000000AA);
+	TextDrawFont(killsNara1vs1, 1);
+	TextDrawSetProportional(killsNara1vs1, 1);
+
+	muertesNara1vs1 = TextDrawCreate(256.666687, 205, "13");
+	TextDrawLetterSize(muertesNara1vs1, 0.200000, 1.000000);
+	TextDrawAlignment(muertesNara1vs1, 1);
+	TextDrawColor(muertesNara1vs1, -1061109505);
+	TextDrawSetShadow(muertesNara1vs1, 0);
+	TextDrawSetOutline(muertesNara1vs1, 1);
+	TextDrawBackgroundColor(muertesNara1vs1, 0x000000AA);
+	TextDrawFont(muertesNara1vs1, 1);
+	TextDrawSetProportional(muertesNara1vs1, 1);
+
+	ratioNara1vs1 = TextDrawCreate(287.333312, 205, "1.24");
+	TextDrawLetterSize(ratioNara1vs1, 0.200000, 1.000000);
+	TextDrawAlignment(ratioNara1vs1, 1);
+	TextDrawColor(ratioNara1vs1, -1061109505);
+	TextDrawSetShadow(ratioNara1vs1, 0);
+	TextDrawSetOutline(ratioNara1vs1, 1);
+	TextDrawBackgroundColor(ratioNara1vs1, 0x000000AA);
+	TextDrawFont(ratioNara1vs1, 1);
+	TextDrawSetProportional(ratioNara1vs1, 1);
+
+	killsVerd1vs1 = TextDrawCreate(340.000122, 205, "14");
+	TextDrawLetterSize(killsVerd1vs1, 0.200000, 1.000000);
+	TextDrawAlignment(killsVerd1vs1, 1);
+	TextDrawColor(killsVerd1vs1, -1061109505);
+	TextDrawSetShadow(killsVerd1vs1, 0);
+	TextDrawSetOutline(killsVerd1vs1, 1);
+	TextDrawBackgroundColor(killsVerd1vs1, 0x000000AA);
+	TextDrawFont(killsVerd1vs1, 1);
+	TextDrawSetProportional(killsVerd1vs1, 1);
+
+	muertesVerd1vs1 = TextDrawCreate(371.333404, 205, "15");
+	TextDrawLetterSize(muertesVerd1vs1, 0.200000, 1.000000);
+	TextDrawAlignment(muertesVerd1vs1, 1);
+	TextDrawColor(muertesVerd1vs1, -1);
+	TextDrawSetShadow(muertesVerd1vs1, 0);
+	TextDrawSetOutline(muertesVerd1vs1, 1);
+	TextDrawBackgroundColor(muertesVerd1vs1, 0x000000AA);
+	TextDrawFont(muertesVerd1vs1, 1);
+	TextDrawSetProportional(muertesVerd1vs1, 1);
+
+	ratioVerd1vs1 = TextDrawCreate(400.333374, 205, "1.25");
+	TextDrawLetterSize(ratioVerd1vs1, 0.200000, 1.000000);
+	TextDrawAlignment(ratioVerd1vs1, 1);
+	TextDrawColor(ratioVerd1vs1, -1);
+	TextDrawSetShadow(ratioVerd1vs1, 0);
+	TextDrawSetOutline(ratioVerd1vs1, 1);
+	TextDrawBackgroundColor(ratioVerd1vs1, 0x000000AA);
+	TextDrawFont(ratioVerd1vs1, 1);
+	TextDrawSetProportional(ratioVerd1vs1, 1);
+
+	fondoInfo1vs1 = TextDrawCreate(389.666687, 301.411102, "usebox");
+	TextDrawLetterSize(fondoInfo1vs1, 0.000000, 0.000000);
+	TextDrawTextSize(fondoInfo1vs1, 389.666687, 0.000000);
+	TextDrawAlignment(fondoInfo1vs1, 1);
+	TextDrawColor(fondoInfo1vs1, 0);
+	TextDrawUseBox(fondoInfo1vs1, true);
+	TextDrawBoxColor(fondoInfo1vs1, 102);
+	TextDrawSetShadow(fondoInfo1vs1, 0);
+	TextDrawSetOutline(fondoInfo1vs1, 0);
+	TextDrawFont(fondoInfo1vs1, 0);
+
+	textoInfo1vs1 = TextDrawCreate(264.666656, 242.666687, "Ganador: [WTx]Andrew_Manu");
+	TextDrawLetterSize(textoInfo1vs1, 0.200000, 1.000000);
+	TextDrawAlignment(textoInfo1vs1, 1);
+	TextDrawColor(textoInfo1vs1, -1);
+	TextDrawSetShadow(textoInfo1vs1, 0);
+	TextDrawSetOutline(textoInfo1vs1, 1);
+	TextDrawBackgroundColor(textoInfo1vs1, 0x000000AA);
+	TextDrawFont(textoInfo1vs1, 1);
+	TextDrawSetProportional(textoInfo1vs1, 1);
+}
+
+stock mostrarTextResultado1vs1(){
+    TextDrawShowForAll(fondoResultado1vs1);
+    TextDrawShowForAll(textoResultado1vs1);
+    
+    TextDrawShowForAll(nombreNaranja1vs1);
+    TextDrawShowForAll(nombreVerde1vs1);
+    
+    TextDrawShowForAll(dataNara1vs1);
+    TextDrawShowForAll(dataVerd1vs1);
+    
+    TextDrawShowForAll(killsNara1vs1);
+    TextDrawShowForAll(muertesNara1vs1);
+    TextDrawShowForAll(ratioNara1vs1);
+    
+    TextDrawShowForAll(killsVerd1vs1);
+    TextDrawShowForAll(muertesVerd1vs1);
+    TextDrawShowForAll(ratioVerd1vs1);
+    
+    TextDrawShowForAll(fondoInfo1vs1);
+    TextDrawShowForAll(textoInfo1vs1);
+}
+
+stock ocultarTextResultado1vs1(){
+    TextDrawHideForAll(fondoResultado1vs1);
+    TextDrawHideForAll(textoResultado1vs1);
+
+    TextDrawHideForAll(nombreNaranja1vs1);
+    TextDrawHideForAll(nombreVerde1vs1);
+
+    TextDrawHideForAll(dataNara1vs1);
+    TextDrawHideForAll(dataVerd1vs1);
+
+    TextDrawHideForAll(killsNara1vs1);
+    TextDrawHideForAll(muertesNara1vs1);
+    TextDrawHideForAll(ratioNara1vs1);
+
+    TextDrawHideForAll(killsVerd1vs1);
+    TextDrawHideForAll(muertesVerd1vs1);
+    TextDrawHideForAll(ratioVerd1vs1);
+
+    TextDrawHideForAll(fondoInfo1vs1);
+    TextDrawHideForAll(textoInfo1vs1);
+}
+
 crearTextResultadoCW(){
 	fondoResultado = TextDrawCreate(479.000274, 100.225967, "usebox");
 	TextDrawLetterSize(fondoResultado, 0.000000, 19.933347);
@@ -3180,7 +3596,6 @@ crearTextResultadoCW(){
 	TextDrawSetProportional(textoEquipoGanador, 1);
 	TextDrawBackgroundColor(ratiosVerde, 0x000000AA);
 }
-
 mostrarTextResultadoCW(){
     TextDrawShowForAll(fondoResultado);
     TextDrawShowForAll(textoResultado);
