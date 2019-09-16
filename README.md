@@ -30,4 +30,4 @@ The server saves all the data of the registered players through SQL queries, in 
 - Master
 - Grand Master
 
-The ranked score is only achieved by playing 1 vs 1
+The ranked score is only achieved by playing 1 vs 1..
