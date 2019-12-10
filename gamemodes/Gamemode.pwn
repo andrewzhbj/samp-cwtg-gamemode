@@ -82,9 +82,11 @@
 #define DIALOG_TOPCKILLS    	34  /* Clan kills */
 #define DIALOG_TOPCWGANADAS 	35
 #define DIALOG_TOPCWPERD    	36
-#define DIALOG_MODOJUEGO    	37
-#define DIALOG_SELECMAPA    	38
-#define DIALOG_DUELOARENAS      39
+#define DIALOG_TOPNACIONAL      37
+#define DIALOG_TOPPAIS     		38
+#define DIALOG_MODOJUEGO        39
+#define DIALOG_SELECMAPA        40
+#define DIALOG_DUELOARENAS      41
 
 /* - Funciones - */
 new bool:FALSE = false;
@@ -863,7 +865,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
  			if(response){
         		switch(listitem){
         		    case 0: mostrarTopRankedMundial(playerid);
-        		    case 1: mostrarTopRankedMundial(playerid);
+        		    case 1: mostrarTopNacional(playerid);
 					case 2: mostrarTopDuelosGanados(playerid);
 					case 3: mostrarTopDuelosPerdidos(playerid);
 					case 4: mostrarTopClanKills(playerid);
@@ -873,12 +875,28 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}else{
 			}
 		}
-		case DIALOG_TOPRANKED: 		if(response) mostrarTop(playerid);
-		case DIALOG_TOPDUELOSG: 	if(response) mostrarTop(playerid);
-		case DIALOG_TOPDUELOSP: 	if(response) mostrarTop(playerid);
+		
+		case DIALOG_TOPNACIONAL:
+		{
+ 			if(response){
+        		switch(listitem){
+        		    case 0: mostrarTopPais(playerid, 0);
+					case 1: mostrarTopPais(playerid, 1);
+					case 2: mostrarTopPais(playerid, 2);
+					case 3: mostrarTopPais(playerid, 3);
+					}
+			}else
+			 mostrarTop(playerid);
+		}
+		
+		case DIALOG_TOPPAIS: 		if(response) mostrarTopNacional(playerid); else mostrarTopNacional(playerid);
+		case DIALOG_TOPRANKED: 		if(response) mostrarTop(playerid); else mostrarTop(playerid);
+		case DIALOG_TOPDUELOSG: 	if(response) mostrarTop(playerid); else mostrarTop(playerid);
+		case DIALOG_TOPDUELOSP: 	if(response) mostrarTop(playerid); else mostrarTop(playerid);
 		case DIALOG_TOPCKILLS: 		if(response) mostrarTop(playerid);
 		case DIALOG_TOPCWGANADAS: 	if(response) mostrarTop(playerid);
 		case DIALOG_TOPCWPERD:  	if(response) mostrarTop(playerid);
+
   case DIALOG_MODOJUEGO:
 		{
 			if(response){
@@ -1153,10 +1171,47 @@ registrarClan(playerid)
 }
 
 mostrarTop(playerid){
-    return ShowPlayerDialog(playerid, DIALOG_TOP, DIALOG_STYLE_LIST, "{7C7C7C}Tops", "{00779E}Ranked Mundial\n{00779E}Ranked Nacional (No hay jugadores suficientes)", "Selec.", "Cancelar");
+    return ShowPlayerDialog(playerid, DIALOG_TOP, DIALOG_STYLE_LIST, "{7C7C7C}Tops", "{00779E}Ranked Mundial\n{00779E}Ranked Nacional\n{00779E}Duelos ganados\n{00779E}Duelos perdidos", ">>", "Cancelar");
 }
-//{00779E}Clan kills\n{00779E}Clan Wars Ganadas\n{00779E}Clan Wars Perdidas
-//{00779E}Duelos ganados\n{00779E}Duelos perdidos
+
+mostrarTopNacional(playerid){
+	ShowPlayerDialog(playerid, DIALOG_TOPNACIONAL, DIALOG_STYLE_LIST, "{7C7C7C}Paises", "{00779E}Argentina\n{00779E}Peru\n{00779E}Chile\n{00779E}Mexico", ">>", "Volver");
+}
+
+nombrePais(id){
+	new s[80];
+	if(id == 0)
+	    format(s, sizeof(s), "Argentina");
+	if(id == 1)
+	    format(s, sizeof(s), "Peru");
+ 	if(id == 2)
+	    format(s, sizeof(s), "Chile");
+  	if(id == 3)
+	    format(s, sizeof(s), "Mexico");
+	return s;
+}
+
+mostrarTopPais(playerid, numeroPais){
+	new i = 1, selece[1024], string[128], titulo[128];
+	new DBResult:resultado, Puntos, nNick[40];
+    format(consultaDb, sizeof(consultaDb), "SELECT nick, puntajeRanked, pais FROM cuentas WHERE puntajeRanked > 0 AND pais = '%s' ORDER BY puntajeRanked DESC LIMIT 20", nombrePais(numeroPais));
+    format(titulo, sizeof(titulo), "{7C7C7C}Ranked {FFFFFF}%s", nombrePais(numeroPais));
+    resultado = db_query(Cuentas, consultaDb);
+    if(db_num_rows(resultado)){
+        strcat(selece, "{7C7C7C}pos.\t{7C7C7C}Puntos\t{7C7C7C}Nick");
+		do{
+			Puntos = db_get_field_assoc_int(resultado, "puntajeRanked");
+			db_get_field_assoc(resultado, "nick", nNick, sizeof(nNick));
+			format(string, sizeof(string), "\n{7C7C7C}%d\t%d\t{FFFFFF}%s", i, Puntos, nNick);
+			strcat(selece, string);
+			i++;
+		}while(db_next_row(resultado));
+		db_free_result(resultado);
+		ShowPlayerDialog(playerid, DIALOG_TOPPAIS, DIALOG_STYLE_TABLIST_HEADERS, titulo, selece, "Volver", "Cerrar");
+	}else{
+		ShowPlayerDialog(playerid, DIALOG_TOPPAIS, DIALOG_STYLE_LIST, titulo, "{7C7C7C}No hay jugadores ranked", "Volver", "Cerrar");
+	}
+}
 
 
 mostrarTopRankedMundial(playerid){
@@ -1181,9 +1236,9 @@ mostrarTopRankedMundial(playerid){
 mostrarTopDuelosGanados(playerid){
 	new i = 1, selece[1024], string[128];
 	new DBResult:resultado, Duelos, nNick[24];
-    resultado = db_query(Cuentas, "SELECT * FROM cuentas ORDER BY duelosGanados DESC LIMIT 20");
+    resultado = db_query(Cuentas, "SELECT nick, duelosGanados FROM cuentas WHERE duelosGanados > 0 ORDER BY duelosGanados DESC LIMIT 20");
     if(db_num_rows(resultado)){
-        strcat(selece, "{7C7C7C}pos.\t{7C7C7C}Nick\t{7C7C7C}Duelos");
+        strcat(selece, "{7C7C7C}pos.\t{7C7C7C}Nick\t{7C7C7C}Cantidad");
 		do{
 			Duelos = db_get_field_assoc_int(resultado, "duelosGanados");
 			db_get_field_assoc(resultado, "nick", nNick, sizeof(nNick));
@@ -1194,15 +1249,16 @@ mostrarTopDuelosGanados(playerid){
 		}while(db_next_row(resultado));
 		db_free_result(resultado);
 		ShowPlayerDialog(playerid, DIALOG_TOPDUELOSG, DIALOG_STYLE_TABLIST_HEADERS, "{7C7C7C}Duelos ganados", selece, "Volver", "Cerrar");
-	}
+	}else
+	    ShowPlayerDialog(playerid, DIALOG_TOPDUELOSG, DIALOG_STYLE_LIST, "{7C7C7C}Duelos ganados", "No hay jugadores para mostrar" , "Volver", "Cerrar");
 }
 
 mostrarTopDuelosPerdidos(playerid){
 	new i = 1, selece[1024], string[128];
 	new DBResult:resultado, Duelos, nNick[24];
-    resultado = db_query(Cuentas, "SELECT * FROM cuentas ORDER BY duelosPerdidos DESC LIMIT 20");
+    resultado = db_query(Cuentas, "SELECT nick, duelosPerdidos FROM cuentas WHERE duelosPerdidos > 0 ORDER BY duelosPerdidos DESC LIMIT 20");
     if(db_num_rows(resultado)){
-    	strcat(selece, "{7C7C7C}pos.\t{7C7C7C}Nick\t{7C7C7C}Duelos");
+    	strcat(selece, "{7C7C7C}pos.\t{7C7C7C}Nick\t{7C7C7C}Cantidad");
 		do{
 			Duelos = db_get_field_assoc_int(resultado, "duelosPerdidos");
 			db_get_field_assoc(resultado, "nick", nNick, sizeof(nNick));
@@ -1213,7 +1269,8 @@ mostrarTopDuelosPerdidos(playerid){
 		}while(db_next_row(resultado));
 		db_free_result(resultado);
 		ShowPlayerDialog(playerid, DIALOG_TOPDUELOSP, DIALOG_STYLE_TABLIST_HEADERS, "{7C7C7C}Duelos perdidos", selece, "Volver", "Cerrar");
-	}
+	}else
+		ShowPlayerDialog(playerid, DIALOG_TOPDUELOSP, DIALOG_STYLE_LIST, "{7C7C7C}Duelos perdidos", "{7C7C7C}No hay jugadores para mostrar", "Volver", "Cerrar");
 }
 
 mostrarTopClanKills(playerid){
@@ -1415,7 +1472,7 @@ cargarDatos(playerid)
         	infoJugador[playerid][puntajeRanked] 	= db_get_field_assoc_int(resultado, "puntajeRanked");
         	infoJugador[playerid][Clan] 			= db_get_field_assoc_int(resultado, "clan");
         	infoJugador[playerid][Baneado] 			= db_get_field_assoc_int(resultado, "baneado");
-			strcat(infoJugador[playerid][Pais], paisJugador(playerid));
+			format(infoJugador[playerid][Pais], 80, paisJugador(playerid));
    	 	}
     	db_free_result(resultado);
     	infoJugador[playerid][Registrado] = true;
@@ -1941,9 +1998,8 @@ public OnPlayerSpawn(playerid)
 {
 	if(eligiendoSkin[playerid] == true){
     	new string[400];
-		strcat(string,"{FFFFFF}El servidor se encuentra en fase BETA\n");
-		strcat(string,"{FFFFFF}Estará en desarrollo los siguientes días\n");
-		strcat(string,"{FFFFFF}Comandos: /cmds\n");
+		strcat(string,"{FFFFFF}El servidor se encuentra en fase BETA, esto significa que estará en desarrollo los siguientes días.\n");
+		strcat(string,"{FFFFFF}Para ver los comandos: /cmds\n");
 		ShowPlayerDialog(playerid, DIALOG_CREDITOS, 0, "Información sobre el servidor", string, "Ok", "");
 		mostrarDataPlayer(playerid);
 		ocultarTextDrawsEntrada(playerid);
@@ -2020,7 +2076,7 @@ public OnPlayerRequestClass(playerid, classid)
 /* Comandos para jugadores */
 
 CMD:top(playerid, params[]){
-	return 	mostrarTop(playerid);
+	return mostrarTop(playerid);
 }
 
 CMD:saber(playerid, params[]){
@@ -2213,6 +2269,7 @@ CMD:admins(playerid, params[]){
 }
 CMD:guardarmisdatos(playerid, params[]){
 	guardarDatos(playerid);
+	SendClientMessage(playerid, COLOR_ROJO, "Se guardaron correctamente tus datos.");
 	return 1;
 }
 
@@ -2753,6 +2810,7 @@ CMD:ban(playerid, params[]){
 	BanEx(i, razon);
 	return 1;
 }
+
 CMD:setadmin(playerid, params[]){
 	new Nivel, i;
 	if(infoJugador[playerid][Admin] < 3)
