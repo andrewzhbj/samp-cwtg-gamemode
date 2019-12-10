@@ -647,6 +647,7 @@ public OnPlayerConnect(playerid)
 public OnPlayerDisconnect(playerid, reason){
 	actualizarArenaJugador(playerid);
 	skinJugador[playerid] = -1;
+	tipoArmas[playerid] = 0;
 	clanInvitacion[playerid][idClanInvitado] = 0;
 	strcat(clanInvitacion[playerid][tagClanInvitado], "");
 	clanInvitacion[playerid][idInvitador] = 0;
@@ -2105,6 +2106,7 @@ CMD:salir(playerid, params[]){
 	if(estaEnDuelo[playerid] == 0)
 		return SendClientMessage(playerid, COLOR_ROJO, "No estas en ninguna arena para salir.");
 	new s[128], num = estaEnDuelo[playerid];
+	tipoArmas[playerid] = 0;
 	format(s, sizeof(s), "%s "GRISEADO"salió de la arena {FFFFFF}%s", infoJugador[playerid][Nombre], nombreArenaX1(num));
 	SendClientMessageToAll(COLOR_BLANCO, s);
 	SpawnPlayer(playerid);
@@ -2336,8 +2338,8 @@ CMD:stats(playerid, params[]){
 
 CMD:creditos(playerid, params[]){
     new string[1200];
-	strcat(string,"{FFFFFF}> {7C7C7C}Desarrollador{B8B8B8}: {FFFFFF}[WTx]Andrew_Manu\n");
-	strcat(string,"{FFFFFF}> {7C7C7C}Testers{B8B8B8}: {FFFFFF}Alexis_Blaze, Franco_Masucco\n");
+	strcat(string,"{FFFFFF}> {7C7C7C}Desarrollador{B8B8B8}: {FFFFFF}Andrew Manu\n");
+	strcat(string,"{FFFFFF}> {7C7C7C}Testers{B8B8B8}: {FFFFFF}Alexis Blaze, Franco Masucco\n");
 	strcat(string,"{FFFFFF}> {7C7C7C}Contacto{B8B8B8}: {FFFFFF}wtxclanx@hotmail.com\n");
 	strcat(string,"{FFFFFF}> {7C7C7C}Versión{B8B8B8}: {FFFFFF}0.6b\n");
 	strcat(string,"{7C7C7C}El servidor garantiza la confidencialidad y protección de tus datos.\n");
