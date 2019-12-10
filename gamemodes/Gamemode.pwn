@@ -384,6 +384,7 @@ public OnGameModeInit()
 stock actualizarArenaJugador(playerid){
     if(estaEnDuelo[playerid] != 0){
 		new i = estaEnDuelo[playerid];
+		tipoArmas[playerid] = 0;
 		jugadoresArena[i]--;
 		estaEnDuelo[playerid] = 0;
     }
@@ -413,7 +414,7 @@ stock nombreArmas(id){
 	new s[10];
 	if(id == ARMAS_RAPIDAS)
 		format(s, 10, "RW");
-	if(id == ARMAS_RAPIDAS)
+	if(id == ARMAS_LENTAS)
 	    format(s, 10, "WW");
 	if(id == 0)
 	    format(s, 10, "RW/WW");
@@ -545,7 +546,7 @@ public OnPlayerConnect(playerid)
 	if(db_num_rows(resultado)){
 	    new nombreAux[30], cuentaBaneada = 0;
 	    db_get_field_assoc(resultado, "nick", nombreAux, sizeof(nombreAux));
-	   cuentaBaneada = db_get_field_assoc_int(resultado, "baneado");
+ 		cuentaBaneada = db_get_field_assoc_int(resultado, "baneado");
 	    printf("nombre sacado: %s. nombre real %s", nombreAux, infoJugador[playerid][Nombre]);
 		if(strcmp(infoJugador[playerid][Nombre], nombreAux, true) != 0){
 		    printf("nombre repetido");
@@ -1414,7 +1415,7 @@ cargarDatos(playerid)
         	infoJugador[playerid][puntajeRanked] 	= db_get_field_assoc_int(resultado, "puntajeRanked");
         	infoJugador[playerid][Clan] 			= db_get_field_assoc_int(resultado, "clan");
         	infoJugador[playerid][Baneado] 			= db_get_field_assoc_int(resultado, "baneado");
-        	infoJugador[playerid][Pais] 			= paisJugador(playerid);
+			strcat(infoJugador[playerid][Pais], paisJugador(playerid));
    	 	}
     	db_free_result(resultado);
     	infoJugador[playerid][Registrado] = true;
@@ -2231,7 +2232,7 @@ CMD:ww(playerid, params[]){
 	if(estaEnDuelo[playerid] == 0)
 		return SendClientMessage(playerid, COLOR_ROJO, "No estas en una arena x1.");
 	if(tipoArmas[playerid] == ARMAS_LENTAS)
-	    return SendClientMessage(playerid, COLOR_ROJO, "Ya tenes puesto estas armas rápidas (RW)");
+	    return SendClientMessage(playerid, COLOR_ROJO, "Ya tenes puesto estas armas.");
 	    
 	darArmasWW(playerid);
 	tipoArmas[playerid] = ARMAS_LENTAS;
