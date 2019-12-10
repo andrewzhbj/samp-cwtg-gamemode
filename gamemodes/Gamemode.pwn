@@ -1652,14 +1652,17 @@ stock resetearJugadoresEnPartida(){
 stock idJugadorVerde(){
 	new id;
 	ForPlayers(i){
-		if(Equipo[i] == EQUIPO_VERDE) id = i;
+		if(Equipo[i] == EQUIPO_VERDE)
+			return id = i;
 	}
 	return id;
 }
+
 idJugadorNaranja(){
 	new id;
 	ForPlayers(i){
-		if(Equipo[i] == EQUIPO_NARANJA) id = i;
+		if(Equipo[i] == EQUIPO_NARANJA)
+			return id = i;
 	}
 	return id;
 }
