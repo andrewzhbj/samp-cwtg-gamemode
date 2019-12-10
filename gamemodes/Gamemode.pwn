@@ -404,7 +404,7 @@ stock mostrarMensajeDueloTerminado(playerid, killerid){
 		    armasUsadas = 0;
 		    
 		GetPlayerHealth(killerid, Vida); GetPlayerArmour(killerid, Armor);
-		format(s, sizeof(s), "%s {C3C3C3}ganó el duelo contra {FFFFFF}%s {C3C3C3}[V: {FFFFFF}%.2f /C: {FFFFFF}%.2f] a armas %s", infoJugador[killerid][Nombre], infoJugador[playerid][Nombre], Vida, Armor, nombreArmas(armasUsadas));
+		format(s, sizeof(s), "%s {C3C3C3}ganó el duelo contra {FFFFFF}%s {C3C3C3}[V: {FFFFFF}%.2f /C: {FFFFFF}%.2f] {C3C3C3}a armas {FFFFFF}%s", infoJugador[killerid][Nombre], infoJugador[playerid][Nombre], Vida, Armor, nombreArmas(armasUsadas));
 		SendClientMessageToAll(COLOR_BLANCO, s);
 		infoJugador[killerid][duelosGanados]++;
 		infoJugador[playerid][duelosPerdidos]++;
@@ -2363,9 +2363,9 @@ CMD:stats(playerid, params[]){
     
     if(estaEnDuelo[i] > 0){
         if(jugadoresArena[estaEnDuelo[i]] == 1)
-			format(stats, sizeof(stats), "%s\n{7C7C7C}Esperando en {FFFFFF}%s {7C7C7C}({FFFFFF}%s{7C7C7C})", stats, nombreArenaX1(estaEnDuelo[i]), tipoDuelo(estaEnDuelo[i]));
+			format(stats, sizeof(stats), "%s\n{7C7C7C}Esperando en {FFFFFF}%s {7C7C7C}({FFFFFF}%s{7C7C7C})", stats, nombreArenaX1(estaEnDuelo[i]), nombreArmas(tipoArmas[i]));
         else
-			format(stats, sizeof(stats), "%s\n{7C7C7C}Dueleando en {FFFFFF}%s {7C7C7C}({FFFFFF}%s{7C7C7C})", stats, nombreArenaX1(estaEnDuelo[i]), tipoDuelo(estaEnDuelo[i]));
+			format(stats, sizeof(stats), "%s\n{7C7C7C}Dueleando en {FFFFFF}%s {7C7C7C}({FFFFFF}%s{7C7C7C})", stats, nombreArenaX1(estaEnDuelo[i]), nombreArmas(tipoArmas[i]));
 	}
     if(infoJugador[i][Admin] > 0)
 		format(stats, sizeof(stats), "%s\n{7C7C7C}%s {7C7C7C}({FFFFFF}%d{7C7C7C})", stats, tipoAdmin(infoJugador[i][Admin]), infoJugador[i][Admin]);
