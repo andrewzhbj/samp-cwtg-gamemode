@@ -3,9 +3,9 @@ The Clan War & Training gamemode emerged in 2008/2009 by Czechoslovak developers
 ## New features
 This version I provide brings new things added that were not included in the original codes.
 - [Ranked sytem](#ranked-system)
-- Clan system
-- Anti-fake system
-- Admin system
+- [CLan system](#clan-system)
+- [Anti-fake system](#antifake-system)
+- [Admin system](#admin-system)
 - Ban system
 ## Includes
 Are required to compile:
@@ -31,3 +31,17 @@ The server saves all the data of the registered players through SQL queries, in 
 - Grand Master
 
 The ranked score is only achieved by playing 1 vs 1..
+
+# Clan system
+The system is not finished, you have the basics like creating, removing and inviting people.
+
+# Antifake system
+If this system is activated, it does not allow players to enter with secondary accounts, only with the main account.
+
+# Admin system
+This system allows a player to have 3 type of levels administration, which are:
+- (1) Game manager
+- (2) General administrator
+- (3) Player administrator
+
+In addition, each range contains different administrator commands depending on its level.
